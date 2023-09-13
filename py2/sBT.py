@@ -35,7 +35,7 @@ import filecmp
 #
 from sbtLocal import *
 
-version='v03'
+version='v04'
 
 # -- VVVVVVVV - sBT dirs & vars
 #
@@ -66,6 +66,11 @@ abdirDtg='%s/adeck-dtg'%(sbtDatDir)
 
 TcNamesDatDir="%s/tc/names"%(sbtVerDirDat)
 TcVitalsDatDir="%s/tc/tcvitals"%(sbtDatDir)
+
+# -- for V04 github distro
+#
+sbtDatDir=sbtRoot
+
 
 W2BaseDirPrc="%s/prc/"%(sbtVerDir)
 

@@ -10,4 +10,4 @@ This is version V04 -- a beta release the will include more years and data to be
 
 V10 will go back to 2006 and include 2023 for a 17-y record. Additional data on the R34 
 (Radius of 34 kt winds or Gale Force winds) from CIRA and ERA5 will give a more complete set 
-of structure information than contained in the best tracks
+of structure information than in the best tracks

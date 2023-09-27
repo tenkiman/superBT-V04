@@ -12,12 +12,12 @@ V10 will go back to 2006 and include 2023 for a 17-y record. Additional data on 
 
 Current files:
 
-  size (bytes)         filename                     description
- 14745266 Sep 26 02:28 all-md3-2007-2022-MRG.csv -- 'mdeck3' with all positions
-   676848 Sep 26 02:28 sum-md3-2007-2022-MRG.csv -- summary of each storm
- 26085454 Sep 12 22:50 sbt-v04-2007-2022-MRG.csv -- the superBT
+   size (bytes)         filename                     description
+ 14745266 Sep 26 02:28 all-md3-2007-2022-MRG.csv  'mdeck3' with all positions
+   676848 Sep 26 02:28 sum-md3-2007-2022-MRG.csv  summary of each storm
+ 26085454 Sep 12 22:50 sbt-v04-2007-2022-MRG.csv  the superBT
 
-     1123 Sep 12 23:00 h-meta-md3-sum.csv        -- variables in the summary file
-     1418 Sep 12 23:00 h-meta-md3-vars.csv       -- mdeck3 variables
-     2805 Sep 12 23:00 h-meta-sbt-v04-vars.csv   -- superBT-V04 variables
+     1123 Sep 12 23:00 h-meta-md3-sum.csv         variables in the summary file
+     1418 Sep 12 23:00 h-meta-md3-vars.csv        mdeck3 variables
+     2805 Sep 12 23:00 h-meta-sbt-v04-vars.csv    superBT-V04 variables
 

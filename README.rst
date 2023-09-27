@@ -14,7 +14,7 @@ of structure information than contained in the best tracks
 
 Current files:
  
- size (bytes)         filename                     description
+  size (bytes)         filename                     description
  14745266 Sep 26 02:28 all-md3-2007-2022-MRG.csv  -- 'mdeck3' with all positions
    676848 Sep 26 02:28 sum-md3-2007-2022-MRG.csv  -- summary of each storm
  26085454 Sep 12 22:50 sbt-v04-2007-2022-MRG.csv  -- the superBT

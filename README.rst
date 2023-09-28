@@ -3,7 +3,11 @@ superBestTrack -- V04 2007-2022
 
 Welcome to the first release of the super Best Track. 
 
-Please see: https://github.com/tenkiman/superBT-V04/blob/main/QuickStart-V04.docx
+Please see (NB: you have to download to view links): 
+https://github.com/tenkiman/superBT-V04/blob/main/QuickStart-V04.pdf
+or
+https://github.com/tenkiman/superBT-V04/blob/main/QuickStart-V04.docx
+
 for an introduction and description of the .csv files that are the superBT
 
 This is version V04 -- a beta release the will include more years and data to become V10.

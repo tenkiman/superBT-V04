@@ -1,4 +1,3 @@
-===============================
 superBestTrack -- V04 2007-2022
 ===============================
 
@@ -7,9 +6,7 @@ Welcome to the first release of the super Best Track.
 Please see (NB: you have to download to view links):
 
 https://github.com/tenkiman/superBT-V04/blob/main/QuickStart-V04.pdf
-
 or
-
 https://github.com/tenkiman/superBT-V04/blob/main/QuickStart-V04.docx
 
 for an introduction and description of the .csv files that are the superBT

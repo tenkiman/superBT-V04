@@ -200,7 +200,7 @@ class TmtrkCmdLine(CmdLine):
             'override':         ['O',0,1,'override'],
             'verb':             ['V',0,1,'verb=1 is verbose'],
             'ropt':             ['N','','norun',' norun is norun'],
-            'doPrint9X':        ['B',0,1,'dobt=1 and print associated 9X'],
+            'basinOpt':         ['B:',None,'a','basinOpt'],
             'yearOpt':          ['Y:',None,'a','yearOpt'],
             'stmopt':           ['S:',None,'a',' stmid target'],
             'sumonly':          ['s',0,1,'list stmids only'],
@@ -247,7 +247,7 @@ else:
 
 MF.sTimer('ALL')
 MF.sTimer('md3-load')
-md3=Mdeck3(oyearOpt=oyearOpt,tbdir=sbtDatDir,verb=verb)
+md3=Mdeck3(oyearOpt=oyearOpt,verb=verb)
 MF.dTimer('md3-load')
 
 dtgs=None
@@ -286,15 +286,10 @@ if(dtgopt != None):
             
 stmids=None
 if(stmopt != None):
-    if(dobt):
-        doPrint9X=0
-    elif(doPrint9X):
-        dobt=1
-        
+    
     stmids=[]
     stmopts=getStmopts(stmopt)
     for stmopt in stmopts:
-        print 'sss',stmopt
         stmids=stmids+md3.getMd3Stmids(stmopt,dobt=dobt,dofilt9x=dofilt9x,verb=verb)
 
     for stmid in stmids:
@@ -309,13 +304,12 @@ if(stmopt != None):
                 b3id=rc[-2].split()[-1]
                 gendtg=rc[-1]
 
-                if(doPrint9X and dobt):
-                    stmid9X='%s.%s'%(b3id.lower(),year)
-                    (rc,scard9X)=md3.getMd3StmMeta(stmid9X)
-                    last9xdtg=rc[-1]
-                    gdtgdiff=mf.dtgdiff(gendtg,last9xdtg)
-                    scard9X="%s genDiff: %3.0f"%(scard9X,gdtgdiff)
-                    print scard9X
+                stmid9X='%s.%s'%(b3id.lower(),year)
+                (rc,scard9X)=md3.getMd3StmMeta(stmid9X)
+                last9xdtg=rc[-1]
+                gdtgdiff=mf.dtgdiff(gendtg,last9xdtg)
+                scard9X="%s genDiff: %3.0f"%(scard9X,gdtgdiff)
+                print scard9X
              
             continue
         

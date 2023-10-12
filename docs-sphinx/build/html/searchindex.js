@@ -1,0 +1,1 @@
+Search.setIndex({docnames:["index"],envversion:52,filenames:["index.rst"],objects:{},objnames:{},objtypes:{},terms:{document:0,index:0,locat:0,modul:0,page:0,search:0,thi:0},titles:["Welcome to superBT-V04!"],titleterms:{document:[],indic:0,superbt:0,tabl:0,v04:0,welcom:0}})

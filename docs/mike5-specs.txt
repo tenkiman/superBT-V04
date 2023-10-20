@@ -121,3 +121,49 @@ webcolors                 1.10                     pypi_0    pypi
 wheel                     0.37.1             pyhd3eb1b0_0  
 zlib                      1.2.13               h5eee18b_0  
 
+openGrADS
+========
+
+              Welcome to the OpenGrADS Bundle Distribution
+              --------------------------------------------
+
+For additional information enter "grads --manual".
+
+Starting "/data/w22/app/opengrads-2.2.1.oga.1/Contents/Linux/Versions/2.2.1.oga.1/x86_64/grads   -h " ...
+
+Grid Analysis and Display System (GrADS) Version 2.2.1.oga.1
+Copyright (C) 1988-2018 by George Mason University
+GrADS comes with ABSOLUTELY NO WARRANTY
+See file COPYRIGHT for more information
+
+Config: v2.2.1.oga.1 little-endian readline grib2 netcdf hdf4-sds hdf5 opendap-grids,stn athena geotiff shapefile
+Issue 'q config' and 'q gxconfig' commands for more detailed configuration information
+Loading User Defined Extensions table </data/w22/app/opengrads-2.2.1.oga.1/Contents/Linux/Versions/2.2.1.oga.1/x86_64/gex/udxt> ... ok.
+Landscape mode? ('n' for portrait):  
+GX Package Initialization: Size = 11 8.5 
+
+Config: v2.2.1.oga.1 little-endian readline grib2 netcdf hdf4-sds hdf5 opendap-grids,stn athena geotiff shapefile
+Grid Analysis and Display System (GrADS) Version 2.2.1.oga.1
+Copyright (C) 1988-2018 by George Mason University 
+GrADS comes with ABSOLUTELY NO WARRANTY 
+See file COPYRIGHT for more information 
+
+Configured on 02/02/19 for x86_64-unknown-linux-gnu
+
+This build of GrADS has the following features:
+ -+- Byte order is LITTLE ENDIAN 
+ -+- Athena Widget GUI ENABLED 
+ -+- Command line editing ENABLED 
+ -+- GRIB2 interface ENABLED  g2clib-1.6.0 
+ -+- NetCDF interface ENABLED  netcdf-4.3.3 
+ -+- OPeNDAP gridded data interface ENABLED
+ -+- OPeNDAP station data interface ENABLED  libgadap 2.0.oga.1 
+ -+- HDF4 interface ENABLED  hdf-4.2r14 
+ -+- HDF5 interface ENABLED  hdf5-1.8.12 
+ -+- KML contour output ENABLED
+ -+- GeoTIFF and KML/TIFF output ENABLED
+ -+- Shapefile interface ENABLED
+
+ -+- GX Display "Cairo"  /data/w22/app/opengrads-2.2.1.oga.1/Contents/Linux/Versions/2.2.1.oga.1/x86_64/gex//libgxdCairo.so  X11.0 cairo-1.14.10 
+ -+- GX Print   "Cairo"  /data/w22/app/opengrads-2.2.1.oga.1/Contents/Linux/Versions/2.2.1.oga.1/x86_64/gex//libgxpCairo.so  cairo-1.14.10 
+

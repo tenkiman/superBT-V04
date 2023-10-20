@@ -1,9 +1,9 @@
 MIME-Version: 1.0
-Content-Type: multipart/related; boundary="----=_NextPart_01DA034E.E7456C70"
+Content-Type: multipart/related; boundary="----=_NextPart_01DA0351.8E463110"
 
 This document is a Single File Web Page, also known as a Web Archive file.  If you are seeing this message, your browser or editor doesn't support Web Archive files.  Please download a browser that supports Web Archive.
 
-------=_NextPart_01DA034E.E7456C70
+------=_NextPart_01DA0351.8E463110
 Content-Location: file:///C:/2B57DE34/QuickStart-V04.htm
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/html; charset="windows-1252"
@@ -27,8 +27,8 @@ xmlns=3D"http://www.w3.org/TR/REC-html40">
   <o:LastAuthor>Mike Fiorino</o:LastAuthor>
   <o:Revision>2</o:Revision>
   <o:TotalTime>349</o:TotalTime>
-  <o:Created>2023-10-20T16:13:00Z</o:Created>
-  <o:LastSaved>2023-10-20T16:13:00Z</o:LastSaved>
+  <o:Created>2023-10-20T16:32:00Z</o:Created>
+  <o:LastSaved>2023-10-20T16:32:00Z</o:LastSaved>
   <o:Pages>1</o:Pages>
   <o:Words>884</o:Words>
   <o:Characters>5045</o:Characters>
@@ -975,6 +975,13 @@ ue"
 @font-face
 	{font-family:Calibri;
 	panose-1:2 15 5 2 2 2 4 3 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:-469750017 -1040178053 9 0 511 0;}
+@font-face
+	{font-family:"Calibri Light";
+	panose-1:2 15 3 2 2 2 4 3 2 4;
 	mso-font-charset:0;
 	mso-generic-font-family:swiss;
 	mso-font-pitch:variable;
@@ -2280,23 +2287,27 @@ word-wrap:break-word'>
 
 <p class=3DMsoTitleCxSpFirst><span style=3D'font-family:"Arial",sans-serif'=
 >superBT-V04
-(<a href=3D"https://tenkiman.github.io/superBT-V04/QuickStart-V04.docx">.do=
-cx</a>
-<a href=3D"https://tenkiman.github.io/superBT-V04/QuickStart-V04.pdf">.pdf<=
-/a>)<o:p></o:p></span></p>
+(</span><a href=3D"https://tenkiman.github.io/superBT-V04/QuickStart-V04.do=
+cx"><span
+style=3D'font-family:"Arial",sans-serif'>.docx</span></a><span style=3D'fon=
+t-family:
+"Arial",sans-serif'> </span><a
+href=3D"https://tenkiman.github.io/superBT-V04/QuickStart-V04.pdf"><span
+style=3D'font-family:"Arial",sans-serif'>.pdf</span></a><span style=3D'font=
+-family:
+"Arial",sans-serif'>)<o:p></o:p></span></p>
 
 <p class=3DMsoTitleCxSpLast><span style=3D'font-size:14.0pt;font-family:"Ar=
 ial",sans-serif'>a
 super Best Track (BT) for Tropical Cyclone (TC) forecasting and research<o:=
 p></o:p></span></p>
 
-<p class=3DMsoNormal align=3Dcenter style=3D'text-align:center'><span
-style=3D'font-family:"Arial",sans-serif'><a
-href=3D"https://github.com/tenkiman/superBT-V04"><span style=3D'color:blue'=
->GitHub
-- <span class=3DSpellE>tenkiman</span>/superBT-V04: first release of the <s=
-pan
-class=3DSpellE>superBT</span> -- V04</span></a><o:p></o:p></span></p>
+<p class=3DMsoNormal align=3Dcenter style=3D'text-align:center'><a
+href=3D"https://github.com/tenkiman/superBT-V04"><span style=3D'font-family=
+:"Arial",sans-serif;
+color:blue'>GitHub - <span class=3DSpellE>tenkiman</span>/superBT-V04: first
+release of the <span class=3DSpellE>superBT</span> -- V04</span></a><span
+style=3D'font-family:"Arial",sans-serif'><o:p></o:p></span></p>
 
 <p class=3DMsoNormal align=3Dcenter style=3D'margin-bottom:0in;margin-botto=
 m:0in;
@@ -2317,10 +2328,10 @@ p>
 m:0in;
 margin-top:0in;mso-margin-bottom-alt:8.0pt;mso-margin-top-alt:0in;mso-add-s=
 pace:
-auto;text-align:center;line-height:normal'><span style=3D'font-family:"Aria=
-l",sans-serif'><a
-href=3D"mailto:mfiorino@gmu.edu"><span style=3D'font-size:12.0pt'>mfiorino@=
-gmu.edu</span></a></span><span
+auto;text-align:center;line-height:normal'><a href=3D"mailto:mfiorino@gmu.e=
+du"><span
+style=3D'font-size:12.0pt;font-family:"Arial",sans-serif'>mfiorino@gmu.edu<=
+/span></a><span
 style=3D'font-size:12.0pt;font-family:"Arial",sans-serif'><o:p></o:p></span=
 ></p>
 
@@ -2406,9 +2417,9 @@ first TC position in the track or the first warning/advisory as both JTWC a=
 nd
 NHC are required to issue warnings on a system analyzed to be a TC regardle=
 ss
-of initial intensity (maximum surface wind speed). <span
-style=3D'mso-spacerun:yes'> </span>Unlike <span class=3DSpellE>IBTrACS</spa=
-n>, or
+of initial intensity (maximum surface wind speed).<span
+style=3D'mso-spacerun:yes'>  </span>Unlike <span class=3DSpellE>IBTrACS</sp=
+an>, or
 the JTWC/NHC best tracks, the <span class=3DSpellE>superBT</span> TC (<b>NN=
 </b> –
 0-50) includes positions from the <span class=3DSpellE>pTC</span> that beca=
@@ -2551,29 +2562,37 @@ ee
 files.<span style=3D'mso-spacerun:yes'>  </span>Technically the <span
 class=3DSpellE>superBT</span> is consistent with <span class=3DSpellE>IBTrA=
 CS</span>
-(<a href=3D"https://www.ncei.noaa.gov/products/international-best-track-arc=
-hive"><span
-style=3D'color:blue'>International Best Track Archive for Climate Stewardsh=
-ip (<span
-class=3DSpellE>IBTrACS</span>) | National Centers for Environmental Informa=
-tion
-(NCEI) (noaa.gov)</span></a>.<span style=3D'mso-spacerun:yes'>  </span>The =
-data
-can be accessed by any application that reads .csv files.<span
-style=3D'mso-spacerun:yes'>  </span>An obvious data interface would be <a
-href=3D"https://pandas.pydata.org/"><span style=3D'color:blue'>pandas - Pyt=
-hon Data
-Analysis Library (pydata.org)</span></a>.<span style=3D'mso-spacerun:yes'> 
+(</span><a
+href=3D"https://www.ncei.noaa.gov/products/international-best-track-archive=
+"><span
+style=3D'font-family:"Arial",sans-serif;color:blue'>International Best Track
+Archive for Climate Stewardship (<span class=3DSpellE>IBTrACS</span>) | Nat=
+ional
+Centers for Environmental Information (NCEI) (noaa.gov)</span></a><span
+style=3D'font-family:"Arial",sans-serif'>.<span style=3D'mso-spacerun:yes'> 
+</span>The data can be accessed by any application that reads .csv files.<s=
+pan
+style=3D'mso-spacerun:yes'>  </span>An obvious data interface would be </sp=
+an><a
+href=3D"https://pandas.pydata.org/"><span style=3D'font-family:"Arial",sans=
+-serif;
+color:blue'>pandas - Python Data Analysis Library (pydata.org)</span></a><s=
+pan
+style=3D'font-family:"Arial",sans-serif'>.<span style=3D'mso-spacerun:yes'> 
 </span>The <span class=3DSpellE>superBT</span> also include python2 code in=
- the <a
-href=3D"https://github.com/tenkiman/superBT-V04/tree/main/py2">py2</a> dire=
-ctory of
-the <a href=3D"https://github.com/tenkiman/superBT-V04/"><span class=3DSpel=
-lE>github</span>
-repository</a> for analysis and display.<span style=3D'mso-spacerun:yes'> 
-</span>I have tested the py2 code in python3 with no obvious<a
-style=3D'mso-footnote-id:ftn2' href=3D"#_ftn2" name=3D"_ftnref2" title=3D""=
-><span
+ the </span><a
+href=3D"https://github.com/tenkiman/superBT-V04/tree/main/py2"><span
+style=3D'font-family:"Arial",sans-serif'>py2</span></a><span style=3D'font-=
+family:
+"Arial",sans-serif'> directory of the </span><a
+href=3D"https://github.com/tenkiman/superBT-V04/"><span class=3DSpellE><span
+style=3D'font-family:"Arial",sans-serif'>github</span></span><span
+style=3D'font-family:"Arial",sans-serif'> repository</span></a><span
+style=3D'font-family:"Arial",sans-serif'> for analysis and display.<span
+style=3D'mso-spacerun:yes'>  </span>I have tested the py2 code in python3 w=
+ith no
+obvious<a style=3D'mso-footnote-id:ftn2' href=3D"#_ftn2" name=3D"_ftnref2" =
+title=3D""><span
 class=3DMsoFootnoteReference><span style=3D'mso-special-character:footnote'=
 ><![if !supportFootnotes]><span
 class=3DMsoFootnoteReference><span style=3D'font-size:11.0pt;line-height:10=
@@ -2962,11 +2981,11 @@ text .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
   <p class=3DMsoNormal align=3Dleft style=3D'margin-bottom:0in;text-align:l=
 eft;
-  line-height:normal'><span style=3D'font-family:"Arial",sans-serif'><a
+  line-height:normal'><a
   href=3D"https://www.nrlmry.navy.mil/atcf_web/docs/database/new/abdeck.txt=
 "><span
-  class=3DSpellE><span style=3D'font-size:10.0pt'>adeck</span></span></a></=
-span><span
+  class=3DSpellE><span style=3D'font-size:10.0pt;font-family:"Arial",sans-s=
+erif'>adeck</span></span></a><span
   style=3D'font-size:10.0pt;font-family:"Arial",sans-serif'><o:p></o:p></sp=
 an></p>
   </td>
@@ -2979,12 +2998,13 @@ text .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
   <p class=3DMsoNormal align=3Dleft style=3D'margin-bottom:0in;text-align:l=
 eft;
-  line-height:normal'><span style=3D'font-family:"Arial",sans-serif'><a
-  href=3D"https://www.nrlmry.navy.mil/atcf_web/index1.html"><span
-  style=3D'font-size:10.0pt'>ATCF</span></a></span><span style=3D'font-size=
-:10.0pt;
-  font-family:"Arial",sans-serif'> aids/operational info<o:p></o:p></span><=
-/p>
+  line-height:normal'><a href=3D"https://www.nrlmry.navy.mil/atcf_web/index=
+1.html"><span
+  style=3D'font-size:10.0pt;font-family:"Arial",sans-serif'>ATCF</span></a>=
+<span
+  style=3D'font-size:10.0pt;font-family:"Arial",sans-serif'> aids/operation=
+al
+  info<o:p></o:p></span></p>
   </td>
   <td width=3D82 valign=3Dtop style=3D'width:61.15pt;border-top:none;border=
 -left:
@@ -3007,13 +3027,13 @@ text .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
   <p class=3DMsoNormal align=3Dleft style=3D'margin-bottom:0in;text-align:l=
 eft;
-  line-height:normal'><span style=3D'font-family:"Arial",sans-serif'><a
+  line-height:normal'><a
   href=3D"https://hurricanes.ral.ucar.edu/repository/data/adecks_open/"><sp=
 an
-  style=3D'color:blue'>ucar.edu <span class=3DSpellE>adecks_open</span></sp=
-an></a></span><span
-  style=3D'font-size:10.0pt;font-family:"Arial",sans-serif'><o:p></o:p></sp=
-an></p>
+  style=3D'font-family:"Arial",sans-serif;color:blue'>ucar.edu <span
+  class=3DSpellE>adecks_open</span></span></a><span style=3D'font-size:10.0=
+pt;
+  font-family:"Arial",sans-serif'><o:p></o:p></span></p>
   </td>
  </tr>
  <tr style=3D'mso-yfti-irow:2'>
@@ -3025,11 +3045,11 @@ text .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
   <p class=3DMsoNormal align=3Dleft style=3D'margin-bottom:0in;text-align:l=
 eft;
-  line-height:normal'><span style=3D'font-family:"Arial",sans-serif'><a
+  line-height:normal'><a
   href=3D"https://www.nrlmry.navy.mil/atcf_web/docs/database/new/abdeck.txt=
 "><span
-  class=3DSpellE><span style=3D'font-size:10.0pt'>bdeck</span></span></a></=
-span><span
+  class=3DSpellE><span style=3D'font-size:10.0pt;font-family:"Arial",sans-s=
+erif'>bdeck</span></span></a><span
   style=3D'font-size:10.0pt;font-family:"Arial",sans-serif'><o:p></o:p></sp=
 an></p>
   </td>
@@ -3042,11 +3062,12 @@ text .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
   <p class=3DMsoNormal align=3Dleft style=3D'margin-bottom:0in;text-align:l=
 eft;
-  line-height:normal'><span style=3D'font-family:"Arial",sans-serif'><a
-  href=3D"https://www.nrlmry.navy.mil/atcf_web/index1.html"><span
-  style=3D'font-size:10.0pt'>ATCF</span></a></span><span style=3D'font-size=
-:10.0pt;
-  font-family:"Arial",sans-serif'> best track<o:p></o:p></span></p>
+  line-height:normal'><a href=3D"https://www.nrlmry.navy.mil/atcf_web/index=
+1.html"><span
+  style=3D'font-size:10.0pt;font-family:"Arial",sans-serif'>ATCF</span></a>=
+<span
+  style=3D'font-size:10.0pt;font-family:"Arial",sans-serif'> best track<o:p=
+></o:p></span></p>
   </td>
   <td width=3D82 valign=3Dtop style=3D'width:61.15pt;border-top:none;border=
 -left:
@@ -3069,11 +3090,12 @@ text .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
   <p class=3DMsoNormal align=3Dleft style=3D'margin-bottom:0in;text-align:l=
 eft;
-  line-height:normal'><span style=3D'font-family:"Arial",sans-serif'><a
+  line-height:normal'><a
   href=3D"https://www.metoc.navy.mil/jtwc/jtwc.html?best-tracks"><span
-  style=3D'color:blue'>JTWC best tracks</span></a></span><span style=3D'fon=
-t-size:
-  10.0pt;font-family:"Arial",sans-serif'><o:p></o:p></span></p>
+  style=3D'font-family:"Arial",sans-serif;color:blue'>JTWC best tracks</spa=
+n></a><span
+  style=3D'font-size:10.0pt;font-family:"Arial",sans-serif'><o:p></o:p></sp=
+an></p>
   </td>
  </tr>
  <tr style=3D'mso-yfti-irow:3'>
@@ -3096,11 +3118,11 @@ text .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
   <p class=3DMsoNormal align=3Dleft style=3D'margin-bottom:0in;text-align:l=
 eft;
-  line-height:normal'><span style=3D'font-family:"Arial",sans-serif'><a
+  line-height:normal'><a
   href=3D"https://www.nrlmry.navy.mil/atcf_web/docs/database/new/abdeck.txt=
 "><span
-  class=3DSpellE><span style=3D'font-size:10.0pt'>adeck</span></span></a></=
-span><span
+  class=3DSpellE><span style=3D'font-size:10.0pt;font-family:"Arial",sans-s=
+erif'>adeck</span></span></a><span
   style=3D'font-size:10.0pt;font-family:"Arial",sans-serif'><o:p></o:p></sp=
 an></p>
   </td>
@@ -3113,12 +3135,13 @@ text .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
   <p class=3DMsoNormal align=3Dleft style=3D'margin-bottom:0in;text-align:l=
 eft;
-  line-height:normal'><span style=3D'font-family:"Arial",sans-serif'><a
-  href=3D"https://www.nrlmry.navy.mil/atcf_web/index1.html"><span
-  style=3D'font-size:10.0pt'>ATCF</span></a></span><span style=3D'font-size=
-:10.0pt;
-  font-family:"Arial",sans-serif'> aids/operational info<o:p></o:p></span><=
-/p>
+  line-height:normal'><a href=3D"https://www.nrlmry.navy.mil/atcf_web/index=
+1.html"><span
+  style=3D'font-size:10.0pt;font-family:"Arial",sans-serif'>ATCF</span></a>=
+<span
+  style=3D'font-size:10.0pt;font-family:"Arial",sans-serif'> aids/operation=
+al
+  info<o:p></o:p></span></p>
   </td>
   <td width=3D82 valign=3Dtop style=3D'width:61.15pt;border-top:none;border=
 -left:
@@ -3141,12 +3164,11 @@ text .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
   <p class=3DMsoNormal align=3Dleft style=3D'margin-bottom:0in;text-align:l=
 eft;
-  line-height:normal'><span style=3D'font-family:"Arial",sans-serif'><a
-  href=3D"https://ftp.nhc.noaa.gov/atcf/aid_public/"><span style=3D'color:b=
-lue'>NHC
-  public <span class=3DSpellE>adecks</span></span></a></span><span
-  style=3D'font-size:10.0pt;font-family:"Arial",sans-serif'><o:p></o:p></sp=
-an></p>
+  line-height:normal'><a href=3D"https://ftp.nhc.noaa.gov/atcf/aid_public/"=
+><span
+  style=3D'font-family:"Arial",sans-serif;color:blue'>NHC public <span
+  class=3DSpellE>adecks</span></span></a><span style=3D'font-size:10.0pt;
+  font-family:"Arial",sans-serif'><o:p></o:p></span></p>
   </td>
  </tr>
  <tr style=3D'mso-yfti-irow:4'>
@@ -3158,11 +3180,11 @@ text .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
   <p class=3DMsoNormal align=3Dleft style=3D'margin-bottom:0in;text-align:l=
 eft;
-  line-height:normal'><span style=3D'font-family:"Arial",sans-serif'><a
+  line-height:normal'><a
   href=3D"https://www.nrlmry.navy.mil/atcf_web/docs/database/new/abdeck.txt=
 "><span
-  class=3DSpellE><span style=3D'font-size:10.0pt'>bdeck</span></span></a></=
-span><span
+  class=3DSpellE><span style=3D'font-size:10.0pt;font-family:"Arial",sans-s=
+erif'>bdeck</span></span></a><span
   style=3D'font-size:10.0pt;font-family:"Arial",sans-serif'><o:p></o:p></sp=
 an></p>
   </td>
@@ -3175,11 +3197,12 @@ text .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
   <p class=3DMsoNormal align=3Dleft style=3D'margin-bottom:0in;text-align:l=
 eft;
-  line-height:normal'><span style=3D'font-family:"Arial",sans-serif'><a
-  href=3D"https://www.nrlmry.navy.mil/atcf_web/index1.html"><span
-  style=3D'font-size:10.0pt'>ATCF</span></a></span><span style=3D'font-size=
-:10.0pt;
-  font-family:"Arial",sans-serif'> best track<o:p></o:p></span></p>
+  line-height:normal'><a href=3D"https://www.nrlmry.navy.mil/atcf_web/index=
+1.html"><span
+  style=3D'font-size:10.0pt;font-family:"Arial",sans-serif'>ATCF</span></a>=
+<span
+  style=3D'font-size:10.0pt;font-family:"Arial",sans-serif'> best track<o:p=
+></o:p></span></p>
   </td>
   <td width=3D82 valign=3Dtop style=3D'width:61.15pt;border-top:none;border=
 -left:
@@ -3202,11 +3225,12 @@ text .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
   <p class=3DMsoNormal align=3Dleft style=3D'margin-bottom:0in;text-align:l=
 eft;
-  line-height:normal'><span style=3D'font-family:"Arial",sans-serif'><a
-  href=3D"https://www.nhc.noaa.gov/data/#hurdat"><span style=3D'color:blue'=
->NHC
-  Data Archive</span></a></span><span style=3D'font-size:10.0pt;font-family=
-:"Arial",sans-serif'><o:p></o:p></span></p>
+  line-height:normal'><a href=3D"https://www.nhc.noaa.gov/data/#hurdat"><sp=
+an
+  style=3D'font-family:"Arial",sans-serif;color:blue'>NHC Data Archive</spa=
+n></a><span
+  style=3D'font-size:10.0pt;font-family:"Arial",sans-serif'><o:p></o:p></sp=
+an></p>
   </td>
  </tr>
  <tr style=3D'mso-yfti-irow:5'>
@@ -3266,10 +3290,11 @@ text .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
   <p class=3DMsoNormal align=3Dleft style=3D'margin-bottom:0in;text-align:l=
 eft;
-  line-height:normal'><span style=3D'font-family:"Arial",sans-serif'><a
+  line-height:normal'><a
   href=3D"https://www.ecmwf.int/en/forecasts/dataset/ecmwf-reanalysis-v5"><=
 span
-  style=3D'color:blue'>ECMWF Reanalysis v5</span></a></span><span
+  style=3D'font-family:"Arial",sans-serif;color:blue'>ECMWF Reanalysis v5</=
+span></a><span
   style=3D'font-size:10.0pt;font-family:"Arial",sans-serif'><o:p></o:p></sp=
 an></p>
   </td>
@@ -3330,10 +3355,11 @@ text .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
   <p class=3DMsoNormal align=3Dleft style=3D'margin-bottom:0in;text-align:l=
 eft;
-  line-height:normal'><span style=3D'font-family:"Arial",sans-serif'><a
+  line-height:normal'><a
   href=3D"https://www.cpc.ncep.noaa.gov/products/janowiak/cmorph.shtml"><sp=
 an
-  style=3D'color:blue'>CMORPH Precipitation</span></a></span><span
+  style=3D'font-family:"Arial",sans-serif;color:blue'>CMORPH Precipitation<=
+/span></a><span
   style=3D'font-size:10.0pt;font-family:"Arial",sans-serif'><o:p></o:p></sp=
 an></p>
   </td>
@@ -3396,13 +3422,13 @@ text .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
   <p class=3DMsoNormal align=3Dleft style=3D'margin-bottom:0in;text-align:l=
 eft;
-  line-height:normal'><span style=3D'font-family:"Arial",sans-serif'><a
-  href=3D"https://sharaku.eorc.jaxa.jp/GSMaP/index.htm"><span style=3D'colo=
-r:blue'>JAXA
-  Global Rainfall Watch (<span class=3DSpellE>GSMaP</span>)</span></a></spa=
-n><span
-  style=3D'font-size:10.0pt;font-family:"Arial",sans-serif'><o:p></o:p></sp=
-an></p>
+  line-height:normal'><a href=3D"https://sharaku.eorc.jaxa.jp/GSMaP/index.h=
+tm"><span
+  style=3D'font-family:"Arial",sans-serif;color:blue'>JAXA Global Rainfall =
+Watch
+  (<span class=3DSpellE>GSMaP</span>)</span></a><span style=3D'font-size:10=
+.0pt;
+  font-family:"Arial",sans-serif'><o:p></o:p></span></p>
   </td>
  </tr>
  <tr style=3D'mso-yfti-irow:8;mso-yfti-lastrow:yes'>
@@ -3461,10 +3487,10 @@ text .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
   <p class=3DMsoNormal align=3Dleft style=3D'margin-bottom:0in;text-align:l=
 eft;
-  line-height:normal'><span style=3D'font-family:"Arial",sans-serif'><a
-  href=3D"https://gpm.nasa.gov/data/imerg"><span style=3D'color:blue'>IMERG:
-  Integrated Multi-<span class=3DSpellE>satellitE</span> Retrievals for GPM=
-</span></a></span><span
+  line-height:normal'><a href=3D"https://gpm.nasa.gov/data/imerg"><span
+  style=3D'font-family:"Arial",sans-serif;color:blue'>IMERG: Integrated Mul=
+ti-<span
+  class=3DSpellE>satellitE</span> Retrievals for GPM</span></a><span
   style=3D'font-size:10.0pt;font-family:"Arial",sans-serif'><o:p></o:p></sp=
 an></p>
   </td>
@@ -3487,13 +3513,15 @@ and What’s next?<o:p></o:p></span></b></p>
 
 <p class=3DMsoNormal align=3Dleft style=3D'text-align:left'><span style=3D'=
 font-family:
-"Arial",sans-serif'>Please contact me at <a href=3D"mailto:mfiorino@gmu.edu=
-">mfiorino@gmu.edu</a>
-if you have any questions and/or comments.<span style=3D'mso-spacerun:yes'> 
-</span>More processing and documents will be added soon…and a journal artic=
-le.</span><span
-style=3D'font-size:10.0pt;line-height:105%;font-family:"Arial",sans-serif'>=
-<o:p></o:p></span></p>
+"Arial",sans-serif'>Please contact me at </span><a
+href=3D"mailto:mfiorino@gmu.edu"><span style=3D'font-family:"Arial",sans-se=
+rif'>mfiorino@gmu.edu</span></a><span
+style=3D'font-family:"Arial",sans-serif'> if you have any questions and/or
+comments.<span style=3D'mso-spacerun:yes'>  </span>More processing and docu=
+ments
+will be added soon…and a journal article.</span><span style=3D'font-size:10=
+.0pt;
+line-height:105%;font-family:"Arial",sans-serif'><o:p></o:p></span></p>
 
 <p class=3DMsoNormal align=3Dleft style=3D'text-align:left'><span style=3D'=
 font-size:
@@ -3558,7 +3586,7 @@ mode.<span style=3D'mso-spacerun:yes'>  </span>My development platform </p>
 
 </html>
 
-------=_NextPart_01DA034E.E7456C70
+------=_NextPart_01DA0351.8E463110
 Content-Location: file:///C:/2B57DE34/QuickStart-V04_files/item0001.xml
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/xml
@@ -3568,7 +3596,7 @@ as.openxmlformats.org/officeDocument/2006/bibliography" xmlns=3D"http://sch=
 emas.openxmlformats.org/officeDocument/2006/bibliography" SelectedStyle=3D"=
 \APASixthEditionOfficeOnline.xsl" StyleName=3D"APA" Version=3D"6"></b:Sourc=
 es>
-------=_NextPart_01DA034E.E7456C70
+------=_NextPart_01DA0351.8E463110
 Content-Location: file:///C:/2B57DE34/QuickStart-V04_files/props002.xml
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/xml
@@ -3578,7 +3606,7 @@ Content-Type: text/xml
 s:ds=3D"http://schemas.openxmlformats.org/officeDocument/2006/customXml"><d=
 s:schemaRefs><ds:schemaRef ds:uri=3D"http://schemas.openxmlformats.org/offi=
 ceDocument/2006/bibliography"/></ds:schemaRefs></ds:datastoreItem>
-------=_NextPart_01DA034E.E7456C70
+------=_NextPart_01DA0351.8E463110
 Content-Location: file:///C:/2B57DE34/QuickStart-V04_files/themedata.thmx
 Content-Transfer-Encoding: base64
 Content-Type: application/vnd.ms-officetheme
@@ -3643,7 +3671,7 @@ FgAAAAAAAAAAAAAAAADWAgAAdGhlbWUvdGhlbWUvdGhlbWUxLnhtbFBLAQItABQABgAIAAAAIQAN
 0ZCftgAAABsBAAAnAAAAAAAAAAAAAAAAAJ0KAAB0aGVtZS90aGVtZS9fcmVscy90aGVtZU1hbmFn
 ZXIueG1sLnJlbHNQSwUGAAAAAAUABQBdAQAAmAsAAAAA
 
-------=_NextPart_01DA034E.E7456C70
+------=_NextPart_01DA0351.8E463110
 Content-Location: file:///C:/2B57DE34/QuickStart-V04_files/colorschememapping.xml
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/xml
@@ -3653,7 +3681,7 @@ Content-Type: text/xml
  bg1=3D"lt1" tx1=3D"dk1" bg2=3D"lt2" tx2=3D"dk2" accent1=3D"accent1" accent=
 2=3D"accent2" accent3=3D"accent3" accent4=3D"accent4" accent5=3D"accent5" a=
 ccent6=3D"accent6" hlink=3D"hlink" folHlink=3D"folHlink"/>
-------=_NextPart_01DA034E.E7456C70
+------=_NextPart_01DA0351.8E463110
 Content-Location: file:///C:/2B57DE34/QuickStart-V04_files/header.htm
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/html; charset="windows-1252"
@@ -3729,7 +3757,7 @@ ortFootnotes]>
 
 </html>
 
-------=_NextPart_01DA034E.E7456C70
+------=_NextPart_01DA0351.8E463110
 Content-Location: file:///C:/2B57DE34/QuickStart-V04_files/filelist.xml
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/xml; charset="utf-8"
@@ -3743,4 +3771,4 @@ Content-Type: text/xml; charset="utf-8"
  <o:File HRef=3D"header.htm"/>
  <o:File HRef=3D"filelist.xml"/>
 </xml>
-------=_NextPart_01DA034E.E7456C70--
+------=_NextPart_01DA0351.8E463110--

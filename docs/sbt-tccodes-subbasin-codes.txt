@@ -1,0 +1,64 @@
+                          TC and subbasin codes
+				20221028
+			      Mike Fiorino
+			    mfiorino@gmu.edu
+
+
+
+
+TCc	TC type code
+TCc: LO,DB,WV,MT,TD,TS,TY,ST,SD,SS,XT
+
+
+pre TC
+------
+LO	low
+DB	disturbance
+WV	wave
+MT	monsoon trough
+
+TC
+--
+
+TD	tropical depression
+TS	tropical storm
+TY	hurricane/typhoon
+ST 	super typhoon (Vmax >= 130 kts)
+
+subTC
+-----
+
+SD	subtropical depression
+SS	subtropical storm
+
+xTC
+---
+
+XT	eXtra-tropical cyclone
+--
+
+
+for subbasins in big basins:
+
+nnB is for numbered TCs
+B - subbasin code
+
+  B=
+  w - wpac	       western N Pacific
+  c - cpac (180W-140W) central N Pacific 
+  e - epac (140W-)     eastern N Pacific
+  l - lant 	       north Atlantic
+  i - IO - Indian Ocean
+  a - Arabian Sea
+  b - Bay of Bengal
+  h - SHEM - souther Hemisphere
+  s - southern Indian Ocean
+  p - southwest Pacific
+
+[A-Z]nB -- for INVESTs or 9X storms
+
+e.g., C8W --> 3rd 98W of season
+   for w,i,a,b,h,s,p --JTWC
+                 e,l -- NHC
+		   c -- CPHC/NHC
+

@@ -11526,19 +11526,16 @@ class superBT(Mdeck3):
 
         # -- meta
         #
+        print 'qqq',sbtRoot,sbtVerDirDat
         smcards=open('%s/%s'%(sbtVerDirDat,sbtMeta)).readlines()
-
         for n in range(0,len(smcards)):
             tt=smcards[n].split(',')
             tt0=tt[0].replace("\n",'')
             tt1=tt[1].replace("\n",'')
             tt0=tt0.replace("""'""",'')
-            #print n,tt0,tt1
             self.sbtTSmeta[n]=tt0
             self.sMdesc[tt0]=tt1
-        #sys.exit()
 
-        sM=self.sbtTSmeta
         self.sMv=self.sbtTSmeta
             
         if(verb):
@@ -12164,7 +12161,7 @@ class superBT(Mdeck3):
         
         
         #print sbt
-        #print rc
+        #print sbtDict
         #sys.exit()
         return(dtg,sbtDict)
     
@@ -12309,10 +12306,9 @@ method to pull variables from sbt to compare dev v non-dev storms
             if(k < self.btime):
                 if(warn): print 'WWW-makeSbtTS time: %d < btime %d'%(k,self.btime)
             else:
-                dovar="'%s'"%(ovar)
                 try:
-                    ovals[k]=vvals[k][dovar]
-                    if(verb): print 'kkkk----',k,vvals[k][dovar]
+                    ovals[k]=vvals[k][ovar]
+                    if(verb): print 'kkkk----',k,vvals[k][ovar]
                 except:
                     None
             
@@ -12409,11 +12405,17 @@ vars %d
         
         rc=self.makeGaNonDevCtl(nx,ny,nvars)
         
-    def makeGaNonVDevTSDict(self,sbtTS,tsType,ovars,verb=0):
+    def makeGaNonVDevTSDict(self,sbtTS,tsType,ovars,verb=0,override=0):
 
         gadir=self.gadatDir
         gadatPath="%s/ts-%s-%s.dat"%(gadir,tsType,self.stmopt)
         gactlPath="%s/ts-%s-%s.ctl"%(gadir,tsType,self.stmopt)
+        if(MF.ChkPath(gadatPath)):
+            if(not(override)):
+                print 'gadatPath exists and override=0...press...'
+                return(1)
+
+        
         (gdir,gfile)=os.path.split(gadatPath)
         self.gadatPath=gadatPath
         self.gactlPath=gactlPath
@@ -12443,6 +12445,7 @@ vars %d
     
             for t in tt:
                 for x in t:
+                    #print 'asdf',t
                     b=struct.pack('1f',x)
                     B.write(b)
         

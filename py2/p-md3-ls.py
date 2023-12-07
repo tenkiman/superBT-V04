@@ -205,6 +205,7 @@ class TmtrkCmdLine(CmdLine):
             'stmopt':           ['S:',None,'a',' stmid target'],
             'sumonly':          ['s',0,1,'list stmids only'],
             'dofilt9x':         ['9',0,1,'only do 9X'],
+            'doNNand9X':        ['D',1,0,'do NOT list 9X that developed into NN'],
             'domiss':           ['m',0,1,'out stmids with missing dtg'],
             'dtgopt':           ['d:',None,'a',' dtgopt'],
             'dobt':             ['b',0,1,'dobt for both get stmid and trk'],
@@ -299,7 +300,7 @@ if(stmopt != None):
             print scard
             (snum,b1id,year,b2id,stm2id,stm1id)=getStmParams(stmid)
 
-            if(IsNN(stmid)):
+            if(IsNN(stmid) and doNNand9X):
                 
                 b3id=rc[-2].split()[-1]
                 gendtg=rc[-1]

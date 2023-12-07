@@ -42,7 +42,7 @@ sbtProdDir='%s/products/tcdiag'%(sbtRoot)
 sbtSrcDir="%s/src"%(sbtRoot)
 sbtVerDir="%s/%s"%(sbtRoot,version)
 sbtVerDirDat="%s/dat"%(sbtVerDir)
-#sbtVerDirDat=sbtRoot
+sbtVerDirDat=sbtRootV04
 sbtPrcDirTcdiag="%s/prc/tcdiag"%(sbtVerDir)
 sbtPrcDirTctrk="%s/prc/tctrk"%(sbtVerDir)
 

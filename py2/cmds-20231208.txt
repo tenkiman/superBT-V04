@@ -89,3 +89,11 @@
 1234  convert -delay 10 -loop 0 shrspd-w-18-22.png shrspd-l-18-22.png og3-w-18-22.png og3-l-18-22.png  loop-shr-pr-l-w.gif
 
 1242  rsync -alv plt/ /home/fiorino/pCloudDrive/PRJ/superBT/V04/plt/
+
+
+# -- change delay to 150 -- more reasonable
+#
+1279  convert -delay 150 -loop 0 all.9xlife.0.w.18-22.png all.9xlife.0.l.18-22.png all.9xlife.0.e.18-22.png all.9xlife.0.h.18-22.png loop-all-18-22.gif
+1289  convert -delay 150 -loop 0 shrspd-l-18-22.png oi3-l-18-22.png og3-l-18-22.png  loop-shr-pr3-l.gif
+1290  convert -delay 150 -loop 0 shrspd-w-18-22.png oi3-w-18-22.png og3-w-18-22.png  loop-shr-pr3-w.gif
+1291  convert -delay 150 -loop 0 shrspd-w-18-22.png shrspd-l-18-22.png og3-w-18-22.png og3-l-18-22.png  loop-shr-pr-l-w.gif

@@ -3332,7 +3332,7 @@ def pltHist(lista,listi,listo,
     plt.ylabel(ylab)
 
     if(ptitle2 == None):
-        ptitle2="Stmopt: %s"%(stmopt)
+        ptitle2="Basin: %s Stmopt: %s"%(basin,stmopt)
 
     if(tlist == 'time2gen'):
 
@@ -3344,24 +3344,28 @@ def pltHist(lista,listi,listo,
 
         ni=len(listi)
         no=len(listo)
+        nn=no-ni
         devratio=(float(ni)/float(no))*100.0
-        ptitle="%s(G) N %d Mn %3.1f $\sigma$: %3.1f %s(R) N %d Mn: %3.1f $\sigma$: %3.1f %%: %3.0f\n%s"%(
+        ptitle="%s(G) Ndev %d Mn: %3.1f $\sigma$: %3.1f\n%s(R) Nnon %d Mn: %3.1f $\sigma$: %3.1f \nForm Rate: %3.0f%%  %s"%(
             var1,ni,meani,sigmai,
-            var2,no,meano,sigmao,
+            var2,nn,meano,sigmao,
             devratio,
             ptitle2)
 
     elif(find(filttype,'seas')):
-
-        ptitle="%s(G)  N: %d Mn: %3.1f $\sigma$: %3.1f %s(R)  N: %d Mn: %3.1f $\sigma$: %3.1f\n%s"%(
-            var1,len(listi),meani,sigmai,
-            var2,len(listo),meano,sigmao,
+        
+        ndev=len(listi)
+        ntot=len(listo)
+        nnon=ntot-ndev
+        ptitle="%s(G) Nd: %d Mn: %3.1f $\sigma$: %3.1f %s(R) Nn: %d Mn: %3.1f $\sigma$: %3.1f\n%s"%(
+            var1,ndev,meani,sigmai,
+            var2,nnon,meano,sigmao,
             stmopt)
 
 
         
     #ptitle="$\sigma=$"
-    plt.title(r"%s"%(ptitle),fontsize=12)
+    plt.title(r"%s"%(ptitle),fontsize=10)
     
 
    
@@ -3472,7 +3476,7 @@ def SimpleListStats(dlist,verb=0,undef=-77,undef2=1e20,hasflag=1,flagval=None):
     return(rc)
 
 
-def setFilter(filtopt,stmopt):
+def setFilter(filtopt,basin,stmopt):
     
     tt=filtopt.split('.')
     if(len(tt) != 3):
@@ -3502,7 +3506,7 @@ NN: 0 - counts; 1 - donorm=1; 2 donorm=1,docum=1
     dtype=int(tt[2])
     binint=0.25
 
-    ptitle2="Stmopt: %s"%(stmopt)
+    ptitle2="Basin: %s  stmopt: %s"%(basin.upper(),stmopt)
     
     if(find(ftype,'sea')): filtBySeason=1
     if(find(ftype,'dev')): filtByDev=1
@@ -3522,7 +3526,7 @@ NN: 0 - counts; 1 - donorm=1; 2 donorm=1,docum=1
         xint=1
         binint=0.5
         if(tlist == 'time2gen'):
-            ptitle2="Time to Genesis Stmopt: %s"%(stmopt)
+            ptitle2="%s Time to Genesis Stmopt: %s"%(basin.upper(),stmopt)
         
     
     elif(tlist == 'latb'):

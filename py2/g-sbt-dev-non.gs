@@ -8,8 +8,8 @@ years=subwrd(args,2)
 ivar=subwrd(args,3)
 
 ddir='/data/w22/dat/tc/sbt/v01/gadat'
-ddir='/data/w22/superBT/v03/gadat'
-
+ddir='/data/w22/superBT/V04/gadat'
+pdir='/data/w22/superBT/V04/plt/dev-non'
 
 if(ivar = mvmax)
   var='mvmax' ; ylo=0 ; yhi=45 ; yd=5 ;  ylab='ERA5 Vmax[kts]'
@@ -35,40 +35,40 @@ if(ivar = cpslo)
   var='cpslo' ; ylo=-60; yhi= 80 ; yd=20;  ylab='ERA5 CPS Low [m]'
 endif
 
-if(ivar = prg5)
-  var='prg5' ; ylo=0; yhi= 80 ; yd=10 ;  ylab='GSMaP 500-km precip [mm/d]'
+if(ivar = og5)
+  var='og5' ; ylo=0; yhi= 80 ; yd=10 ;  ylab='GSMaP 500-km precip [mm/d]'
 endif
 
-if(ivar = pri5)
-  var='pri5' ; ylo=0; yhi= 80 ; yd=10 ;  ylab='IMERG 500-km precip [mm/d]'
+if(ivar = oi5)
+  var='oi5' ; ylo=0; yhi= 80 ; yd=10 ;  ylab='IMERG 500-km precip [mm/d]'
 endif
 
-if(ivar = prc5)
-  var='prc5' ; ylo=0; yhi= 80 ; yd=10 ;  ylab='CMORPH 500-km precip [mm/d]'
+if(ivar = oc5)
+  var='oc5' ; ylo=0; yhi= 80 ; yd=10 ;  ylab='CMORPH 500-km precip [mm/d]'
 endif
 
-if(ivar = prg3)
-  var='prg3' ; ylo=0; yhi= 80 ; yd=10 ;  ylab='GSMaP 300-km precip [mm/d]'
+if(ivar = og3)
+  var='og3' ; ylo=0; yhi= 80 ; yd=10 ;  ylab='GSMaP 300-km precip [mm/d]'
 endif
 
-if(ivar = pri3)
-  var='pri3' ; ylo=0; yhi= 80 ; yd=10 ;  ylab='IMERG 300-km precip [mm/d]'
+if(ivar = oi3)
+  var='oi3' ; ylo=0; yhi= 80 ; yd=10 ;  ylab='IMERG 300-km precip [mm/d]'
 endif
 
-if(ivar = prc3)
-  var='prc3' ; ylo=20; yhi= 100 ; yd=10 ;  ylab='CMORPH 300-km precip [mm/d]'
+if(ivar = oc3)
+  var='oc3' ; ylo=0; yhi= 80 ; yd=10 ;  ylab='CMORPH 300-km precip [mm/d]'
 endif
 
-if(ivar = prg8)
-  var='prg8' ; ylo=0; yhi= 80 ; yd=10 ;  ylab='GSMaP 800-km precip [mm/d]'
+if(ivar = og8)
+  var='og8' ; ylo=0; yhi= 80 ; yd=10 ;  ylab='GSMaP 800-km precip [mm/d]'
 endif
 
-if(ivar = pri8)
-  var='pri8' ; ylo=0; yhi= 80 ; yd=10 ;  ylab='IMERG 800-km precip [mm/d]'
+if(ivar = oi8)
+  var='oi8' ; ylo=0; yhi= 80 ; yd=10 ;  ylab='IMERG 800-km oecip [mm/d]'
 endif
 
-if(ivar = prc8)
-  var='prc8' ; ylo=0; yhi= 80 ; yd=10 ;  ylab='CMORPH 800-km precip [mm/d]'
+if(ivar = oc8)
+  var='oc8' ; ylo=0; yhi= 80 ; yd=10 ;  ylab='CMORPH 800-km precip [mm/d]'
 endif
 
 if(basin = 'l') ; t1=ylab' LANT 'years ; endif
@@ -76,7 +76,7 @@ if(basin = 'w') ; t1=ylab' WPAC 'years ; endif
 if(basin = 'e') ; t1=ylab' EPAC 'years ; endif
 if(basin = 'h') ; t1=ylab' SHEM 'years ; endif
 
-pngpath='plt/dev-non/'var'-'basin'-'years'.png'
+pngpath=pdir'/'var'-'basin'-'years'.png'
 
 ncol=23 ; ncola=29 ; nsty=3
 dcol=33 ; dcola=39 ; dsty=3

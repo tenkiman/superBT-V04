@@ -28,7 +28,6 @@ def getStmSumVars(sps,olist1,olist2,oopt=None,minDev=0.0,min9X=0.0,verb=0):
                 print 'WWW small 9X-NN for stmid: ',stmid,' time2gen: ',time2gen
         else:
             if(stmlife >= min9X):
-                print 'sss',stcd
                 olist2.append(stmlife)
             
     else:
@@ -127,7 +126,7 @@ olistNon=[]
 
 for stmid in stmids:
     (sps,scard)=md3.getMd3StmMeta(stmid)
-    rc=getStmSumVars(sps,olistDev,olistNon,oopt='time2dev')
+    rc=getStmSumVars(sps,olistDev,olistNon,oopt='time2dev',verb=verb)
     
 print 'ddd',olistDev
 print 'nnn',olistNon
@@ -138,7 +137,7 @@ if(find(stmopt.lower(),'e')): basin='EPAC'
 if(find(stmopt.lower(),'h')): basin='SHEM'
 
 (filtBySeason,filtByDev,filtByCC,tlist,donorm,docum,
- ymax,yint,xmax,xmin,xint,binint,ptitle2)=setFilter(filtopt,stmopt)
+ ymax,yint,xmax,xmin,xint,binint,ptitle2)=setFilter(filtopt,basin,stmopt)
 
 
 statAll=olistDev
@@ -146,7 +145,7 @@ statDev=olistDev
 statNonDev=olistNon
 year=stmopt
 
-pngpath="/ptmp/%s.%s.png"%(filtopt,stmopt)
+pngpath="%s/plt/9xlife/%s.%s.png"%(sbtRoot,filtopt,stmopt)
 pngpath=pngpath.replace(',','-')
 print 'PPP(pngpath): ',pngpath
         

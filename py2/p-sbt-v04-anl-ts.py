@@ -249,6 +249,10 @@ if(stmopt != None):
            'tpw','rh70',
            'oc3','og3','oi3',
            'ec3','eg3','ei3',
+           'oc5','og5','oi5',
+           'ec5','eg5','ei5',
+           'oc8','og8','oi8',
+           'ec8','eg8','ei8',
            'e3','re3',
            'ssta']
 
@@ -332,7 +336,7 @@ if(stmopt != None):
                 
             if(doXv):
                 pstmopt=istmopt.replace('.','-')
-                pmask="plt/dev-non/%s*%s*png"%(ivar,pstmopt)
+                pmask="%s/plt/dev-non/%s*%s*png"%(sbtRoot,ivar,pstmopt)
                 print 'ppp',pmask
                 pngpaths=glob.glob(pmask)
                 if(len(pngpaths) > 0):

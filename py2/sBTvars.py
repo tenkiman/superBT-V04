@@ -40,7 +40,10 @@ md3VarsMeta='h-meta-md3-vars.csv'
 sbtDatDir="%s/dat"%(sbtRoot)
 sbtProdDir='%s/products/tcdiag'%(sbtRoot)
 sbtSrcDir="%s/src"%(sbtRoot)
+
 sbtVerDir="%s/%s"%(sbtRoot,version)
+sbtVerDir=sbtRootV04
+
 sbtVerDirDat="%s/dat"%(sbtVerDir)
 sbtVerDirDat=sbtRootV04
 sbtPrcDirTcdiag="%s/prc/tcdiag"%(sbtVerDir)

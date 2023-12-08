@@ -1,0 +1,91 @@
+20231208
+========
+
+1067  mkdir -p plt/dev-non
+
+1069  cd py2/
+1070  p-sbt-v04-anl-ts.py -S w.20-22 -P shrspd -X
+1071  p-sbt-v04-anl-ts.py -S l.20-22 -P shrspd -X
+1072  p-sbt-v04-anl-ts.py -S e.20-22 -P shrspd -X
+1073  p-sbt-v04-anl-ts.py -S h.20-22 -P shrspd -X
+
+# -- diagnosis of why get different dev/nondev counts in p-sbt-v04-anl-ts.py and p-md3-stm-anl.py
+# -- problem in some NN with 0 time2gen because of crossing basins and 0-length time series?
+#
+ 1103  p-md3-stm-anl.py  -S e.20-22 -f all.9xlife.0
+ 1104  p-md3-stm-anl.py  -S e.20-22 -f all.9xlife.2
+ 1105  la..
+ 1106  la ..
+ 1107  la ../sum-md3-2007-2022-MRG.csv
+ 1108  pg ../sum-md3-2007-2022-MRG.csv
+ 1109  p-md3-stm-anl.py  -S e.20-22 -f all.9xlife.2 -V
+ 1110  xv /ptmp/all.9xlife.2.e.20-22.png
+ 1111  p-md3-stm-anl.py  -S e.20-22 -f all.9xlife.0
+ 1112  h
+ 1113  xv ../plt/dev-non/shrspd-e-20-22.png
+ 1114  f
+ 1115  p-md3-stm-anl.py  -S e.20-22 -f all.9xlife.0
+ 1116  p-md3-stm-anl.py  -S e.20-22 -f all.9xlife.0 -V
+ 1117  which md3a
+ 1118  md3a -S e.22 -b -s
+ 1119  md3a 
+ 1120  md3a -S e.22 -b -s -D
+ 1121  md2a -S 02e.22
+ 1122  md2a -S 02e.22 -X
+ 1123  md2a -S 02e.22 
+ 1124  md2a -S 02e.22  -X
+ 1125  md3a -S 02e.22
+ 1126  md2a -S 02e.22
+ 1127  md2a -S 04e.22  
+ 1128  md3a -S 04e.22  
+ 1129  p-md3-stm-anl.py -S l.20-22 -f all.9xlife.0
+ 1130  p-md3-stm-anl.py -S l.18-22 -f all.9xlife.0
+ 1131  p-md3-stm-anl.py -S l.07-12 -f all.9xlife.0
+ 1132  p-md3-stm-anl.py -S w.20-22 -f all.9xlife.0
+ 1133  p-md3-stm-anl.py -S w.18-22 -f all.9xlife.0
+
+1136  p-sbt-v04-anl-ts.py -S w.18-22 -P shrspd -X
+1137  p-sbt-v04-anl-ts.py -S l.18-22 -P shrspd -X
+
+# make listing of all vars
+1139  p-sbt-v04-anl-ts.py  -L
+
+1140  p-sbt-v04-anl-ts.py -S l.18-22 -P  -X
+1141  p-sbt-v04-anl-ts.py -S l.18-22 -P oi3 -X -O
+1142  p-sbt-v04-anl-ts.py -S l.18-22 -P oi5 -X -O
+1143  p-sbt-v04-anl-ts.py -S l.18-22 -P og5 -X -O
+1144  p-sbt-v04-anl-ts.py -S l.18-22 -P oc5 -X
+1145  p-sbt-v04-anl-ts.py -S l.18-22 -P og8 -X -O
+1146  p-sbt-v04-anl-ts.py -S l.18-22 -P oi5 -X
+1147  p-sbt-v04-anl-ts.py -S l.18-22 -P oi8 -X
+1153  p-sbt-v04-anl-ts.py -S l.18-22 -P og3 -X
+
+1161  p-sbt-v04-anl-ts.py -S w.18-22 -P oc3,oc5,oc8 -X -O
+1162  p-sbt-v04-anl-ts.py -S w.18-22 -P oi3,oi5,oi8,og3,og5,og8 -X -O
+
+
+
+# -- make plots with basin
+#
+1205  p-md3-stm-anl.py -S w.18-22 -f all.9xlife.0
+1206  p-md3-stm-anl.py -S l.18-22 -f all.9xlife.0
+1207  p-md3-stm-anl.py -S e.18-22 -f all.9xlife.0
+1208  p-md3-stm-anl.py -S h.18-22 -f all.9xlife.0
+
+# -- make loops
+#
+1209  pd ../plt/9xlife/
+1214  convert -delay 5 all.9xlife.0.w.18-22.png all.9xlife.0.l.18-22.png all.9xlife.0.e.18-22.png all.9xlife.0.h.18-22.png loop-all-18-22.gif
+1216  git add loop-all-18-22.gif 
+1217  cd ../dev-non/
+
+1226  convert -delay 5 -loop 0 shrspd-l-18-22.png oi3-l-18-22.png og3-l-18-22.png  loop-shr-pr3.gif
+1227  display loop-shr-pr3.gif 
+
+1228  convert -delay 5 -loop 0 shrspd-l-18-22.png oi3-l-18-22.png og3-l-18-22.png  loop-shr-pr3-l.gif
+1229  convert -delay 5 -loop 0 shrspd-w-18-22.png oi3-w-18-22.png og3-w-18-22.png  loop-shr-pr3-w.gif
+
+1232  convert -delay 5 -loop 0 shrspd-w-18-22.png shrspd-l-18-22.png og3-w-18-22.png og3-l-18-22.png  loop-shr-pr-l-w.gif
+1234  convert -delay 10 -loop 0 shrspd-w-18-22.png shrspd-l-18-22.png og3-w-18-22.png og3-l-18-22.png  loop-shr-pr-l-w.gif
+
+1242  rsync -alv plt/ /home/fiorino/pCloudDrive/PRJ/superBT/V04/plt/

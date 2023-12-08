@@ -11556,7 +11556,7 @@ class superBT(Mdeck3):
         self.oyearOpt=oyearOpt
         
         sbtCvsPath="%s/sbt-%s-%s-MRG.csv"%(sbtVerDirDat,versionsBT,oyearOpt)
-        sumCvsPath="%s/sum-md3-%s-MRG.csv"%(sbtVerDir,oyearOpt)
+        sumCvsPath="%s/sum-md3-%s-MRG.csv"%(sbtVerDirDat,oyearOpt)
 
         # -- 111 -- get the storm meta data
         #
@@ -12410,6 +12410,7 @@ vars %d
         gadir=self.gadatDir
         gadatPath="%s/ts-%s-%s.dat"%(gadir,tsType,self.stmopt)
         gactlPath="%s/ts-%s-%s.ctl"%(gadir,tsType,self.stmopt)
+        print 'qqqqq',gactlPath
         if(MF.ChkPath(gadatPath)):
             if(not(override)):
                 print 'gadatPath exists and override=0...press...'

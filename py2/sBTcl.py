@@ -11526,7 +11526,6 @@ class superBT(Mdeck3):
 
         # -- meta
         #
-        print 'qqq',sbtRoot,sbtVerDirDat
         smcards=open('%s/%s'%(sbtVerDirDat,sbtMeta)).readlines()
         for n in range(0,len(smcards)):
             tt=smcards[n].split(',')

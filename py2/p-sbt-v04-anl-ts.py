@@ -277,7 +277,6 @@ if(stmopt != None):
             sbtTSDev[stmid]=sbtTS
         else:
             nNN=nNN+1
-        
             
     nstmids=sbtTSNonDev.keys()
     nstmids.sort()

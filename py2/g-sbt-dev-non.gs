@@ -3,13 +3,20 @@ function main(args)
 rc=gsfallow('on')
 rc=const()
 rc=jaecol2()
-basin=subwrd(args,1)
-years=subwrd(args,2)
-ivar=subwrd(args,3)
+n=1
+basin=subwrd(args,n) ; n=n+1
+years=subwrd(args,n) ; n=n+1
+ivar=subwrd(args,n) ; n=n+1
 
-ddir='/data/w22/dat/tc/sbt/v01/gadat'
-ddir='/data/w22/superBT/V04/gadat'
-pdir='/data/w22/superBT/V04/plt/dev-non'
+ddir=subwrd(args,n) ; n=n+1
+pdir=subwrd(args,5) ; n=n+1
+
+# -- if not set at command line the assume run from the py2/ dir
+#
+  
+if(ddir = '') ; ddir='../gadat'       ; endif
+if(pdir = '') ; pdir='../plt/dev-non' ; endif
+  
 
 if(ivar = mvmax)
   var='mvmax' ; ylo=0 ; yhi=45 ; yd=5 ;  ylab='ERA5 Vmax[kts]'

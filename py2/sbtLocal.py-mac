@@ -1,4 +1,4 @@
 # -- full path with local installation directories
 #
 sbtRoot='/Volumes/SSD3-02/w22/superBT-V04'
-sbtRoot='/data/w22/superBT/V04'
+sbtRootV04=sbtRoot

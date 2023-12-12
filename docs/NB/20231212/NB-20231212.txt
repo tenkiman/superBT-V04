@@ -1,0 +1,42 @@
+			Nota Bene (NB) 20231212
+
+comparing the # of developing v non-developing storms using:
+
+p-md3-stm-anl.py  -- analyzes formation rate as # of NN v # of all 9X (9Xnon + 9Xdev)
+
+v
+
+p-sbt-v04-anl-ts.py  -- plot time series of dev v non-dev 9X
+
+Example:
+--------
+
+for all EPAC 2022 storms:
+
+p-md3-stm-anl.py -S e.22 -f all.9xlife.1
+
+the resulting 'all.9xlife.1.e.2022.png' files shows:
+
+Ndev: 19   (19 named storms)
+Nnon:  2   (2 non developing 9X or 9Xnon)
+
+p-sbt-v04-anl-ts.py -S e.22 -P shrspd -X
+
+the resulting shrspd-e-22.png file shows:
+
+Ndev: 18   (there were 18 9Xdev)
+Nnon:  3   (three non developers or 9Xnon)
+
+Why:
+---
+
+18e.2022 formed in the atLANTic so the 9Xdev is NOT in the EPAC basin.
+Furthermore, while the md3 data file (all-md3-2007-2022-MRG.csv) does
+contain 3 9Xnon, they are not correctly including in the md3 summary
+file (sum-md3-2007-2022-MRG.csv)
+
+A problem?
+----------
+
+Basin crossing (e.g., LANT -> EPAC or EPAC->CPAC-WPAC or WPAC->IO) is a
+2-3% problem and over many years does not affect the statistics.

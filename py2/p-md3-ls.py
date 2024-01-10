@@ -199,9 +199,8 @@ class TmtrkCmdLine(CmdLine):
         self.options={
             'override':         ['O',0,1,'override'],
             'verb':             ['V',0,1,'verb=1 is verbose'],
-            'ropt':             ['N','','norun',' norun is norun'],
-            'basinOpt':         ['B:',None,'a','basinOpt'],
-            'yearOpt':          ['Y:',None,'a','yearOpt'],
+            'doBT':             ['B',0,1,'only display best track info'],
+            'yearOpt':          ['Y:',None,'a','yearOpt -- to select byear-eyear range default is 2007-2022 in sBTvars.py'],
             'stmopt':           ['S:',None,'a',' stmid target'],
             'sumonly':          ['s',0,1,'list stmids only'],
             'dofilt9x':         ['9',0,1,'only do 9X'],
@@ -214,10 +213,16 @@ class TmtrkCmdLine(CmdLine):
         }
 
         self.purpose="""
-reconstruct stm-sum cards using mdeck3.trk data in src directories in dat/tc/sbt by year and basin"""
+an 'ls' or listing app for 'mdeck3' data two filter options are available:
+-S by storm
+-d by dtg or date-time-group or YYYYMMDDHH"""
 
         self.examples='''
-%s 2019'''
+%s -S w.19 -s       # list just the summary for ALL WPAC storms in 2019 including 9Xdev and 9Xnon and NN
+%s -S w.19 -s -B    # list the summary for only numbered or NN WPAC storms in 2019 w/o summary of 9Xdev
+%s -S 20w.19        # list all posits for supertyphoon HAGIBIS -- the largest TC to hit Tokyo
+%s -S l.18-22 -s -B # list all atLANTic storms 2018-2022
+'''
 
 #mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
 #
@@ -288,6 +293,12 @@ if(dtgopt != None):
 stmids=None
 if(stmopt != None):
     
+    if(doBT):
+        dobt=1
+        dofilt9x=0
+        doNNand9X=0
+
+    
     stmids=[]
     stmopts=getStmopts(stmopt)
     for stmopt in stmopts:
@@ -347,14 +358,15 @@ if(stmopt != None):
                 print scard
                 (snum,b1id,year,b2id,stm2id,stm1id)=getStmParams(stmid)
 
-                b3id=rc[-2].split()[-1]
-                gendtg=rc[-1]
-                stmid9X='%s.%s'%(b3id.lower(),year)
-                (rc,scard9X)=md3.getMd3StmMeta(stmid9X)
-                last9xdtg=rc[-1]
-                gdtgdiff=mf.dtgdiff(gendtg,last9xdtg)
-                scard9X="%s genDiff: %3.0f"%(scard9X,gdtgdiff)
-                print scard9X
+                if(doNNand9X):
+                    b3id=rc[-2].split()[-1]
+                    gendtg=rc[-1]
+                    stmid9X='%s.%s'%(b3id.lower(),year)
+                    (rc,scard9X)=md3.getMd3StmMeta(stmid9X)
+                    last9xdtg=rc[-1]
+                    gdtgdiff=mf.dtgdiff(gendtg,last9xdtg)
+                    scard9X="%s genDiff: %3.0f"%(scard9X,gdtgdiff)
+                    print scard9X
 
             else:
                 (rc,scard)=md3.getMd3StmMeta(stmid)

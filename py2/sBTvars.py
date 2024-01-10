@@ -41,16 +41,16 @@ sbtDatDir="%s/dat"%(sbtRoot)
 sbtProdDir='%s/products/tcdiag'%(sbtRoot)
 sbtSrcDir="%s/src"%(sbtRoot)
 
-sbtVerDir="%s/%s"%(sbtRoot,version)
+sbtVerDirTcPrc="%s/%s"%(sbtRoot,version)
 sbtVerDir=sbtRootV04
 
-sbtVerDirDat="%s/dat"%(sbtVerDir)
+sbtVerDirDatTcPrc="%s/dat"%(sbtVerDirTcPrc)
 sbtVerDirDat=sbtRootV04
-sbtPrcDirTcdiag="%s/prc/tcdiag"%(sbtVerDir)
-sbtPrcDirTctrk="%s/prc/tctrk"%(sbtVerDir)
+sbtPrcDirTcdiag="%s/prc/tcdiag"%(sbtVerDirTcPrc)
+sbtPrcDirTctrk="%s/prc/tctrk"%(sbtVerDirTcPrc)
 
-sbtGeogDatDir="%s/geog"%(sbtVerDirDat)
-sbtGslibDir="%s/gslib"%(sbtVerDir)
+sbtGeogDatDir="%s/geog"%(sbtVerDirDatTcPrc)
+sbtGslibDir="%s/gslib"%(sbtVerDirTcPrc)
 
 tsbdbdir="%s/tcdiag"%(sbtDatDir)
 adeckSdir="%s/adeck-dtg"%(sbtDatDir)

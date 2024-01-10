@@ -6752,6 +6752,7 @@ def doMd2Md3Mrg(stmid,doM2=1,doRedo=0,qc2paths=1,doGenChk=0,override=0,ropt='',v
 def setModel2(model,bdir2=None):
 
     model=model.lower()
+    from sBTcl import Era5
     
     if(model == 'era5'): return(Era5(bdir2=bdir2))
 

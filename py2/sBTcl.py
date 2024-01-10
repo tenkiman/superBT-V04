@@ -12748,7 +12748,7 @@ vars %d
         MF.WriteCtl(ctlAll, self.gactlPathAll,verb=verb)
 
 
-    def makeGaStnVar(self,sbtvarAll,ovars,sMdesc,verb=0):
+    def makeGaStnVar(self,sbtvarAll,ovars,sMdesc,doGrads=1,verb=0):
 
         stmids=sbtvarAll.keys()
         stmids.sort()
@@ -12831,6 +12831,7 @@ vars %d
                 no=len(ovars)
                 for n in range(0,no):
                     ovar=ovars[n]
+                    print 'nnnnnnn',n,ovar
                     if(ovar != 'nstm'):
                         dovar=ovar
                         pval=vvals[dtg][dovar]
@@ -13047,19 +13048,29 @@ return
         runcmd(cmd)
         
         gs=gshead+gsvars+gsexpr 
-        print gs
+        #print gs
         rc=WriteCtl(gs,gaSgsPath)
         
-        cmd="""grads -lc '%s'"""%(gaSgsPath)
-        runcmd(cmd)
+        if(doGrads):
+            cmd="""grads -lc '%s'"""%(gaSgsPath)
+            runcmd(cmd)
         
         return
 
 
-    def lsGaVarAllDict(self,sbtvarAll,ovars,sMdesc,verb=0):
+    def lsGaVarAllDict(self,sbtvarAll,ovars,sMdesc,mdtgOpt=None,doCsv=0,csvPath=None,verb=0):
         
         # -- all only varies in x
         #
+        
+        # -- first get dtg range to filter...
+        #
+        fdtgs=[]
+        if(mdtgOpt != None):
+            fdtgs=mf.dtg_dtgopt_prc(mdtgOpt)
+            
+        ocards=[]
+        
         oNx={}
         stmids=sbtvarAll.keys()
         stmids.sort()
@@ -13077,9 +13088,14 @@ return
         ovals={}
         
         for odtg in odtgs:
-            ovals[odtg]=[]
+            if(mdtgOpt != None):
+                if(not(odtg in fdtgs)):
+                    continue
+            else:
+                ovals[odtg]=[]
 
-        print 'ls of:'
+        ocard='stmid,dtg'
+        if(not(doCsv)): print 'ls of:'
         for ovar in ovars:
             try:
                 desc=sMdesc[ovar]
@@ -13090,28 +13106,44 @@ return
                 print 'EEE ovar: ',ovar,' NOT in sBT...sayounara...'
                 sys.exit()
                 
-            print ovar,desc
+            if(not(doCsv)): print '%7s :: %5s'%(ovar,desc)
+            else: ocard="%s,%s"%(ocard,ovar)
         
-        print
+        if(not(doCsv)): 
+            print
+        else: 
+            print ocard
+            ocards.append(ocard)
         
         for stmid in stmids:
             
             if(verb): print 'NNNNNNNN--DDD ovar: ',stmid,ovar
             vvals=sbtvarAll[stmid]
-            dtgs=vvals.keys()
-            dtgs.sort()
+            idtgs=vvals.keys()
+            idtgs.sort()
+            dtgs=[]
+            for idtg in idtgs:
+                if(mdtgOpt != None):
+                    if(idtg in fdtgs):
+                        dtgs.append(idtg)
+                else:
+                    dtgs.append(idtg)
+                        
             
-            hcard='stmid: %s  N: %d'%(stmid,len(dtgs))
-            hcard1='dtg        '
-            for ovar in ovars:
-                hcard1='%s %6s'%(hcard1,ovar[0:6])
+            if(not(doCsv)):
+                hcard='stmid: %s  N: %d'%(stmid,len(dtgs))
+                hcard1='dtg        '
+                for ovar in ovars:
+                    hcard1='%s %6s'%(hcard1,ovar[0:6])
                 
-            print hcard
-            print hcard1
-
+                print hcard
+                print hcard1
+            
             for dtg in dtgs:
 
                 ocard="%s "%(dtg)
+                if(doCsv):
+                    ocard="%s,%s"%(stmid,dtg)
                 stndat={}
                 olist=[]
                 for ovar in ovars:
@@ -13124,12 +13156,26 @@ return
                         pval1=pval
                         pval=IsTc(pval1)
                         ocard="%s %3s %1s "%(ocard,pval1,pval)
+                        if(doCsv):
+                            ocard="%s,%3s-%1s"%(ocard,pval1,pval)
+                            
                     else:
-                        ocard="%s %6.1f"%(ocard,opval)
+                        if(doCsv):
+                            ocard="%s,%6.1f"%(ocard,opval)
+                        else:
+                            ocard="%s %6.1f"%(ocard,opval)
                         
+                if(doCsv):
+                    ocard=ocard.replace(" ",'')
+                    ocards.append(ocard)
+                    
                 print ocard
                         
-                
+        print 'ccccc',csvPath
+        if(csvPath != None):
+            MF.WriteList2Path(ocards, csvPath, append=0, verb=0, warnonly=1 )
+            
+            
         return         
 
     def chkSpdDirGaVarAllDict(self,sbtvarType,sbtvarAll,stmidNNDev,

@@ -55,7 +55,11 @@ change.
 
 - a python2 interface is provided for simple access/slicing and analysis
 
-### How to access/install
+### How to access/install:
+
+The simplest way to install is to download the tarball:
+
+[superBT-V04.tgz](https://github.com/tenkiman/superBT-V04/blob/main/superBT-V04.tgz "superBT tarball")
 
 
 

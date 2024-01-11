@@ -59,7 +59,7 @@ change.
 
 The simplest way to install is to download the tarball:
 
-[superBT-V04.tgz](https://github.com/tenkiman/superBT-V04/blob/main/superBT-V04.tgz "superBT tarball")
+[superBT-V04.tgz](https://tenkiman.github.io/superBT-V04/superBT-V04.tgz "superBT tarball")
 
 
 

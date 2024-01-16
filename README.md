@@ -22,7 +22,9 @@ change.
 ### Key properties of the data set:
 
 - global - ***ALL*** TC basins
+
 - 2007-2022 - 16-y data set
+
 - three TC types **NN** ; **9Xdev** ; **9Xnon**
   - **NN** - a numbered/named TC in the JTWC/NHC BT files
     - **TD** - **T**ropical **D**epression (V<sub>max</sub> < 35 kts)
@@ -34,22 +36,70 @@ change.
   - **9Xdev** - the pre/potential TC (pTC or 9X) disturbance that developed into an **NN** TC
   - **9Xnon** - pTC that did ***not develop*** into an **NN** TC
 
+- ***dynamical*** variables (e.g., vertical wind shear) from [ERA5](https://www.ecmwf.int/en/forecasts/dataset/ecmwf-reanalysis-v5 "https://www.ecmwf.int/en/forecasts/dataset/ecmwf-reanalysis-v5") 10-d forecasts
+
+- ***thermo*** variables (rain) from three high-reslution satellite analyses [NCEP-CMORPH](https://www.cpc.ncep.noaa.gov/products/janowiak/cmorph.shtml), [JAXA-GSMaP](https://sharaku.eorc.jaxa.jp/GSMaP/index.htm) & [NASA-IMERG](https://gpm.nasa.gov/data/imerg)
+
 - superBT-V04 consists of:
   - 3 `.csv` data files
   - 3 corresponding `.csv` metadata files describing the variables.
   - `py2` directory with a python2 interface for analysis and display
 
-### Quick Start
+### Quick Starts and documentation
 
-If you are a "just give me the links" person...  There are two ways to install:
+#### ***docs***
+
+The more complete doc [README-sbt-v04.md](https://raw.githubusercontent.com/tenkiman/superBT-V04/main/docs/README-sbt-v04.md
+"https://raw.githubusercontent.com/tenkiman/superBT-V04/main/docs/README-sbt-v04.md")
+gives more details on the data and processing, and two science applications that demonstrate unique capabilities possible with the `superBT`.
+Links to the python2 applications are also included in [README-sbt-v04.md](https://raw.githubusercontent.com/tenkiman/superBT-V04/main/docs/README-sbt-v04.md
+"https://raw.githubusercontent.com/tenkiman/superBT-V04/main/docs/README-sbt-v04.md")
+
+The [superBT-blog](https://surperbt.blogspot.com/2023/12/intro-to-superbt.html
+"superBT Intro & applications:
+https://surperbt.blogspot.com/2023/12/intro-to-superbt.html") has an
+introduction with and an expanded version of the two science applications in [README-sbt-v04.md](https://raw.githubusercontent.com/tenkiman/superBT-V04/main/docs/README-sbt-v04.md
+"https://raw.githubusercontent.com/tenkiman/superBT-V04/main/docs/README-sbt-v04.md")
+
+- formation rate of 9Xdev --> NN or the percentage of TC 'seeds' that become TCs (about 50% in 2018-2022 WPAC)
+- differences in shear(decreases)/rain(increases) in 9Xdev v 9Xnon shear(increases)/rain(decreases) about 48 h before formation or dissipation
+
+An earlier version of the more comprehensive doc is available at [QuickStartV04](https://tenkiman.github.io/superBT-V04/QuickStartV04.html "https://tenkiman.github.io/superBT-V04/QuickStartV04.html")
+
+#### ***install*** -- if you are a "just give me the links to the data" person...
+
+There are two ways to install:
 
 - download the superBT tarball: [superBT-V04.tgz](https://tenkiman.github.io/superBT-V04/superBT-V04.tgz
-"superBT tarball: https://tenkiman.github.io/superBT-V04/superBT-V04.tgz")
+"superBT tarball: https://tenkiman.github.io/superBT-V04/superBT-V04.tgz") and
+<pre>
+mkdir local-dir                        # local-dir is the directory to untar and will be ...
+cd local-dir                           # the root of the git repo
+tar -zxvf ~/Downloads/superBT-V04.tgz  # ~/Downloads is the typical location of downloads
+</pre>
 
-- pull the release from github.com:
+- pull the release from github.com/tenkiman/superBT-V04
 
-- the more complete [README-sbt-v04.md](https://tenkiman.github.io/superBT-V04/README-sbt-v04.md
-" https://tenkiman.github.io/superBT-V04/README-sbt-v04.md")
+  - [download the git repo tarball](https://github.com/tenkiman/superBT-V04/archive/refs/tags/v0.1-beta.tar.gz "https://github.com/tenkiman/superBT-V04/archive/refs/tags/v0.1-beta.tar.gz")
+  - clone the git repo: `git clone git@github.com:tenkiman/superBT-V04.git superBT`
+
+#### `wxmap2.com` weather maps and TC NWP displays
+
+The code used to manage the NWP, TC and precipitation data flows and to
+construct the superBT comes from the python implementation of my 'weather
+maps' web site WxMAP at FNMOC in 1997 and JTWC in 2002.  WxMAP runs on my home
+PC and is pushed to my `wxmap2.com` domain.
+
+Here are some links:
+
+- maps.wxmap2.com     -- original weather maps
+- jtdiag.wxmap2.com   -- display tracks and 'diagnostic' file for real-time storms and sync'd to operational forecasting
+- tcgen.wxmap2.com -- TC genesis forecasts from the 5 operational global NWP systems
+  - USA-NCEP(GFS)/EU-ECMWF(IFS)/Canada-CMC(CGD)/USA-Navy(NAVGEM)/Japan-JMA(GSM)
+- tcact.wxmap2.com/cur/llmap.htm - maps of TC activity in the current year basins (20230701-20240630 the 2024-SHEM season)
+- tcact.wxmap2.com/cur/spec.htm - TC activity 'spectographs' in the current year basins (2024-SHEM season)
+- tcact.wxmap2.com/cur/ts.htm - TC activity time series 4,8,16,32,48 years the current year basins (2024-SHEM season)
+
 
 ### Contact info
 

@@ -25,12 +25,15 @@ change.
 - 2007-2022 - 16-y data set
 - three TC types:
   - **NN** - a numbered TC
+<pre>
     - **TD** - **T**ropical **D**epression (V<sub>max</sub> < 35 kts)
     - **TS** - **T**ropical **S**torm (V<sub>max</sub> >= 35 kts and V<sub>max</sub> < 65 kts )
     - **TY** or **HU** - **TY**phoon or **HU**icane (V<sub>max</sub> >= 65 kts)
     - **STY** - **S**uper **TY**phoon(V<sub>max</sub> >= 130 kts)
     - **SD** - **S**ubtropical **D**epression (V<sub>max</sub> < 35 kts)
     - **SS** - **S**ubtropical *S**torm (V<sub>max</sub> >= 35 kts)
+</pre>
+
   - **9Xdev** - the pre/potential TC (pTC or 9X) disturbance that developed into an **NN** TC
   - **9Xnon** - pTC that did ***not develop*** into an **NN** TC
 

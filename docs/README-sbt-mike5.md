@@ -1,11 +1,10 @@
-uname -a
-========
+### uname -a
 
+<pre>
 Linux tenkiS.wxmap2.com 5.14.21-150500.55.28-default #1 SMP PREEMPT_DYNAMIC Fri
 Sep 22 10:04:29 UTC 2023 (c11336f) x86_64 x86_64 x86_64 GNU/Linux
 
 cat /etc/os-release
-===================
 
 NAME="openSUSE Leap"
 VERSION="15.5"
@@ -19,10 +18,11 @@ BUG_REPORT_URL="https://bugs.opensuse.org"
 HOME_URL="https://www.opensuse.org/"
 DOCUMENTATION_URL="https://en.opensuse.org/Portal:Leap"
 LOGO="distributor-logo-Leap"
+</pre>
 
-anaconda:
-=========
+### anaconda:
 
+<pre>
 conda info
 
      active environment : py2
@@ -54,9 +54,11 @@ conda info
              netrc file : /home/fiorino/.netrc
            offline mode : False
 
-python2 packages
-================
+</pre>
 
+### python2 packages
+
+<pre>
 # packages in environment at /w21/app/anaconda3/envs/py2:
 #
 # Name                    Version                   Build  Channel
@@ -120,9 +122,11 @@ urllib3                   1.25.7                   py27_0
 webcolors                 1.10                     pypi_0    pypi
 wheel                     0.37.1             pyhd3eb1b0_0  
 zlib                      1.2.13               h5eee18b_0  
+</pre>
 
-openGrADS
-========
+### openGrADS
+
+<pre>
 
               Welcome to the OpenGrADS Bundle Distribution
               --------------------------------------------
@@ -166,4 +170,4 @@ This build of GrADS has the following features:
 
  -+- GX Display "Cairo"  /data/w22/app/opengrads-2.2.1.oga.1/Contents/Linux/Versions/2.2.1.oga.1/x86_64/gex//libgxdCairo.so  X11.0 cairo-1.14.10 
  -+- GX Print   "Cairo"  /data/w22/app/opengrads-2.2.1.oga.1/Contents/Linux/Versions/2.2.1.oga.1/x86_64/gex//libgxpCairo.so  cairo-1.14.10 
-
+</pre>

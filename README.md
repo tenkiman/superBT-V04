@@ -38,7 +38,7 @@ change.
 
 - ***dynamical*** variables (e.g., vertical wind shear) from [ERA5](https://www.ecmwf.int/en/forecasts/dataset/ecmwf-reanalysis-v5 "https://www.ecmwf.int/en/forecasts/dataset/ecmwf-reanalysis-v5") 10-d forecasts
 
-- ***thermo*** variables (rain) from three high-reslution satellite analyses [NCEP-CMORPH](https://www.cpc.ncep.noaa.gov/products/janowiak/cmorph.shtml), [JAXA-GSMaP](https://sharaku.eorc.jaxa.jp/GSMaP/index.htm) & [NASA-IMERG](https://gpm.nasa.gov/data/imerg)
+- ***thermo*** variables (rain) from three high-resolution satellite analyses [NCEP-CMORPH](https://www.cpc.ncep.noaa.gov/products/janowiak/cmorph.shtml), [JAXA-GSMaP](https://sharaku.eorc.jaxa.jp/GSMaP/index.htm) & [NASA-IMERG](https://gpm.nasa.gov/data/imerg)
 
 - superBT-V04 consists of:
   - 3 `.csv` data files
@@ -51,7 +51,7 @@ change.
 
 The more complete doc [README-sbt-v04.md](https://raw.githubusercontent.com/tenkiman/superBT-V04/main/docs/README-sbt-v04.md
 "https://raw.githubusercontent.com/tenkiman/superBT-V04/main/docs/README-sbt-v04.md")
-gives more details on the data and processing, and two science applications that demonstrate unique capabilities possible with the `superBT`.
+gives more details on the data and processing, and two science applications that demonstrate the unique capabilities possible with the `superBT`.
 Links to the python2 applications are also included in [README-sbt-v04.md](https://raw.githubusercontent.com/tenkiman/superBT-V04/main/docs/README-sbt-v04.md
 "https://raw.githubusercontent.com/tenkiman/superBT-V04/main/docs/README-sbt-v04.md")
 
@@ -105,3 +105,9 @@ Here are some links:
 
 Comments and questions are always welcome and appreciated!  Please contact me at mfiorino@gmu.edu
 
+##### ispell local words
+LocalWords:  superBT BT Fiorino br Fiorino's JTWC NHC IBTRaCS NN Xdev Xnon py
+LocalWords:  ropical kts uper pre pTC thermo NCEP CMORPH JAXA GSMaP IMERG csv
+LocalWords:  README sbt md TCs WPAC QuickStartV tgz mkdir dir untar cd repo
+LocalWords:  zxvf wxmap NWP WxMAP FNMOC sync'd GFS ECMWF CMC CGD NAVGEM JMA
+LocalWords:  GSM

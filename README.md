@@ -92,13 +92,13 @@ PC and is pushed to my `wxmap2.com` domain.
 
 Here are some links:
 
-- maps.wxmap2.com     -- original weather maps
-- jtdiag.wxmap2.com   -- display tracks and 'diagnostic' file for real-time storms and sync'd to operational forecasting
-- tcgen.wxmap2.com -- TC genesis forecasts from the 5 operational global NWP systems
+- [maps.wxmap2.com](https://maps.wxmap2.com)     -- original weather maps
+- [jtdiag.wxmap2.com](https://jtdiag.wxmap2.com)   -- display tracks and 'diagnostic' file for real-time storms and sync'd to operational forecasting
+- [tcgen.wxmap2.com](https://tcgen.wxmap2.com) -- TC genesis forecasts from the 5 operational global NWP systems
   - USA-NCEP(GFS)/EU-ECMWF(IFS)/Canada-CMC(CGD)/USA-Navy(NAVGEM)/Japan-JMA(GSM)
-- tcact.wxmap2.com/cur/llmap.htm - maps of TC activity in the current year basins (20230701-20240630 the 2024-SHEM season)
-- tcact.wxmap2.com/cur/spec.htm - TC activity 'spectographs' in the current year basins (2024-SHEM season)
-- tcact.wxmap2.com/cur/ts.htm - TC activity time series 4,8,16,32,48 years the current year basins (2024-SHEM season)
+- [tcact.wxmap2.com/cur/llmap.htm](https://tcact.wxmap2.com/cur/llmap.htm) - maps of TC activity in the current year basins (20230701-20240630 the 2024-SHEM season)
+- [tcact.wxmap2.com/cur/spec.htm](https://tcact.wxmap2.com/cur/spec.htm) - TC activity 'spectographs' in the current year basins (2024-SHEM season)
+- [tcact.wxmap2.com/cur/ts.htm](https://tcact.wxmap2.com/cur/ts.htm) - TC activity time series 4,8,16,32,48 years the current year basins (2024-SHEM season)
 
 
 ### Contact info

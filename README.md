@@ -4,7 +4,7 @@
 <h3>a "super" Best Track (BT) for Tropical Cyclone (TC) Forecasting and Research</h3>
 
 Mike Fiorino (mfiorino@gmu.edu)</br>
-<b> 12 January 2024 </b>
+<b> 16 January 2024 </b>
 </div>
 
 Welcome to the 1st beta release (V04) of Mike Fiorino's <ins><b>superBT</ins></b> -- a <ins><b>super</b></ins>position of **TC-centric** *dynamical*
@@ -23,17 +23,14 @@ change.
 
 - global - ***ALL*** TC basins
 - 2007-2022 - 16-y data set
-- three TC types:
-  - **NN** - a numbered TC
-<pre>
+- three TC types **NN** ; **9Xdev** ; **9Xnon**
+  - **NN** - a numbered/named TC in the JTWC/NHC BT files
     - **TD** - **T**ropical **D**epression (V<sub>max</sub> < 35 kts)
     - **TS** - **T**ropical **S**torm (V<sub>max</sub> >= 35 kts and V<sub>max</sub> < 65 kts )
     - **TY** or **HU** - **TY**phoon or **HU**icane (V<sub>max</sub> >= 65 kts)
     - **STY** - **S**uper **TY**phoon(V<sub>max</sub> >= 130 kts)
     - **SD** - **S**ubtropical **D**epression (V<sub>max</sub> < 35 kts)
     - **SS** - **S**ubtropical *S**torm (V<sub>max</sub> >= 35 kts)
-</pre>
-
   - **9Xdev** - the pre/potential TC (pTC or 9X) disturbance that developed into an **NN** TC
   - **9Xnon** - pTC that did ***not develop*** into an **NN** TC
 

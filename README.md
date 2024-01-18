@@ -79,8 +79,7 @@ tar -zxvf ~/Downloads/superBT-V04.tgz  # ~/Downloads is the typical location of 
 </pre>
 
 - pull the release from github.com/tenkiman/superBT-V04
-
-  - [download the git repo tarball](https://github.com/tenkiman/superBT-V04/archive/refs/tags/v0.1-beta.tar.gz "https://github.com/tenkiman/superBT-V04/archive/refs/tags/v0.1-beta.tar.gz")
+  - [download the git repo tarball](https://github.com/tenkiman/superBT-V04/archive/refs/tags/v0.1-beta1.tar.gz "https://github.com/tenkiman/superBT-V04/archive/refs/tags/v0.1-beta1.tar.gz")
   - clone the git repo: `git clone git@github.com:tenkiman/superBT-V04.git superBT`
 
 #### `wxmap2.com` weather maps and TC NWP displays

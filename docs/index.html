@@ -1,11 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-
-  <meta http-equiv="refresh" content="0; url='https://raw.githubusercontent.com/tenkiman/superBT-V04/main/docs/contents.md'" />
+<div id="content"></div>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+  fetch('https://raw.githubusercontent.com/tenkiman/superBT-V04/main/docs/contents.md')
+    .then(response => response.blob())
+    .then(blob => blob.text())
+    .then(markdown => {
+      document.getElementById('content').innerHTML = marked.parse(markdown);
+    });
+</script>
 
 </head>
 <body>
-<p>You will be redirected to example.com soon!</p>
 </body>
 </html>

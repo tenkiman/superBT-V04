@@ -1,1 +1,18 @@
-<h1>Hello World</h1>
+<!DOCTYPE html>
+<html>
+<head>
+<div id="content"></div>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+  fetch('https://raw.githubusercontent.com/tenkiman/superBT-V04/main/docs/contents.md')
+    .then(response => response.blob())
+    .then(blob => blob.text())
+    .then(markdown => {
+      document.getElementById('content').innerHTML = marked.parse(markdown);
+    });
+</script>
+
+</head>
+<body>
+</body>
+</html>

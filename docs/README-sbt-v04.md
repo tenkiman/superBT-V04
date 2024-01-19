@@ -62,7 +62,7 @@ From the plot we see:
 <!--
 ![WPAC 2018-22 Formation Rate](https://tenkiman.github.io/superBT-V04/docs/plt/9xlife/all.9xlife.0.w.18-22.png "WPAC 18-22: https://tenkiman.github.io/superBT-V04/docs/plt/9xlife/all.9xlife.0.w.18-22.png")
 -->
-![WPAC 2018-22 Formation Rate](plt/9xlife/all.9xlife.0.w.18-22.png "WPAC 18-22: https://tenkiman.github.io/superBT-V04/plt/9xlife/all.9xlife.0.w.18-22.png")
+![WPAC 2018-22 Formation Rate](plt/9xlife/all.9xlife.0.w.18-22.png "WPAC 18-22: https://tenkiman.github.io/superBT-V04/docs/plt/9xlife/all.9xlife.0.w.18-22.png")
 
 ### Next Steps...
 
@@ -71,7 +71,7 @@ Here are documentation and date set links:
 - the [superBT blog](https://surperbt.blogspot.com/ "https://surperbt.blogspot.com/") has an [introduction](https://surperbt.blogspot.com/2023/12/intro-to-superbt.html "https://surperbt.blogspot.com/2023/12/intro-to-superbt.html") with links and a further analysis of ***formation rate*** in the big basins and the ***dynamical*** (wind shear) and ***thermodynamical*** (precipitation) differences between **9Xdev** and **9Xnon**
 
 - this
-  [presentation](https://tenkiman.github.io/docs/superBT-V04/tc-superBT-20230310.pptx
+  [presentation](https://tenkiman.github.io/superBT-V04/docs/tc-superBT-20230310.pptx
   "https://tenkiman.github.io/superBT-V04/docs/tc-superBT-20230310.pptx") gives:
   - details on the ATCF data files used for the TC positions/structure
   - track forecast skill of the ERA5 forecasts

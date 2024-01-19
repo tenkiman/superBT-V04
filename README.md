@@ -67,13 +67,13 @@ introduction with and an expanded version of the two science applications in [RE
 - formation rate of 9Xdev --> NN or the percentage of TC 'seeds' that become TCs (about 50% in 2018-2022 WPAC)
 - differences in shear(decreases)/rain(increases) in 9Xdev v 9Xnon shear(increases)/rain(decreases) about 48 h before formation or dissipation
 
-An earlier version of the more comprehensive doc is available at [QuickStartV04](https://tenkiman.github.io/superBT-V04/QuickStartV04.html "https://tenkiman.github.io/superBT-V04/QuickStartV04.html")
+An earlier version of the more comprehensive doc is available at [QuickStartV04](https://tenkiman.github.io/superBT-V04/docs/QuickStartV04.html "https://tenkiman.github.io/docs/superBT-V04/QuickStartV04.html")
 
 #### ***install*** -- if you are a "just give me the links to the data" person...
 
 There are two ways to install:
 
-- download the superBT tarball: [superBT-V04.tgz](https://tenkiman.github.io/superBT-V04/superBT-V04.tgz
+- download the superBT tarball: [superBT-V04.tgz](https://tenkiman.github.io/docs/superBT-V04/superBT-V04.tgz
 "superBT tarball: https://tenkiman.github.io/superBT-V04/superBT-V04.tgz") and
 <pre>
 mkdir local-dir                        # local-dir is the directory to untar and will be ...

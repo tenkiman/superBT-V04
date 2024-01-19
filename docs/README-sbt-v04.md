@@ -61,8 +61,8 @@ Here are documentation and date set links:
 - the [superBT blog](https://surperbt.blogspot.com/ "https://surperbt.blogspot.com/") has an [introduction](https://surperbt.blogspot.com/2023/12/intro-to-superbt.html "https://surperbt.blogspot.com/2023/12/intro-to-superbt.html") with links and a further analysis of ***formation rate*** in the big basins and the ***dynamical*** (wind shear) and ***thermodynamical*** (precipitation) differences between **9Xdev** and **9Xnon**
 
 - this
-  [presentation](https://tenkiman.github.io/superBT-V04/tc-superBT-20230310.pptx
-  "https://tenkiman.github.io/superBT-V04/tc-superBT-20230310.pptx") gives:
+  [presentation](https://tenkiman.github.io/docs/superBT-V04/tc-superBT-20230310.pptx
+  "https://tenkiman.github.io/superBT-V04/docs/tc-superBT-20230310.pptx") gives:
   - details on the ATCF data files used for the TC positions/structure
   - track forecast skill of the ERA5 forecasts
     - as good or better the ECMWF operational runs

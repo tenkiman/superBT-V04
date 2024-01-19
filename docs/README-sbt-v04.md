@@ -1,10 +1,10 @@
 <div align="center">
 
-<h1>superBT-V04 -- the details</h1>
+<h1>superBT-V04 - The Details</h1>
 <h3>a "super" Best Track (BT) for Tropical Cyclone (TC) Forecasting and Research</h3>
 
 Mike Fiorino (mfiorino@gmu.edu)</br>
-<b> 12 January 2024 </b>
+<b> 19 January 2024 </b>
 </div>
 
 Welcome to the 1st beta release (V04) of Mike Fiorino's <ins><b>superBT</ins></b> -- a <ins><b>super</b></ins>position of **TC-centric** *dynamical*
@@ -21,23 +21,33 @@ change.
 
 ### Key properties of the data set:
 
+[TCs]: ## "
+TD  - Tropical Depression : Vmax < 35 kts
+TS  - Tropical Storm      : Vmax >=35 & Vmax < 64 kts
+HU  - Hurricane           : Vmax >=65kts
+STY - Super Typhoon       : Vmax >= 130 kts
+SD  - Subtropical Depression : Vmax < 35 kts
+SS  - Subtropical Storm      : Vmax >=35 & Vmax < 64 kts
+"
+
 - global - ***ALL*** TC basins
+
 - 2007-2022 - 16-y data set
-- three TC types:
-  - **NN** - a numbered TC
-    - **TD** - **T**ropical **D**epression (V<sub>max</sub> < 35 kts)
-    - **TS** - **T**ropical **S**torm (V<sub>max</sub> >= 35 kts and V<sub>max</sub> < 65 kts )
-    - **TY** or **HU** - **TY**phoon or **HU**icane (V<sub>max</sub> >= 65 kts)
-    - **STY** - **S**uper **TY**phoon(V<sub>max</sub> >= 130 kts)
-    - **SD** - **S**ubtropical **D**epression (V<sub>max</sub> < 35 kts)
-    - **SS** - **S**ubtropical *S**torm (V<sub>max</sub> >= 35 kts)
+
+- three TC types **NN** ; **9Xdev** ; **9Xnon**
+  - **NN** - [a numbered/named TC in the JTWC/NHC BT files][TCs]
   - **9Xdev** - the pre/potential TC (pTC or 9X) disturbance that developed into an **NN** TC
   - **9Xnon** - pTC that did ***not develop*** into an **NN** TC
+
+- ***dynamical*** variables (e.g., vertical wind shear) from [ERA5](https://www.ecmwf.int/en/forecasts/dataset/ecmwf-reanalysis-v5 "https://www.ecmwf.int/en/forecasts/dataset/ecmwf-reanalysis-v5") 10-d forecasts
+
+- ***thermo*** variables (rain) from three high-resolution satellite analyses [NCEP-CMORPH](https://www.cpc.ncep.noaa.gov/products/janowiak/cmorph.shtml), [JAXA-GSMaP](https://sharaku.eorc.jaxa.jp/GSMaP/index.htm) & [NASA-IMERG](https://gpm.nasa.gov/data/imerg)
 
 - superBT-V04 consists of:
   - 3 `.csv` data files
   - 3 corresponding `.csv` metadata files describing the variables.
   - `py2` directory with a python2 interface for analysis and display
+
 
 ### Demo of ***formation rate*** or the % of all pTCs --> TCs
 

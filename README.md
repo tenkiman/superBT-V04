@@ -4,7 +4,7 @@
 <h3>a "super" Best Track (BT) for Tropical Cyclone (TC) Forecasting and Research</h3>
 
 Mike Fiorino (mfiorino@gmu.edu)</br>
-<b> 16 January 2024 </b>
+<b> 19 January 2024 </b>
 </div>
 
 Welcome to the 1st beta release (V04) of Mike Fiorino's <ins><b>superBT</ins></b> -- a <ins><b>super</b></ins>position of **TC-centric** *dynamical*
@@ -21,18 +21,21 @@ change.
 
 ### Key properties of the data set:
 
+[TCs]: ## "
+TD  - Tropical Depression : Vmax < 35 kts
+TS  - Tropical Storm      : Vmax >=35 & Vmax < 64 kts
+HU  - Hurricane           : Vmax >=65kts
+STY - Super Typhoon       : Vmax >= 130 kts
+SD  - Subtropical Depression : Vmax < 35 kts
+SS  - Subtropical Storm      : Vmax >=35 & Vmax < 64 kts
+"
+
 - global - ***ALL*** TC basins
 
 - 2007-2022 - 16-y data set
 
 - three TC types **NN** ; **9Xdev** ; **9Xnon**
-  - **NN** - a numbered/named TC in the JTWC/NHC BT files
-    - **TD** - **T**ropical **D**epression (V<sub>max</sub> < 35 kts)
-    - **TS** - **T**ropical **S**torm (V<sub>max</sub> >= 35 kts and V<sub>max</sub> < 65 kts )
-    - **TY** or **HU** - **TY**phoon or **HU**icane (V<sub>max</sub> >= 65 kts)
-    - **STY** - **S**uper **TY**phoon(V<sub>max</sub> >= 130 kts)
-    - **SD** - **S**ubtropical **D**epression (V<sub>max</sub> < 35 kts)
-    - **SS** - **S**ubtropical *S**torm (V<sub>max</sub> >= 35 kts)
+  - **NN** - [a numbered/named TC in the JTWC/NHC BT files][TCs]
   - **9Xdev** - the pre/potential TC (pTC or 9X) disturbance that developed into an **NN** TC
   - **9Xnon** - pTC that did ***not develop*** into an **NN** TC
 

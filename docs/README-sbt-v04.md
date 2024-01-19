@@ -89,23 +89,29 @@ Comments and questions are always welcome and appreciated!  Please contact me at
 
 ### Basic Properties:
 
+[NHEMcodes]: ## "
+B - Bay of Bengal
+A - Arabian Sea
+I - North Indian Ocean (NIO) both B & A
+W - Western north PACific (WPAC)
+C - Central north PACific (CPAC)
+E - Eastern north PACific (EPAC)
+L - north atLANTic (LANT)
+"
+
+[SHEMcodes]: ## "
+S - South Indian Ocean (SIO)
+P - southwest Pacific ocean
+H - SHEM S & P 
+"
+
 - 2007-2022 – 16-y data set
 - Final (latest/greatest) BT:
   - JTWC 2007-2021
   - NHC 2007-2022
 - Global - NHEM (A,B,I,W,C,E,L) & SHEM basins (S,P,H)
-  - NHEM Subbasin 1-char codes:
-    - **B** - Bay of **B**engal
-    - **A** - **A**rabian Sea
-    - **I** - North **I**ndian Ocean (NIO) both B & A
-    - **W** - **W**estern north PACific (WPAC)
-    - **C** - **C**entral north PACific (CPAC)
-    - **E** - **E**astern north PACific (EPAC)
-    - **L** - north atLANTic (**L**ANT)
-  - SHEM Subbasin 1-char codes:
-    - **S** - **S**outh Indian Ocean (SIO)
-    - **P** - southwest **P**acific ocean (
-    - **H** - SHEM **S** & **P** 
+  - [NHEM Subbasin 1-char codes][NHEMcodes]
+  - [SHEM Subbasin 1-char codes][SHEMcodes]
 - JTWC/NHC [ATCF](https://www.nrlmry.navy.mil/atcf_web/index1.html
 "https://www.nrlmry.navy.mil/atcf_web/index1.html" ) data files
   - "bdeck" -- best track operational (working) or 'final' (post-season) positions/structure

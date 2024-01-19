@@ -29,24 +29,74 @@ STY - Super Typhoon       : Vmax >= 130 kts
 SD  - Subtropical Depression : Vmax < 35 kts
 SS  - Subtropical Storm      : Vmax >=35 & Vmax < 64 kts
 "
+[NHEMcodes]: ## "
+B - Bay of Bengal
+A - Arabian Sea
+I - North Indian Ocean (NIO) both B & A
+W - Western north PACific (WPAC)
+C - Central north PACific (CPAC)
+E - Eastern north PACific (EPAC)
+L - north atLANTic (LANT)
+"
 
-- global - ***ALL*** TC basins
+[SHEMcodes]: ## "
+S - South Indian Ocean (SIO)
+P - southwest Pacific ocean
+H - SHEM S & P 
+"
 
 - 2007-2022 - 16-y data set
 
+- Final (latest/greatest) BT:
+  - JTWC 2007-2021
+  - NHC 2007-2022
+
+- Global - NHEM (A,B,I,W,C,E,L) & SHEM basins (S,P,H)
+  - [NHEM Subbasin 1-char codes][NHEMcodes]
+  - [SHEM Subbasin 1-char codes][SHEMcodes]
+
+- JTWC/NHC [ATCF](https://www.nrlmry.navy.mil/atcf_web/index1.html
+"https://www.nrlmry.navy.mil/atcf_web/index1.html" ) data files
+  - "bdeck" -- best track operational (working) or 'final' (post-season) positions/structure
+
 - three TC types **NN** ; **9Xdev** ; **9Xnon**
-  - **NN** - [a numbered/named TC in the JTWC/NHC BT files][TCs]
+  - **NN** - [a numbered/named (01-50) TC in the JTWC/NHC BT files][TCs]
+    - not necessarily Tropical Storms (**TS** with winds >= 35 kts) 
   - **9Xdev** - the pre/potential TC (pTC or 9X) disturbance that developed into an **NN** TC
   - **9Xnon** - pTC that did ***not develop*** into an **NN** TC
 
-- ***dynamical*** variables (e.g., vertical wind shear) from [ERA5](https://www.ecmwf.int/en/forecasts/dataset/ecmwf-reanalysis-v5 "https://www.ecmwf.int/en/forecasts/dataset/ecmwf-reanalysis-v5") 10-d forecasts
+- ***dynamical*** variables (e.g., vertical wind shear) from [ECMWF ERA5 reanalysis](https://www.ecmwf.int/en/forecasts/dataset/ecmwf-reanalysis-v5
+"ERA5: https://www.ecmwf.int/en/forecasts/dataset/ecmwf-reanalysis-v5") 10-d NWP global forecasts for:
+  - storm and large-scale *environment* diagnostics - the *diagnostic file* - input to e statistical-dynamical TC intensity prediction models 
+  - model track/structure forecasts
 
-- ***thermo*** variables (rain) from three high-resolution satellite analyses [NCEP-CMORPH](https://www.cpc.ncep.noaa.gov/products/janowiak/cmorph.shtml), [JAXA-GSMaP](https://sharaku.eorc.jaxa.jp/GSMaP/index.htm) & [NASA-IMERG](https://gpm.nasa.gov/data/imerg)
+- ***thermo*** variables (rain) from  three global, high-resolution precipitation analyses:
+  - [CMORPH - USA - NCEP/CPC V1.0](https://www.cpc.ncep.noaa.gov/products/janowiak/cmorph.shtml
+"CPC V1.0 : https://www.cpc.ncep.noaa.gov/products/janowiak/cmorph.shtml")
+  - [GsMAP - Japan - JAXA V6](https://sharaku.eorc.jaxa.jp/GSMaP/index.htm
+"JAXA GsMAP V6.0: https://sharaku.eorc.jaxa.jp/GSMaP/index.htm ")
+  - [IMERG - USA - NASA V06D](https://gpm.nasa.gov/data/imerg "NASA IMERG: https://gpm.nasa.gov/data/imerg" )
 
 - superBT-V04 consists of:
   - 3 `.csv` data files
   - 3 corresponding `.csv` metadata files describing the variables.
   - `py2` directory with a python2 interface for analysis and display
+
+### Unique Properties:
+
+- curated pTC or TC 'seeds' data set based on a zip archive of all ATCF
+  adeck/bdeck (pTCs or '9X' or 'INVESTS') from JTWC/NHC operations.  All TCs
+  start as pTCs and by having data on both pTCs that *developed* into **NN** TCs
+  (**9Xdev**) and did ***not*** develop (**9Xnon**) we can determine the
+  ***formation rate*** and the ***dynamical/thermodynamical difference*** between developers and non-developers
+
+- the ***highest quality global NWP analyses*** to date based on the
+  high-quality of the daily 00/12 UTC 10-d ERA5 TC forecasts.  The quality of
+  the reanalysis does vary with changes in the observing system, but with ERA5
+  the TC track forecasts are consistently better than ECMWF operations and
+  nearly as good in the 1980s as the 2000s.
+
+- a python2 interface is provided for simple access/slicing and analysis
 
 
 ### Demo of ***formation rate*** or the % of all pTCs --> TCs
@@ -64,11 +114,25 @@ From the plot we see:
 -->
 ![WPAC 2018-22 Formation Rate](plt/9xlife/all.9xlife.0.w.18-22.png "WPAC 18-22: https://tenkiman.github.io/superBT-V04/docs/plt/9xlife/all.9xlife.0.w.18-22.png")
 
-### Next Steps...
+### Data files and Documentation
 
-Here are documentation and date set links:
+The superBT consists of three `.csv` data files and three `.csv` metadata files describing the variables in data files.
+
+| data file | description | # of lines/points
+| -:      | :-:   | :-	  
+| [all-md3-2007-2022-MRG.csv](../dat/all-md3-2007-2022-MRG.csv) | positions for NN/9Xdev/9Xnondev   | 107050 positions
+| [sum-md3-2007-2022-MRG.csv](../dat/sum-md3-2007-2022-MRG.csv)  | summary of each storm  | 5233 storms
+| sbt-v04-2007-2022-MRG.csv  | superBT     | 86595 positions
+| h-meta-md3-vars.csv | metadata for all-md3-*.csv | 32 variables
+| h-meta-md3-sum-vars.csv | metadata for sum-md3-*.csv | 25 variables
+| h-meta-sbt-v04-vars.csv | metadata for sbt-v04*.csv | 66 variables
+
+
+#### superBT blog with intro:
 
 - the [superBT blog](https://surperbt.blogspot.com/ "https://surperbt.blogspot.com/") has an [introduction](https://surperbt.blogspot.com/2023/12/intro-to-superbt.html "https://surperbt.blogspot.com/2023/12/intro-to-superbt.html") with links and a further analysis of ***formation rate*** in the big basins and the ***dynamical*** (wind shear) and ***thermodynamical*** (precipitation) differences between **9Xdev** and **9Xnon**
+
+#### presentations:
 
 - this  [presentation for the HURICAN Project in 202303](https://tenkiman.github.io/superBT-V04/docs/tc-superBT-20230310.pptx
   "https://tenkiman.github.io/superBT-V04/docs/tc-superBT-20230310.pptx") gives:
@@ -79,76 +143,6 @@ Here are documentation and date set links:
     - quality of the three precipitation analyses
     
 - this [talk at AORI/UofTokyo in 202210](https://tenkiman.github.io/superBT-V04/docs/tc-superBT-climate-studies-20221017.pdf "https://tenkiman.github.io/superBT-V04/docs/tc-superBT-climate-studies-20221017.pdf") shows how a superBT would be useful for TC climate studies.
-
-### Installation
-
-- The simplest way to install is to download the tarball [superBT-V04.tgz](https://tenkiman.github.io/superBT-V04/superBT-V04.tgz
-"superBT tarball: https://tenkiman.github.io/superBT-V04/superBT-V04.tgz")
-
-### Contact info
-
-Comments and questions are always welcome and appreciated!  Please contact me at mfiorino@gmu.edu
-
-
-### Basic Properties:
-
-[NHEMcodes]: ## "
-B - Bay of Bengal
-A - Arabian Sea
-I - North Indian Ocean (NIO) both B & A
-W - Western north PACific (WPAC)
-C - Central north PACific (CPAC)
-E - Eastern north PACific (EPAC)
-L - north atLANTic (LANT)
-"
-
-[SHEMcodes]: ## "
-S - South Indian Ocean (SIO)
-P - southwest Pacific ocean
-H - SHEM S & P 
-"
-
-- 2007-2022 – 16-y data set
-- Final (latest/greatest) BT:
-  - JTWC 2007-2021
-  - NHC 2007-2022
-- Global - NHEM (A,B,I,W,C,E,L) & SHEM basins (S,P,H)
-  - [NHEM Subbasin 1-char codes][NHEMcodes]
-  - [SHEM Subbasin 1-char codes][SHEMcodes]
-- JTWC/NHC [ATCF](https://www.nrlmry.navy.mil/atcf_web/index1.html
-"https://www.nrlmry.navy.mil/atcf_web/index1.html" ) data files
-  - "bdeck" -- best track operational (working) or 'final' (post-season) positions/structure
-  - "adeck" -- aid files with real-time, operational positions/structure
-- **NN** - 'numbered storms' (01-50) designated as TCs
-  - not necessarily Tropical Storms (**TS** with winds >= 35 kts) 
-- **9Xdev** - pre/potential TC (pTC) that developed into NN or TC (developers)
-- **9Xnon** - pre/potential TC (pTC) that did not develop (non-developers)
-- [ECMWF ERA5 reanalysis](https://www.ecmwf.int/en/forecasts/dataset/ecmwf-reanalysis-v5
-"ERA5: https://www.ecmwf.int/en/forecasts/dataset/ecmwf-reanalysis-v5") 10-d NWP global forecasts for:
-  - storm and large-scale *environment* diagnostics - the *diagnostic file* - input to e statistical-dynamical TC intensity prediction models 
-  - model track/structure forecasts
-- Three global, high-resolution precipitation analyses:
-  - [CMORPH - USA - NCEP/CPC V1.0](https://www.cpc.ncep.noaa.gov/products/janowiak/cmorph.shtml
-"CPC V1.0 : https://www.cpc.ncep.noaa.gov/products/janowiak/cmorph.shtml")
-  - [GsMAP - Japan - JAXA V6](https://sharaku.eorc.jaxa.jp/GSMaP/index.htm
-"JAXA GsMAP V6.0: https://sharaku.eorc.jaxa.jp/GSMaP/index.htm ")
-  - [IMERG - USA - NASA V06D](https://gpm.nasa.gov/data/imerg "NASA IMERG: https://gpm.nasa.gov/data/imerg" )
-
-### Unique Properties:
-
-- curated pTC or TC 'seeds' data set based on a zip archive of all ATCF
-  adeck/bdeck (pTCs or '9X' or 'INVESTS') from JTWC/NHC operations.  All TCs
-  start as pTCs and by having data on both pTCs that *developed* into **NN** TCs
-  (**9Xdev**) and did ***not*** develop (**9Xnon**) we can determine the
-  ***formation rate*** and the ***dynamical/thermodynamical difference*** between developers and non-developers
-
-- the ***highest quality global NWP analyses*** to date based on the
-  high-quality of the daily 00/12 UTC 10-d ERA5 TC forecasts.  The quality of
-  the reanalysis does vary with changes in the observing system, but with ERA5
-  the TC track forecasts are consistently better than ECMWF operations and
-  nearly as good in the 1980s as the 2000s.
-
-- a python2 interface is provided for simple access/slicing and analysis
 
 ### How to access/install:
 
@@ -193,17 +187,9 @@ edit the sbtLocal.py file to locate (full paths to local the .py and .csv files)
 
 </pre>
 
+### Contact info:
 
-### Data files:
+Comments and questions are always welcome and appreciated!  Please contact me at mfiorino@gmu.edu
 
-The superBT consists of three `.csv` data files and three `.csv` metadata files describing the variables in data files.
 
-| data file | description | # of lines/points
-| -:      | :-:   | :-	  
-| all-md3-2007-2022-MRG.csv | positions for NN/9Xdev/9Xnondev   | 107050 positions
-| sum-md3-2007-2022-MRG.csv  | summary of each storm  | 5233 storms
-| sbt-v04-2007-2022-MRG.csv  | superBT     | 86595 positions
-| h-meta-md3-vars.csv | metadata for all-md3-*.csv | 32 variables
-| h-meta-md3-sum-vars.csv | metadata for sum-md3-*.csv | 25 variables
-| h-meta-sbt-v04-vars.csv | metadata for sbt-v04*.csv | 66 variables
 

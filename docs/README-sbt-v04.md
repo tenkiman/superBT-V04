@@ -50,7 +50,7 @@ From the plot we see:
 50% become NN or the ***formation rate*** is 50%</br>
 
 
-[WPAC 2018-22 Formation Rate](https://tenkiman.github.io/superBT-V04/plt/9xlife/all.9xlife.0.w.18-22.png "WPAC 18-22: https://tenkiman.github.io/superBT-V04/plt/9xlife/all.9xlife.0.w.18-22.png")
+[WPAC 2018-22 Formation Rate](https://tenkiman.github.io/superBT-V04/docs/plt/9xlife/all.9xlife.0.w.18-22.png "WPAC 18-22: https://tenkiman.github.io/superBT-V04/docs/plt/9xlife/all.9xlife.0.w.18-22.png")
 
 ### Next Steps...
 

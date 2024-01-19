@@ -70,15 +70,18 @@ Here are documentation and date set links:
 
 - the [superBT blog](https://surperbt.blogspot.com/ "https://surperbt.blogspot.com/") has an [introduction](https://surperbt.blogspot.com/2023/12/intro-to-superbt.html "https://surperbt.blogspot.com/2023/12/intro-to-superbt.html") with links and a further analysis of ***formation rate*** in the big basins and the ***dynamical*** (wind shear) and ***thermodynamical*** (precipitation) differences between **9Xdev** and **9Xnon**
 
-- this
-  [presentation](https://tenkiman.github.io/superBT-V04/docs/tc-superBT-20230310.pptx
+- this  [presentation for the HURICAN Project in 202303](https://tenkiman.github.io/superBT-V04/docs/tc-superBT-20230310.pptx
   "https://tenkiman.github.io/superBT-V04/docs/tc-superBT-20230310.pptx") gives:
   - details on the ATCF data files used for the TC positions/structure
   - track forecast skill of the ERA5 forecasts
     - as good or better the ECMWF operational runs
     - consistent skill even in the 1980s v 2000-2022
     - quality of the three precipitation analyses
-  
+    
+- this [talk at AORI/UofTokyo in 202210](https://tenkiman.github.io/superBT-V04/docs/tc-superBT-climate-studies-20221017.pdf "https://tenkiman.github.io/superBT-V04/docs/tc-superBT-climate-studies-20221017.pdf") shows how a superBT would be useful for TC climate studies.
+
+### Installation
+
 - The simplest way to install is to download the tarball [superBT-V04.tgz](https://tenkiman.github.io/superBT-V04/superBT-V04.tgz
 "superBT tarball: https://tenkiman.github.io/superBT-V04/superBT-V04.tgz")
 

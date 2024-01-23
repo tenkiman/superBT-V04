@@ -19,12 +19,14 @@ import array
 import zipfile
 import filecmp
 
-# -- get local vars
+# -- get local vars -- installation dependent
 #
 from sbtLocal import *
 
-version='v03'
-versionsBT='v04'
+sbtRootVer="%s/%s"%(sbtRoot,sbtVersion)
+
+versionDev='v03'
+versionBT=sbtVersion.lower()
 
 # -- VVVVVVVV - sBT dirs & vars
 #
@@ -33,19 +35,20 @@ bm3year=2007
 em3year=2022
 em3yearP1=em3year+1
  
-sbtMeta='h-meta-sbt-%s-vars.csv'%(versionsBT)
+sbtMeta='h-meta-sbt-%s-vars.csv'%(versionBT)
 md3SumMeta='h-meta-md3-sum.csv'
 md3VarsMeta='h-meta-md3-vars.csv'
+
+sbtVerDirDat="%s/dat"%(sbtRootVer)
 
 sbtDatDir="%s/dat"%(sbtRoot)
 sbtProdDir='%s/products/tcdiag'%(sbtRoot)
 sbtSrcDir="%s/src"%(sbtRoot)
 
-sbtVerDirTcPrc="%s/%s"%(sbtRoot,version)
-sbtVerDir=sbtRootV04
+sbtVerDirTcPrc="%s/%s"%(sbtRoot,versionDev)
+sbtVerDir=sbtRootVer
 
 sbtVerDirDatTcPrc="%s/dat"%(sbtVerDirTcPrc)
-sbtVerDirDat=sbtRootV04
 sbtPrcDirTcdiag="%s/prc/tcdiag"%(sbtVerDirTcPrc)
 sbtPrcDirTctrk="%s/prc/tctrk"%(sbtVerDirTcPrc)
 
@@ -61,7 +64,7 @@ abdirDtg='%s/adeck-dtg'%(sbtDatDir)
 TcNamesDatDir="%s/tc/names"%(sbtVerDirDat)
 TcVitalsDatDir="%s/tc/tcvitals"%(sbtDatDir)
 
-W2BaseDirPrc="%s/prc/"%(sbtVerDir)
+W2BaseDirPrc="%s/prc/"%(sbtVerDirTcPrc)
 
 # -- lsdiag
 #

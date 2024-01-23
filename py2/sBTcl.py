@@ -3668,7 +3668,7 @@ class Mdeck3(MFutils):
             tbdir=sbtSrcDir
             tbdir=sbtVerDir
             tbdir=sbtVerDirDat
-            tbdir=sbtRoot
+            #tbdir=sbtRoot
 
         self.tbdir=tbdir
         
@@ -11554,7 +11554,7 @@ class superBT(Mdeck3):
         oyearOpt="%s"%(oyearOpt)
         self.oyearOpt=oyearOpt
         
-        sbtCvsPath="%s/sbt-%s-%s-MRG.csv"%(sbtVerDirDat,versionsBT,oyearOpt)
+        sbtCvsPath="%s/sbt-%s-%s-MRG.csv"%(sbtVerDirDat,versionBT,oyearOpt)
         sumCvsPath="%s/sum-md3-%s-MRG.csv"%(sbtVerDirDat,oyearOpt)
 
         # -- 111 -- get the storm meta data

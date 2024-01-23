@@ -4,7 +4,7 @@
 <h3>a "super" Best Track (BT) for Tropical Cyclone (TC) Forecasting and Research</h3>
 
 Mike Fiorino (mfiorino@gmu.edu)</br>
-<b> 19 January 2024 </b>
+<b> 30 January 2024 </b>
 </div>
 
 Welcome to the 1st beta release (V04) of Mike Fiorino's <ins><b>superBT</ins></b> -- a <ins><b>super</b></ins>position of **TC-centric** *dynamical*
@@ -19,7 +19,16 @@ The <ins><b>superBT</ins></b> can also be considered as
 variables (e.g., vertical wind shear) known to be important in TC intensity
 change.
 
-### Key properties of the data set:
+### Versions
+
+- **V04** : ***current beta version***
+released 202401 at [https://github.com/tenkiman/superBT-V04](https://github.com/tenkiman/superBT-V04 "https://github.com/tenkiman/superBT-V04")
+- **V10** : initial version around 202404
+  - 2006-2023
+  - add R34
+  
+
+### Key properties of the V04 data set:
 
 [TCs]: ## "
 TD  - Tropical Depression : Vmax < 35 kts
@@ -34,7 +43,7 @@ SS  - Subtropical Storm      : Vmax >=35 & Vmax < 64 kts
 
 - 2007-2022 - 16-y data set
 
-- three TC types **NN** ; **9Xdev** ; **9Xnon**
+- three TC types [**NN**][TCs] ; **9Xdev** ; **9Xnon**
   - **NN** - [a numbered/named TC in the JTWC/NHC BT files][TCs]
   - **9Xdev** - the pre/potential TC (pTC or 9X) disturbance that developed into an **NN** TC
   - **9Xnon** - pTC that did ***not develop*** into an **NN** TC
@@ -75,11 +84,11 @@ There are two ways to install:
 
 - download the superBT tarball: [superBT-V04.tgz](https://tenkiman.github.io/docs/superBT-V04/superBT-V04.tgz
 "superBT tarball: https://tenkiman.github.io/superBT-V04/superBT-V04.tgz") and
-<pre>
+```sh
 mkdir local-dir                        # local-dir is the directory to untar and will be ...
 cd local-dir                           # the root of the git repo
 tar -zxvf ~/Downloads/superBT-V04.tgz  # ~/Downloads is the typical location of downloads
-</pre>
+```
 
 - pull the release from github.com/tenkiman/superBT-V04
   - [download the git repo tarball](https://github.com/tenkiman/superBT-V04/archive/refs/tags/v0.1-beta1.tar.gz "https://github.com/tenkiman/superBT-V04/archive/refs/tags/v0.1-beta1.tar.gz")

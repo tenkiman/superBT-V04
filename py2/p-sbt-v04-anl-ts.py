@@ -70,7 +70,7 @@ if(lsVars):  sys.exit()
 MF.sTimer('ALL')
 
 MF.sTimer('sbt')
-sbt=superBT(versionsBT,verb=verb)
+sbt=superBT(versionBT,verb=verb)
 MF.dTimer('sbt')
 
 # -- internal processing verb
@@ -321,6 +321,9 @@ if(stmopt != None):
     rc=sbt.makeGaNonVDevTSDict(sbtTSDev,'dev',ovars,verb=overb,override=override)
 
     if(doPlot != None):
+        ddir='../gadat'
+        pdir='../plts/dev-non'
+        MF.ChkDir(pdir,'mk')
         ivars=doPlot.split(',')
         ropt=''
         ss=istmopt.split('.')
@@ -328,14 +331,14 @@ if(stmopt != None):
         years=ss[1]
         for ivar in ivars:
             if(ivar in ovars):
-                cmd='''grads -lbc "g-sbt-dev-non.gs %s %s %s"'''%(basin,years,ivar)
+                cmd='''grads -lbc "g-sbt-dev-non.gs %s %s %s %s %s"'''%(basin,years,ivar,ddir,pdir)
                 mf.runcmd(cmd,ropt)
             else:
                 print 'WWW ivar: ',ivar,' not in ovars: ',str(ovars)
                 
             if(doXv):
                 pstmopt=istmopt.replace('.','-')
-                pmask="%s/plt/dev-non/%s*%s*png"%(sbtRoot,ivar,pstmopt)
+                pmask="%s/%s*%s*png"%(pdir,ivar,pstmopt)
                 print 'ppp',pmask
                 pngpaths=glob.glob(pmask)
                 if(len(pngpaths) > 0):

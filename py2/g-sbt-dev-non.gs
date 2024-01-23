@@ -15,7 +15,7 @@ pdir=subwrd(args,5) ; n=n+1
 #
   
 if(ddir = '') ; ddir='../gadat'       ; endif
-if(pdir = '') ; pdir='../plt/dev-non' ; endif
+if(pdir = '') ; pdir='../plts/dev-non' ; endif
   
 
 if(ivar = mvmax)

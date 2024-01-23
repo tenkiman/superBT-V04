@@ -3143,7 +3143,8 @@ def pltHist(lista,listi,listo,
             pngpath=None,
             doAllOnly=0,
             tag='',
-            doshow=1):
+            doshow=1,
+            verb=0):
 
     import matplotlib.pyplot as plt
     from numpy import array,arange
@@ -3225,7 +3226,8 @@ def pltHist(lista,listi,listo,
                                        facecolor=fc1,edgecolor=ec1,
                                        alpha=0.75,rwidth=1.0)
 
-        print '1111111111111' ,n1,bins
+        if(verb):
+            print '1111111111111' ,n1,bins
         
         n2=n1
         
@@ -3259,13 +3261,14 @@ def pltHist(lista,listi,listo,
                                        facecolor=fc1,edgecolor=ec1,
                                        alpha=fa1,rwidth=fr1)
 
-        print '1111111111111' ,n1,bins
         
         (n2, bins, patches) = plt.hist(xo,nbins,histtype=ptype,range=hrange,\
                                        density=donorm,cumulative=docum,
                                        facecolor=fc2,edgecolor=ec2,
                                        alpha=fa2,rwidth=fr2)
-        print '22222222222222 ',n2,bins
+        if(verb):
+            print '1111111111111--n1--bins' ,n1,bins
+            print '2222222222222--n2--bins ',n2,bins
         
         # -- make x&y for line plots if docum=1
         #
@@ -3384,7 +3387,7 @@ def pltHist(lista,listi,listo,
     if(pngpath == None):
         pngpath="/tmp/9x.%s.%s.png"%(basin,year)
 
-    print 'ppppppppppppppppppppppp ',pngpath
+    #print 'ppppppppppppppppppppppp ',pngpath
     plt.savefig(pngpath)
     
     doCp2Aori=0
@@ -6026,7 +6029,7 @@ def lsSbtVars(verb=0):
             sMkeys.append(tt0)
         
     if(verb):
-        print 'superBT-%s listing'%(versionsBT)
+        print 'superBT-%s listing'%(versionBT)
         print '         var : description'
         print '--------------------------'
         kk=sMkeys

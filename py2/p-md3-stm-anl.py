@@ -110,10 +110,13 @@ if(filtopt == None):
     print 'EEE you must set filtopt in FF.TT.NN format'
     sys.exit()
 
+doSumOnly=1
 MF.sTimer('ALL')
-MF.sTimer('md3-load')
-md3=Mdeck3(oyearOpt=oyearOpt,verb=verb,doSumOnly=1)
-MF.dTimer('md3-load')
+if(doSumOnly):  MF.sTimer('md3-load-doSumOnly')
+else: MF.sTimer('md3-load-ALL')
+md3=Mdeck3(oyearOpt=oyearOpt,verb=verb,doSumOnly=doSumOnly)
+if(doSumOnly):  MF.dTimer('md3-load-doSumOnly')
+else: MF.dTimer('md3-load-ALL')
 
 stmids=[]
 stmopts=getStmopts(stmopt)
@@ -128,8 +131,9 @@ for stmid in stmids:
     (sps,scard)=md3.getMd3StmMeta(stmid)
     rc=getStmSumVars(sps,olistDev,olistNon,oopt='time2dev',verb=verb)
     
-print 'ddd',olistDev
-print 'nnn',olistNon
+if(verb):
+    print 'ddd',olistDev
+    print 'nnn',olistNon
 
 if(find(stmopt.lower(),'l')): basin='LANT'
 if(find(stmopt.lower(),'w')): basin='WPAC'
@@ -145,7 +149,10 @@ statDev=olistDev
 statNonDev=olistNon
 year=stmopt
 
-pngpath="%s/plt/9xlife/%s.%s.png"%(sbtRoot,filtopt,stmopt)
+bdirpng="%s/plts/9X2NNformation"%(sbtRootVer)
+MF.ChkDir(bdirpng,'mk')
+
+pngpath="%s/%s.%s.png"%(bdirpng,filtopt,stmopt)
 pngpath=pngpath.replace(',','-')
 print 'PPP(pngpath): ',pngpath
         

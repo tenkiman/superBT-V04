@@ -19,6 +19,16 @@ The <ins><b>superBT</ins></b> can also be considered as
 variables (e.g., vertical wind shear) known to be important in TC intensity
 change.
 
+### Table of Contents
+
+**[Key properties](#key-properties-of-the-data-set)**<br>
+**[Unique Properties](#unique-properties)**<br>
+**[TC formation rate](#tc-formation-rate-or-the--of-all-ptcs----tcs)**<br>
+**[Vertical wind shea - 9Xdev v 9Xnon](#vertical-wind-shear-between-9xdev-and-9xnon)**<br>
+**[Data Files and Docs](#data-files-and-documentation)**<br>
+**[Access and Installation](#how-to-accessinstall)**<br>
+**[Contact](#contact-info)**<br>
+
 ### Key properties of the data set:
 
 [TCs]: ## "
@@ -99,7 +109,9 @@ H - SHEM S & P
 - a python2 interface is provided for simple access/slicing and analysis
 
 
-### Demo of ***formation rate*** or the % of all pTCs --> TCs
+### Two Demos of unique superBT TC analyses
+
+#### ***TC formation rate*** or the % of all pTCs --> TCs
 
 below is the percentage of both 9Xdev + 9Xnon that became TCs in the Western north PACific (WPAC) in the 5-y period 2018-2022.
 
@@ -114,7 +126,62 @@ From the plot we see:
 -->
 ![WPAC 2018-22 Formation Rate](plt/9xlife/all.9xlife.0.w.18-22.png "WPAC 18-22: https://tenkiman.github.io/superBT-V04/docs/plt/9xlife/all.9xlife.0.w.18-22.png")
 
+The plot was made by running this python2 application in the `py2` directory:
+
+
+```sh
+py2/p-md3-stm-anl.py -S w.18-22 -f all.9xlife.0
+# output from command (py2) MIKE5-wxmap2 19:24 fiorino@tenkiS /data/w22/superBT/V04/py2 1013 > p-md3-stm-anl.py -S w.18-22 -f all.9xlife.0
+TTTTTTTTTTTTTTTTTTTTTTT-------------------timer: md3-load-doSumOnly                                                      :  0.135      at: 2024012018 01:24:20
+PPP(pngpath):  /data/w22/superBT/V04/plts/9X2NNformation/all.9xlife.0.w.18-22.png
+```
+[screen shot of output from running `py2/p-md3-stm-anl.py -S w.18-22 -f all.9xlife.0`](../docs/plt/screen-shot-20240120-19-27.png "click for a screen shot")
+
+#### ***vertical wind shear between 9Xdev and 9Xnon***
+
+The plot below shows the difference in shear between 9Xdev (heavy green
+line is the mean) and 9Xnon (heavy red line) for the same basin/years - WPAC 2018-2022
+
+![WPAC 2018-22 Formation Rate](plt/dev-non/shrspd-w-18-22.png "WPAC 18-22: https://tenkiman.github.io/superBT-V04/docs/plt/dev-non/shrspd-w-18-22.png")
+
+Note how the shear is about 15 kts around 84 h before formation/dissipation for both 9Xdev and 9Xnon.
+
+The 9Xdev developers shear stays <= 15 kts, but for the 9Xnon non-developers
+the shear increases > 15 kts reaching 20 kts at dissipation.  This difference
+is consistent with JTWC forecaster experience that shear < 15 kts is favorable
+for development.
+
+This plot was made by running this application:
+
+```sh
+p-sbt-v04-anl-ts.py -S w.18-22 -P shrspd -X
+# output:
+```
+```
+(py2) MIKE5-wxmap2 20:06 fiorino@tenkiS /data/w22/superBT/V04/py2 1029 > p-sbt-v04-anl-ts.py -S w.18-22 -P shrspd -X
+
+TTTTTTTTTTTTTTTTTTTTTTT-------------------timer: sbt-init     :  0.763      at: 2024012018 02:06:49
+TTTTTTTTTTTTTTTTTTTTTTT-------------------timer: sbt          :  0.874      at: 2024012018 02:06:49
+NNN for stmopt:  w.18-22 nNN:  150 nDev 149 nNon 153
+DDD rFormDev:  49%  NNM rFormN:  50%   0.2%
+CCC: grads -lbc "g-sbt-dev-non.gs w 18-22 shrspd ../gadat ../plts/dev-non"   ---> CurDT: 20240120 20:06:49 <--- 
+
+Grid Analysis and Display System (GrADS) Version 2.2.1.oga.1
+Copyright (C) 1988-2018 by George Mason University
+GrADS comes with ABSOLUTELY NO WARRANTY
+See file COPYRIGHT for more information
+
+ppp ../plts/dev-non/shrspd*w-18-22*png
+CCC: xv ../plts/dev-non/shrspd-w-18-22.png   ---> CurDT: 20240120 20:06:51 <--- 
+TTTTTTTTTTTTTTTTTTTTTTT-------------------timer: ALL         : 13.571      at: 2024012018 02:07:02
+```
+
+[screen shot of output from running `py2/p-sbt-v04-anl-ts.py -S w.18-22 -P shrspd -X`](../docs/plt/Screenshot-2024-01-20-19-52.png "click for a screen shot")
+
+
 ### Data files and Documentation
+
+
 
 The superBT consists of three `.csv` data files and three `.csv` metadata files describing the variables in data files.
 
@@ -122,10 +189,10 @@ The superBT consists of three `.csv` data files and three `.csv` metadata files 
 | -:      | :-:   | :-	  
 | [all-md3-2007-2022-MRG.csv](../dat/all-md3-2007-2022-MRG.csv) | positions for NN/9Xdev/9Xnondev   | 107050 positions
 | [sum-md3-2007-2022-MRG.csv](../dat/sum-md3-2007-2022-MRG.csv)  | summary of each storm  | 5233 storms
-| sbt-v04-2007-2022-MRG.csv  | superBT     | 86595 positions
-| h-meta-md3-vars.csv | metadata for all-md3-*.csv | 32 variables
-| h-meta-md3-sum-vars.csv | metadata for sum-md3-*.csv | 25 variables
-| h-meta-sbt-v04-vars.csv | metadata for sbt-v04*.csv | 66 variables
+| [sbt-v04-2007-2022-MRG.csv](../dat/sbt-v04-2007-2022-MRG.csv)  | superBT     | 86595 positions
+| [h-meta-md3-vars.csv](../dat/h-meta-md3-vars.csv) | metadata for all-md3-*.csv | 32 variables
+| [h-meta-md3-sum-vars.csv](../dat/h-meta-md3-sum-vars.csv) | metadata for sum-md3-*.csv | 25 variables
+| [h-meta-sbt-v04-vars.csv](../dat/h-meta-sbt-v04-vars.csv) | metadata for sbt-v04*.csv | 66 variables
 
 
 #### superBT blog with intro:
@@ -149,8 +216,7 @@ The superBT consists of three `.csv` data files and three `.csv` metadata files 
 The simplest way to install is to download the tarball [superBT-V04.tgz](https://tenkiman.github.io/superBT-V04/superBT-V04.tgz
 "superBT tarball: https://tenkiman.github.io/superBT-V04/superBT-V04.tgz")
 
-<pre>
-
+```sh
 cd ~/Download             # typical download directory
 mkdir ~/local-dir         # make a 'local-dir' in your home
 
@@ -184,8 +250,7 @@ will make local-dir/superBT/V04/ with these files:
    220148 2024-01-08 14:59 superBT/V04/py2/sBTvm.py
 
 edit the sbtLocal.py file to locate (full paths to local the .py and .csv files)
-
-</pre>
+```
 
 ### Contact info:
 

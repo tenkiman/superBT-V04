@@ -4,7 +4,7 @@
 <h3>a "super" Best Track (BT) for Tropical Cyclone (TC) Forecasting and Research</h3>
 
 Mike Fiorino (mfiorino@gmu.edu)</br>
-<b> 19 January 2024 </b>
+<b> 30 January 2024 </b>
 </div>
 
 Welcome to the 1st beta release (V04) of Mike Fiorino's <ins><b>superBT</ins></b> -- a <ins><b>super</b></ins>position of **TC-centric** *dynamical*
@@ -16,20 +16,28 @@ and [NHC](https://www.nhc.noaa.gov/ "NHC home page: https://www.nhc.noaa.gov/").
 The <ins><b>superBT</ins></b> can also be considered as
 '[IBTRaCS](https://www.ncei.noaa.gov/products/international-best-track-archive
 "IBTRaCS: https://www.ncei.noaa.gov/products/international-best-track-archive" ) ++', i.e., a TC position/structure data set with additional
-variables (e.g., vertical wind shear) known to be important in TC intensity
+variables (e.g., vertical wind shear) known to be important in TC intensity/structure
 change.
 
 ### Table of Contents
 
-**[Key properties](#key-properties-of-the-data-set)**<br>
-**[Unique Properties](#unique-properties)**<br>
-**[TC formation rate](#tc-formation-rate-or-the--of-all-ptcs----tcs)**<br>
-**[Vertical wind shea - 9Xdev v 9Xnon](#vertical-wind-shear-between-9xdev-and-9xnon)**<br>
-**[Data Files and Docs](#data-files-and-documentation)**<br>
-**[Access and Installation](#how-to-accessinstall)**<br>
-**[Contact](#contact-info)**<br>
+- [Key properties of the data set:](#key-properties-of-the-data-set)
+- [Unique Properties:](#unique-properties)
+- [Two Demos of unique superBT TC analyses](#two-demos-of-unique-superbt-tc-analyses)
+  * [***TC formation rate*** or the % of all pTCs --> TCs](#tc-formation-rate-or-the-%25-of-all-ptcs----tcs)
+  * [***vertical wind shear between 9Xdev and 9Xnon***](#vertical-wind-shear-between-9xdev-and-9xnon)
+- [Data files](#data-files)
+- [Documentation](#documentation)
+  * [superBT blog with intro:](#superbt-blog-with-intro)
+  * [presentations](#presentations)
+  * [docs/ directory](#docs-directory)
+- [How to access/install:](#how-to-accessinstall)
 
-### Key properties of the data set:
+### TC label/numbering and Date-Time conventions
+
+<!--
+mouse over  lists...
+-->
 
 [TCs]: ## "
 TD  - Tropical Depression : Vmax < 35 kts
@@ -39,6 +47,7 @@ STY - Super Typhoon       : Vmax >= 130 kts
 SD  - Subtropical Depression : Vmax < 35 kts
 SS  - Subtropical Storm      : Vmax >=35 & Vmax < 64 kts
 "
+
 [NHEMcodes]: ## "
 B - Bay of Bengal
 A - Arabian Sea
@@ -54,6 +63,19 @@ S - South Indian Ocean (SIO)
 P - southwest Pacific ocean
 H - SHEM S & P 
 "
+
+#### date-time format
+
+The standard NWP and US Navy 'date-time-group' format is used throughout the docs and data:
+
+**`YYYYMMDDHH`**
+
+12 UTC 1 July 2022 would be coded as `2022070112` NB: sometimes the HH will be dropped to indicate the date only
+
+
+
+### Key properties of the data set:
+
 
 - 2007-2022 - 16-y data set
 
@@ -179,9 +201,7 @@ TTTTTTTTTTTTTTTTTTTTTTT-------------------timer: ALL         : 13.571      at: 2
 [screen shot of output from running `py2/p-sbt-v04-anl-ts.py -S w.18-22 -P shrspd -X`](../docs/plt/Screenshot-2024-01-20-19-52.png "click for a screen shot")
 
 
-### Data files and Documentation
-
-
+### Data files
 
 The superBT consists of three `.csv` data files and three `.csv` metadata files describing the variables in data files.
 
@@ -194,12 +214,16 @@ The superBT consists of three `.csv` data files and three `.csv` metadata files 
 | [h-meta-md3-sum-vars.csv](../dat/h-meta-md3-sum-vars.csv) | metadata for sum-md3-*.csv | 25 variables
 | [h-meta-sbt-v04-vars.csv](../dat/h-meta-sbt-v04-vars.csv) | metadata for sbt-v04*.csv | 66 variables
 
+### Documentation
 
-#### superBT blog with intro:
+There are two sources for documentation on science applications.  The blog and
+talks given while I was in Japan and for a US-UK project.
+
+#### superBT blog with intro
 
 - the [superBT blog](https://surperbt.blogspot.com/ "https://surperbt.blogspot.com/") has an [introduction](https://surperbt.blogspot.com/2023/12/intro-to-superbt.html "https://surperbt.blogspot.com/2023/12/intro-to-superbt.html") with links and a further analysis of ***formation rate*** in the big basins and the ***dynamical*** (wind shear) and ***thermodynamical*** (precipitation) differences between **9Xdev** and **9Xnon**
 
-#### presentations:
+#### presentations
 
 - this  [presentation for the HURICAN Project in 202303](https://tenkiman.github.io/superBT-V04/docs/tc-superBT-20230310.pptx
   "https://tenkiman.github.io/superBT-V04/docs/tc-superBT-20230310.pptx") gives:
@@ -209,11 +233,40 @@ The superBT consists of three `.csv` data files and three `.csv` metadata files 
     - consistent skill even in the 1980s v 2000-2022
     - quality of the three precipitation analyses
     
-- this [talk at AORI/UofTokyo in 202210](https://tenkiman.github.io/superBT-V04/docs/tc-superBT-climate-studies-20221017.pdf "https://tenkiman.github.io/superBT-V04/docs/tc-superBT-climate-studies-20221017.pdf") shows how a superBT would be useful for TC climate studies.
+- this [talk at AORI/UofTokyo in 202210](https://tenkiman.github.io/superBT-V04/docs/tc-superBT-climate-studies-20221017.pdf "https://tenkiman.github.io/superBT-V04/docs/tc-superBT-climate-studies-20221017.pdf") shows how a superBT should be useful for TC climate studies.
+
+
+#### docs/ directory
+
+
+- [docs](https://github.com/tenkiman/superBT-V04/tree/main/docs)
+    - [NB](https://github.com/tenkiman/superBT-V04/tree/main/docs/NB) ::  **N**ota **B**ene directory with issues/problems
+        - [20231212](https://github.com/tenkiman/superBT-V04/tree/main/docs/NB/20231212) :: Why number of 9Xdev in mdeck3 is not the same is in the superBT
+    - [QuickStartV04.html](https://github.com/tenkiman/superBT-V04/blob/main/docs/QuickStartV04.html)
+    - [README-2nd.txt](https://github.com/tenkiman/superBT-V04/blob/main/docs/README-2nd.txt)
+    - [README-py2.md](https://github.com/tenkiman/superBT-V04/blob/main/docs/README-py2.md)
+    - [README-sbt-mike5.md](https://github.com/tenkiman/superBT-V04/blob/main/docs/README-sbt-mike5.md)
+    - [README-sbt-v04](https://github.com/tenkiman/superBT-V04/blob/main/docs/README-sbt-v04)
+    - [README-sbt-v04.html](https://github.com/tenkiman/superBT-V04/blob/main/docs/README-sbt-v04.html)
+    - [README-sbt-v04.md](https://github.com/tenkiman/superBT-V04/blob/main/docs/README-sbt-v04.md)
+    - [README-sbt-vars.txt](https://github.com/tenkiman/superBT-V04/blob/main/docs/README-sbt-vars.txt)
+    - [README.txt](https://github.com/tenkiman/superBT-V04/blob/main/docs/README.txt)
+    - [contents.md](https://github.com/tenkiman/superBT-V04/blob/main/docs/contents.md)
+    - [index.html](https://github.com/tenkiman/superBT-V04/blob/main/docs/index.html)
+    - [mike5-specs.md](https://github.com/tenkiman/superBT-V04/blob/main/docs/mike5-specs.md)
+    - [sbt-tccodes-subbasin-codes.md](https://github.com/tenkiman/superBT-V04/blob/main/docs/sbt-tccodes-subbasin-codes.md)
+    - **[superBT-V04.tgz](https://github.com/tenkiman/superBT-V04/blob/main/docs/superBT-V04.tgz)**  the tarball
+    - [tc-superBT-20230310.pptx](https://github.com/tenkiman/superBT-V04/blob/main/docs/tc-superBT-20230310.pptx)
+    - [tc-superBT-climate-studies-20221017.pdf](https://github.com/tenkiman/superBT-V04/blob/main/docs/tc-superBT-climate-studies-20221017.pdf)
+    
+- [index.html](https://github.com/tenkiman/superBT-V04/blob/main/index.html)  index.html for the git hub pages
+
 
 ### How to access/install:
 
-The simplest way to install is to download the tarball [superBT-V04.tgz](https://tenkiman.github.io/superBT-V04/superBT-V04.tgz
+There are two basic ways to access and install:
+
+- the simplest is to ***download the tarball*** [superBT-V04.tgz](https://tenkiman.github.io/superBT-V04/superBT-V04.tgz
 "superBT tarball: https://tenkiman.github.io/superBT-V04/superBT-V04.tgz")
 
 ```sh
@@ -248,9 +301,19 @@ will make local-dir/superBT/V04/ with these files:
       119 2023-12-12 19:33 superBT/V04/py2/sBT.py
     11337 2024-01-08 15:00 superBT/V04/py2/sBTvars.py
    220148 2024-01-08 14:59 superBT/V04/py2/sBTvm.py
-
-edit the sbtLocal.py file to locate (full paths to local the .py and .csv files)
 ```
+
+edit the [sbtLocal.py](../py2/sbtLocal.py) file to set the full path of the
+local directory with the distribution (sets the location of .py and .csv files)
+
+- ***pull*** from github.com/tenkiman/superBT-V04
+
+  - [**download the git repo tarball**](https://github.com/tenkiman/superBT-V04/archive/refs/tags/v0.1-beta1.tar.gz "https://github.com/tenkiman/superBT-V04/archive/refs/tags/v0.1-beta1.tar.gz")
+
+  - **clone** the git repo: `git clone git@github.com:tenkiman/superBT-V04.git superBT`
+
+
+
 
 ### Contact info:
 

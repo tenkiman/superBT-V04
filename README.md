@@ -16,8 +16,23 @@ and [NHC](https://www.nhc.noaa.gov/ "NHC home page: https://www.nhc.noaa.gov/").
 The <ins><b>superBT</ins></b> can also be considered as
 '[IBTRaCS](https://www.ncei.noaa.gov/products/international-best-track-archive
 "IBTRaCS: https://www.ncei.noaa.gov/products/international-best-track-archive" ) ++', i.e., a TC position/structure data set with additional
-variables (e.g., vertical wind shear) known to be important in TC intensity
+variables (e.g., vertical wind shear) known to be important in TC intensity/structure
 change.
+
+### Contents
+- [Versions](#versions)
+- [TC label/numbering and Date-Time conventions](#tc-labelnumbering-and-date-time-conventions)
+  * [date-time format](#date-time-format)
+  * [TCs are labelled using the NNB.YYYY format where:](#tcs-are-labelled-using-the-nnbyyyy-format-where)
+- [Key properties of the V04 data set:](#key-properties-of-the-v04-data-set)
+- [the superBT data in the `dat/` directory:](#the-superbt-data-in-the-dat-directory)
+- [Quick Starts and documentation](#quick-starts-and-documentation)
+  * [***docs***](#docs)
+  * [***install*** -- if you are a "just give me the links to the data" person...](#install----if-you-are-a-just-give-me-the-links-to-the-data-person)
+  * [`wxmap2.com` weather maps and TC NWP displays](#wxmap2com-weather-maps-and-tc-nwp-displays)
+- [Contact info](#contact-info)
+
+
 
 ### Versions
 
@@ -26,7 +41,44 @@ released 202401 at [https://github.com/tenkiman/superBT-V04](https://github.com/
 - **V10** : initial version around 202404
   - 2006-2023
   - add R34
-  
+
+### TC label/numbering and Date-Time conventions
+
+[NHEMcodes]: ## "
+B - Bay of Bengal
+A - Arabian Sea
+I - North Indian Ocean (NIO) both B & A
+W - Western north PACific (WPAC)
+C - Central north PACific (CPAC)
+E - Eastern north PACific (EPAC)
+L - north atLANTic (LANT)
+"
+
+[SHEMcodes]: ## "
+S - South Indian Ocean (SIO)
+P - southwest Pacific ocean
+H - SHEM S & P 
+"
+
+#### date-time format
+
+The standard NWP and US Navy 'date-time-group' format is used throughout the docs and data:
+
+**`YYYYMMDDHH`**
+
+12 UTC 1 July 2022 would be coded as `2022070112` NB: sometimes the HH will be dropped to indicate the date only
+
+
+
+
+#### TCs are labelled using the NNB.YYYY format where:
+- NN : storm number
+- B  : basin code for [NHEM][NHEMcodes] & [SHEM][SHEMcodes] (mouse over for a list)
+- YYYY : basin season year, NB: the SHEM season starts 1 July YYYY-1 and ends on 30 June YYYY, e.g., the 2023 SHEM season ran from 1 July 2022 - 30 June 2023
+
+
+
+
 
 ### Key properties of the V04 data set:
 
@@ -52,10 +104,18 @@ SS  - Subtropical Storm      : Vmax >=35 & Vmax < 64 kts
 
 - ***thermo*** variables (rain) from three high-resolution satellite analyses [NCEP-CMORPH](https://www.cpc.ncep.noaa.gov/products/janowiak/cmorph.shtml), [JAXA-GSMaP](https://sharaku.eorc.jaxa.jp/GSMaP/index.htm) & [NASA-IMERG](https://gpm.nasa.gov/data/imerg)
 
-- superBT-V04 consists of:
+### the superBT data in the `dat/` directory:
   - 3 `.csv` data files
+    - `sbt-v04-2007-2022-MRG.csv` - the superBT
+    - `all-md3-2007-2022-MRG.csv` - a ***merge*** (I call a `mdeck3` or `md3`) of both ***real-time operational*** and ***final best track*** TC position/structure data
+    - `sum-md3-2007-2022-MRG.csv` - a one-line storm summary, there are ***5233 storms*** in the data set
   - 3 corresponding `.csv` metadata files describing the variables.
-  - `py2` directory with a python2 interface for analysis and display
+    - `h-meta-sbt-v04-vars.csv` - superBT variables/descriptors
+    - `h-meta-md3-vars.csv` - `mdeck3` variables/descriptors
+    - `h-meta-md3-sum.csv` - `mdeck3` storm summary variables/descriptors
+    
+  - `py2/` directory with a python2 interface for analysis and display
+  - `docs/` directory with documentation
 
 ### Quick Starts and documentation
 

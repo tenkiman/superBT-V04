@@ -1,4 +1,6 @@
-superBT-v04 listing
+### superBT-v04 listing
+<pre>
+
          var : description
 --------------------------
    'm3stmid' : storm id in NNB.YYYY format
@@ -65,8 +67,11 @@ superBT-v04 listing
        'ei8' : IMERG 800-km precip at ERA5 position [mm/d]
         'e8' : ERA5 800-km precip [mm/d]
        're8' : ERA5 ratio Convective/Total 800-km precip [%]
+</pre>
 
-mD3-v03  variable listing
+### mD3-v03  variable listing
+
+<pre>
          var : description
 --------------------------
        'dtg' : date-time-group YYYYMMDDHH
@@ -102,8 +107,11 @@ mD3-v03  variable listing
      'depth' : TC BT Depth code: S - shallow; M - medium; D - deep
       'rmax' : BT radius of max wind
        'tdo' : forecaster initials
+</pre>
 
-mD3-v03 summary variable listing
+### mD3-v03 summary variable listing
+
+<pre>
          var : description
 --------------------------
      'stmid' : storm id in NNB.YYYY format
@@ -118,9 +126,9 @@ mD3-v03 summary variable listing
       'bdtg' : beginning DTG YYYYMMDDHH
       'edtg' : ending DTG YYYYMMDDHH
     'minlat' : minimum latitude [degN]
-    'maxlat' : maximum longitude [degE]
-    'minlon' : maximum latitude [degN]
-    'maxlon' : maximum longtiude [degN]
+    'maxlat' : maximum latitude [degN]
+    'minlon' : maximum longitude [degE]
+    'maxlon' : maximum longitude [degE]
       'stcd' : scaled TC days [d]
        'ace' : life-time scaled ACE [d]
        'nri' : number of RI - rapid intensification >= 30 kts/24 h
@@ -131,4 +139,4 @@ mD3-v03 summary variable listing
      't2gen' : time from start of pTC to becoming a TC (as set by JTWC/NHC)
     'gendtg' : DTG of genesis YYYYMMDDHH
     'wncode' : warning status at genesis time
-
+</pre>

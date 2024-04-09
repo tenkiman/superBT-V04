@@ -23,7 +23,9 @@ import filecmp
 #
 from sbtLocal import *
 
-sbtRootVer="%s/%s"%(sbtRoot,sbtVersion)
+#sbtRootVer="%s/%s"%(sbtRoot,sbtVersion)
+# -- root ver is the root in the v04 distro
+sbtRootVer = sbtRoot
 
 versionDev='v03'
 versionBT=sbtVersion.lower()

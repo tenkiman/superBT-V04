@@ -1,4 +1,5 @@
 # -- full path with local installation directories
 #
 sbtRoot='/w21/superBT-V04'
-sbtRootV04=sbtRoot
+sbtVersion='V04'
+#sbtRootV04=sbtRoot

@@ -6061,7 +6061,7 @@ def lsMd3Vars(verb=0):
         
     if(verb):
         kk=mD3keys
-        print 'mD3-%s  variable listing'%(version)
+        print 'mD3-%s  variable listing'%(versionBT)
         print '         var : description'
         print '--------------------------'
         for k in kk:
@@ -6090,7 +6090,7 @@ def lsMd3SumVars(verb=0):
         
     if(verb):
         kk=mD3keys
-        print 'mD3-%s summary variable listing'%(version)
+        print 'mD3-%s summary variable listing'%(versionBT)
         print '         var : description'
         print '--------------------------'
         for k in kk:

@@ -2,7 +2,11 @@ function main(args)
 
 rc=gsfallow('on')
 rc=const()
-rc=jaecol2()
+rc=jaecol2bw()
+
+
+'set background 87'
+'c'
 n=1
 basin=subwrd(args,n) ; n=n+1
 years=subwrd(args,n) ; n=n+1
@@ -167,25 +171,29 @@ endif
 yy=yy+1
 
 endwhile
+
+cthkb=10
+cthkm=8
+
 'set y 1'
 'set cmark 0'
 'set ccolor 0'
-'set cthick 10'
+'set cthick 'cthkb
 'd 'nave
 
 'set cmark 0'
 'set ccolor 'ncola
-'set cthick 8'
+'set cthick 'cthkm
 'd 'nave
 
 'set cmark 0'
 'set ccolor 0'
-'set cthick 10'
+'set cthick 'cthkb
 'd 'dave
 
 'set cmark 0'
 'set ccolor 'dcola
-'set cthick 8'
+'set cthick 'cthkm
 'd 'dave
 
 if(var = 'shr')

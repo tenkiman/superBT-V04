@@ -85,15 +85,16 @@ The standard NWP and US Navy 'date-time-group' format is used throughout the doc
   - NHC 2007-2022
 
 - Global - NHEM (A,B,I,W,C,E,L) & SHEM basins (S,P,H)
-  - [NHEM Subbasin 1-char codes][NHEMcodes]
-  - [SHEM Subbasin 1-char codes][SHEMcodes]
+  - [NHEM Subbasin 1-char codes][NHEMcodes] (mouse over)
+  - [SHEM Subbasin 1-char codes][SHEMcodes] (mouse over)
 
 - JTWC/NHC [ATCF](https://www.nrlmry.navy.mil/atcf_web/index1.html
 "https://www.nrlmry.navy.mil/atcf_web/index1.html" ) data files
   - "bdeck" -- best track operational (working) or 'final' (post-season) positions/structure
+  - "adeck" -- "aid" forecasts (e.g., GFS model forecast track) and real-time operational positions/structure
 
 - three TC types **NN** ; **9Xdev** ; **9Xnon**
-  - **NN** - [a numbered/named (01-50) TC in the JTWC/NHC BT files][TCs]
+  - **NN** - [a numbered/named (01-50) TC in the JTWC/NHC BT files][TCs] (mouse over)
     - not necessarily Tropical Storms (**TS** with winds >= 35 kts) 
   - **9Xdev** - the pre/potential TC (pTC or 9X) disturbance that developed into an **NN** TC
   - **9Xnon** - pTC that did ***not develop*** into an **NN** TC
@@ -243,19 +244,10 @@ talks given while I was in Japan and for a US-UK project.
 - [docs](https://github.com/tenkiman/superBT-V04/tree/main/docs)
     - [NB](https://github.com/tenkiman/superBT-V04/tree/main/docs/NB) ::  **N**ota **B**ene directory with issues/problems
         - [20231212](https://github.com/tenkiman/superBT-V04/tree/main/docs/NB/20231212) :: Why number of 9Xdev in mdeck3 is not the same is in the superBT
-    - [QuickStartV04.html](https://github.com/tenkiman/superBT-V04/blob/main/docs/QuickStartV04.html)
-    - [README-2nd.txt](https://github.com/tenkiman/superBT-V04/blob/main/docs/README-2nd.txt)
     - [README-py2.md](https://github.com/tenkiman/superBT-V04/blob/main/docs/README-py2.md)
     - [README-sbt-mike5.md](https://github.com/tenkiman/superBT-V04/blob/main/docs/README-sbt-mike5.md)
-    - [README-sbt-v04](https://github.com/tenkiman/superBT-V04/blob/main/docs/README-sbt-v04)
-    - [README-sbt-v04.html](https://github.com/tenkiman/superBT-V04/blob/main/docs/README-sbt-v04.html)
     - [README-sbt-v04.md](https://github.com/tenkiman/superBT-V04/blob/main/docs/README-sbt-v04.md)
-    - [README-sbt-vars.txt](https://github.com/tenkiman/superBT-V04/blob/main/docs/README-sbt-vars.txt)
-    - [README.txt](https://github.com/tenkiman/superBT-V04/blob/main/docs/README.txt)
-    - [contents.md](https://github.com/tenkiman/superBT-V04/blob/main/docs/contents.md)
-    - [index.html](https://github.com/tenkiman/superBT-V04/blob/main/docs/index.html)
-    - [mike5-specs.md](https://github.com/tenkiman/superBT-V04/blob/main/docs/mike5-specs.md)
-    - [sbt-tccodes-subbasin-codes.md](https://github.com/tenkiman/superBT-V04/blob/main/docs/sbt-tccodes-subbasin-codes.md)
+    - [README-sbt-v04-vars.md](https://github.com/tenkiman/superBT-V04/blob/main/docs/README-sbt-v04-vars.md)
     - **[superBT-V04.tgz](https://github.com/tenkiman/superBT-V04/blob/main/docs/superBT-V04.tgz)**  the tarball
     - [tc-superBT-20230310.pptx](https://github.com/tenkiman/superBT-V04/blob/main/docs/tc-superBT-20230310.pptx)
     - [tc-superBT-climate-studies-20221017.pdf](https://github.com/tenkiman/superBT-V04/blob/main/docs/tc-superBT-climate-studies-20221017.pdf)

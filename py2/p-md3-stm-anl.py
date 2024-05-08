@@ -76,10 +76,10 @@ NN: 0 - counts; 1 - donorm=1; 2 donorm=1,docum=1
         }
 
         self.purpose="""
-reconstruct stm-sum cards using mdeck3.trk data in src directories in dat/tc/sbt by year and basin"""
+analyze 9Xdev v 9Xnon and plot histograms"""
 
         self.examples='''
-%s 2019'''
+%s -S w.18-22 -f all.9xlife.0  # histogram of 9Xdev v 9Xnon lifetime for WPAC 2018-2022'''
 
 #mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
 #

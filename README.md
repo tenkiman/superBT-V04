@@ -4,7 +4,8 @@
 <h3>a "super" Best Track (BT) for Tropical Cyclone (TC) Forecasting and Research</h3>
 
 Mike Fiorino (mfiorino@gmu.edu)</br>
-<b> 30 January 2024 </b>
+<b> 30 January 2024 </b></br>
+<b>  8 May 2024 </b>
 </div>
 
 Welcome to the 1st beta release (V04) of Mike Fiorino's <ins><b>superBT</ins></b> -- a <ins><b>super</b></ins>position of **TC-centric** *dynamical*
@@ -95,8 +96,8 @@ SS  - Subtropical Storm      : Vmax >=35 & Vmax < 64 kts
 
 - 2007-2022 - 16-y data set
 
-- three TC types [**NN**][TCs] ; **9Xdev** ; **9Xnon**
-  - **NN** - [a numbered/named TC in the JTWC/NHC BT files][TCs]
+- three TC types [**NN**][TCs] (mouse over) ; **9Xdev** ; **9Xnon**
+  - **NN** - [a numbered/named TC in the JTWC/NHC BT files][TCs] (mouse over)
   - **9Xdev** - the pre/potential TC (pTC or 9X) disturbance that developed into an **NN** TC
   - **9Xnon** - pTC that did ***not develop*** into an **NN** TC
 
@@ -136,22 +137,24 @@ introduction with and an expanded version of the two science applications in [RE
 - formation rate of 9Xdev --> NN or the percentage of TC 'seeds' that become TCs (about 50% in 2018-2022 WPAC)
 - differences in shear(decreases)/rain(increases) in 9Xdev v 9Xnon shear(increases)/rain(decreases) about 48 h before formation or dissipation
 
-An earlier version of the more comprehensive doc is available at [QuickStartV04](https://tenkiman.github.io/superBT-V04/docs/QuickStartV04.html "https://tenkiman.github.io/docs/superBT-V04/QuickStartV04.html")
-
 #### ***install*** -- if you are a "just give me the links to the data" person...
 
 There are two ways to install:
 
-- download the superBT tarball: [superBT-V04.tgz](https://tenkiman.github.io/docs/superBT-V04/superBT-V04.tgz
-"superBT tarball: https://tenkiman.github.io/superBT-V04/superBT-V04.tgz") and
+- download the superBT tarball: [superBT-V04.tgz](https://github.com/tenkiman/superBT-V04/raw/v04/docs/superBT-V04.tgz
+"superBT tarball: https://github.com/tenkiman/superBT-V04/raw/v04/docs/superBT-V04.tgz")
+
 ```sh
 mkdir local-dir                        # local-dir is the directory to untar and will be ...
 cd local-dir                           # the root of the git repo
 tar -zxvf ~/Downloads/superBT-V04.tgz  # ~/Downloads is the typical location of downloads
 ```
 
-- pull the release from github.com/tenkiman/superBT-V04
-  - [download the git repo tarball](https://github.com/tenkiman/superBT-V04/archive/refs/tags/v0.1-beta1.tar.gz "https://github.com/tenkiman/superBT-V04/archive/refs/tags/v0.1-beta1.tar.gz")
+- pull the release from ```github.com/tenkiman/superBT-V04```
+  - [download the git repo tarball in .zip or .tar.gz format](
+https://github.com/tenkiman/superBT-V04/releases/tag/V04.01
+"https://github.com/tenkiman/superBT-V04/releases/tag/V04.01"
+)
   - clone the git repo: `git clone git@github.com:tenkiman/superBT-V04.git superBT`
 
 #### `wxmap2.com` weather maps and TC NWP displays

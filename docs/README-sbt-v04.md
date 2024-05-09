@@ -222,7 +222,7 @@ There are two sources for documentation on science applications.  The blog and
 talks given while I was in Japan and for a US-UK project.
 
 #### superBT blog with intro
-
+     
 - the [superBT blog](https://surperbt.blogspot.com/ "https://surperbt.blogspot.com/") has an [introduction](https://surperbt.blogspot.com/2023/12/intro-to-superbt.html "https://surperbt.blogspot.com/2023/12/intro-to-superbt.html") with links and a further analysis of ***formation rate*** in the big basins and the ***dynamical*** (wind shear) and ***thermodynamical*** (precipitation) differences between **9Xdev** and **9Xnon**
 
 #### presentations
@@ -241,16 +241,18 @@ talks given while I was in Japan and for a US-UK project.
 #### docs/ directory
 
 
-- [docs](https://github.com/tenkiman/superBT-V04/tree/main/docs)
-    - [NB](https://github.com/tenkiman/superBT-V04/tree/main/docs/NB) ::  **N**ota **B**ene directory with issues/problems
+- [docs/](https://github.com/tenkiman/superBT-V04/tree/main/docs)
+    - [plt/](https://github.com/tenkiman/superBT-V04/tree/v04/docs/plt) :: plots used in this doc and other docs 
+    - [NB/](https://github.com/tenkiman/superBT-V04/tree/main/docs/NB) ::  **N**ota **B**ene directory with issues/problems
         - [20231212](https://github.com/tenkiman/superBT-V04/tree/main/docs/NB/20231212) :: Why number of 9Xdev in mdeck3 is not the same is in the superBT
-    - [README-py2.md](https://github.com/tenkiman/superBT-V04/blob/main/docs/README-py2.md)
+    - [README-sbt-v04-py2.md](https://github.com/tenkiman/superBT-V04/blob/main/docs/README-sbt-v04-py2.md)
     - [README-sbt-mike5.md](https://github.com/tenkiman/superBT-V04/blob/main/docs/README-sbt-mike5.md)
     - [README-sbt-v04.md](https://github.com/tenkiman/superBT-V04/blob/main/docs/README-sbt-v04.md)
     - [README-sbt-v04-vars.md](https://github.com/tenkiman/superBT-V04/blob/main/docs/README-sbt-v04-vars.md)
     - **[superBT-V04.tgz](https://github.com/tenkiman/superBT-V04/blob/main/docs/superBT-V04.tgz)**  the tarball
     - [tc-superBT-20230310.pptx](https://github.com/tenkiman/superBT-V04/blob/main/docs/tc-superBT-20230310.pptx)
     - [tc-superBT-climate-studies-20221017.pdf](https://github.com/tenkiman/superBT-V04/blob/main/docs/tc-superBT-climate-studies-20221017.pdf)
+    - [MF-TCC-2024-superBT-20240418.pptx](https://github.com/tenkiman/superBT-V04/blob/v04/docs/MF-TCC-2024-superBT-202240418-V3.pptx)
     
 - [index.html](https://github.com/tenkiman/superBT-V04/blob/main/index.html)  index.html for the git hub pages
 
@@ -301,11 +303,20 @@ local directory with the distribution (sets the location of .py and .csv files)
 
 - ***pull*** from github.com/tenkiman/superBT-V04
 
-  - [**download the git repo tarball**](https://github.com/tenkiman/superBT-V04/archive/refs/tags/v0.1-beta1.tar.gz "https://github.com/tenkiman/superBT-V04/archive/refs/tags/v0.1-beta1.tar.gz")
+  - [**download the git repo release tarball in either .zip or .tar.gz format**](
+  https://github.com/tenkiman/superBT-V04/releases/tag/V04.01
+  "https://github.com/tenkiman/superBT-V04/releases/tag/V04.01"
+  )
 
   - **clone** the git repo: `git clone git@github.com:tenkiman/superBT-V04.git superBT`
 
+- **test the python2 applications in distribution**</br>
 
+four .py2 applications are provided to list and analyze both the ***mdeck3***
+(extended best track position/structure variables) and the ***sbt*** (superBT)
+data</br> see
+
+-
 
 
 ### Contact info:

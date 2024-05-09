@@ -237,7 +237,8 @@ talks given while I was in Japan and for a US-UK project.
     
 - this [talk at AORI/UofTokyo in 202210](https://tenkiman.github.io/superBT-V04/docs/tc-superBT-climate-studies-20221017.pdf "https://tenkiman.github.io/superBT-V04/docs/tc-superBT-climate-studies-20221017.pdf") shows how a superBT should be useful for TC climate studies.
 
-
+- this [presentation at the 2024 Annual INDOPACOM Tropical Cyclone Conference on 20240419](https://github.com/tenkiman/superBT-V04/blob/v04/docs/MF-TCC-2024-superBT-202240418-V3.pptx 	"https://github.com/tenkiman/superBT-V04/blob/v04/docs/MF-TCC-2024-superBT-202240418-V3.pptx") shows how the superBT could be used in TC forecast tool development.
+											         
 #### docs/ directory
 
 
@@ -245,15 +246,14 @@ talks given while I was in Japan and for a US-UK project.
     - [plt/](https://github.com/tenkiman/superBT-V04/tree/v04/docs/plt) :: plots used in this doc and other docs 
     - [NB/](https://github.com/tenkiman/superBT-V04/tree/main/docs/NB) ::  **N**ota **B**ene directory with issues/problems
         - [20231212](https://github.com/tenkiman/superBT-V04/tree/main/docs/NB/20231212) :: Why number of 9Xdev in mdeck3 is not the same is in the superBT
-    - [README-sbt-v04-py2.md](https://github.com/tenkiman/superBT-V04/blob/main/docs/README-sbt-v04-py2.md)
-    - [README-sbt-mike5.md](https://github.com/tenkiman/superBT-V04/blob/main/docs/README-sbt-mike5.md)
-    - [README-sbt-v04.md](https://github.com/tenkiman/superBT-V04/blob/main/docs/README-sbt-v04.md)
-    - [README-sbt-v04-vars.md](https://github.com/tenkiman/superBT-V04/blob/main/docs/README-sbt-v04-vars.md)
-    - **[superBT-V04.tgz](https://github.com/tenkiman/superBT-V04/blob/main/docs/superBT-V04.tgz)**  the tarball
-    - [tc-superBT-20230310.pptx](https://github.com/tenkiman/superBT-V04/blob/main/docs/tc-superBT-20230310.pptx)
-    - [tc-superBT-climate-studies-20221017.pdf](https://github.com/tenkiman/superBT-V04/blob/main/docs/tc-superBT-climate-studies-20221017.pdf)
-    - [MF-TCC-2024-superBT-20240418.pptx](https://github.com/tenkiman/superBT-V04/blob/v04/docs/MF-TCC-2024-superBT-202240418-V3.pptx)
-    
+    - [README-sbt-v04-py2.md](https://tenkiman.github.io/superBT-V04/docs/README-sbt-v04-py2.md)
+    - [README-sbt-mike5.md](https://tenkiman.github.io/superBT-V04/docs/README-sbt-mike5.md)
+    - [README-sbt-v04.md](https://tenkiman.github.io/superBT-V04/docs/README-sbt-v04.md)
+    - [README-sbt-v04-vars.md](https://tenkiman.github.io/superBT-V04/docs/README-sbt-v04-vars.md)
+    - **[superBT-V04.tgz](https://tenkiman.github.io/superBT-V04/docs/superBT-V04.tgz)**  the tarball
+    - [tc-superBT-20230310.pptx](https://tenkiman.github.io/superBT-V04/docs/tc-superBT-20230310.pptx)
+    - [tc-superBT-climate-studies-20221017.pdf](https://tenkiman.github.io/superBT-V04/docs/tc-superBT-climate-studies-20221017.pdf)
+    - [MF-TCC-2024-superBT-20240418.pptx](https://tenkiman.github.io/superBT-V04/docs/MF-TCC-2024-superBT-202240418-V3.pptx)
 - [index.html](https://github.com/tenkiman/superBT-V04/blob/main/index.html)  index.html for the git hub pages
 
 
@@ -261,45 +261,86 @@ talks given while I was in Japan and for a US-UK project.
 
 There are two basic ways to access and install:
 
-- the simplest is to ***download the tarball*** [superBT-V04.tgz](https://tenkiman.github.io/superBT-V04/superBT-V04.tgz
-"superBT tarball: https://tenkiman.github.io/superBT-V04/superBT-V04.tgz")
+- the simplest is to ***download the tarball*** [superBT-V04.tgz](
+https://tenkiman.github.io/superBT-V04/docs/superBT-V04.tgz
+"superBT tarball: https://tenkiman.github.io/superBT-V04/docs/superBT-V04.tgz")
 
 ```sh
-cd ~/Download             # typical download directory
-mkdir ~/local-dir         # make a 'local-dir' in your home
+'/tmp/uname'               # your home dir
+cd /tmp/uname/Download     # typical download directory
+mkdir /tmp/uname/sbtv04    # make a 'superBT-V04' in your home
 
 # from the Download dir
 
-mv superBT-V04.tgz local-dir/ (e.g., ~/superBT)
-cd local-dir/
+mv /tmp/uname/Download/superBT-V04.tgz /tmp/uname/sbtv04 (e.g., ~/superBT)
+cd /tmp/uname/sbtv04
 tar -xzvf superBT-V04.tgz
 
-will make local-dir/superBT/V04/ with these files:
+will make in /tmp/uname/sbtv04 these files:
 
-     2851 2024-01-10 21:35 superBT/V04/README-sbt
-     7926 2023-10-20 17:46 superBT/V04/README-sbt-mike5
-      900 2024-01-10 21:07 superBT/V04/README-sbt-py2
-     6327 2023-12-08 20:36 superBT/V04/README-sbt-vars
- 14745266 2024-01-11 15:36 superBT/V04/dat/all-md3-2007-2022-MRG.csv
-     1099 2024-01-11 15:36 superBT/V04/dat/h-meta-md3-sum.csv
-     1384 2024-01-11 15:36 superBT/V04/dat/h-meta-md3-vars.csv
-     2797 2024-01-11 15:36 superBT/V04/dat/h-meta-sbt-v04-vars.csv
- 26085454 2024-01-11 15:36 superBT/V04/dat/sbt-v04-2007-2022-MRG.csv
-   676848 2024-01-11 15:36 superBT/V04/dat/sum-md3-2007-2022-MRG.csv
-    40026 2023-10-20 13:27 superBT/V04/py2/mf.py
-    16943 2024-01-10 19:07 superBT/V04/py2/p-md3-ls.py
-     5526 2023-12-08 20:16 superBT/V04/py2/p-md3-stm-anl.py
-    10401 2023-12-12 19:33 superBT/V04/py2/p-sbt-v04-anl-ts.py
-     5879 2024-01-11 15:36 superBT/V04/py2/p-sbt-v04-anl-var.py
-   509285 2024-01-10 18:12 superBT/V04/py2/sBTcl.py
-        0 2023-12-12 20:06 superBT/V04/py2/sbtLocal.py -> sbtLocal.py-mike5
-      119 2023-12-12 19:33 superBT/V04/py2/sBT.py
-    11337 2024-01-08 15:00 superBT/V04/py2/sBTvars.py
-   220148 2024-01-08 14:59 superBT/V04/py2/sBTvm.py
+    9183 2024-02-27 16:19 README.md
+
+# -- the data files
+
+ 14745266 2024-02-22 12:27 dat/all-md3-2007-2022-MRG.csv
+     1100 2024-02-27 16:19 dat/h-meta-md3-sum.csv
+     1384 2024-02-22 12:27 dat/h-meta-md3-vars.csv
+     2797 2024-02-22 12:27 dat/h-meta-sbt-v04-vars.csv
+ 26085454 2024-02-22 12:27 dat/sbt-v04-2007-2022-MRG.csv
+   676848 2024-02-22 12:27 dat/sum-md3-2007-2022-MRG.csv
+
+# -- python2 files
+
+    40026 2023-12-12 19:09 py2/mf.py
+    16943 2024-02-22 12:27 py2/p-md3-ls.py
+     5764 2024-04-10 11:50 py2/p-md3-stm-anl.py
+    10485 2024-02-22 12:27 py2/p-sbt-v04-anl-ts.py
+     5879 2024-02-22 12:27 py2/p-sbt-v04-anl-var.py
+   509285 2024-04-09 15:25 py2/sBTcl.py
+        0 2024-04-09 15:14 py2/sbtLocal.py -> sbtLocal.py-mac
+      119 2023-12-12 19:36 py2/sBT.py
+    11504 2024-04-09 15:26 py2/sBTvars.py
+   220239 2024-04-10 11:15 py2/sBTvm.py
+   
+# -- doc files
+
+     7930 2024-03-04 13:20 docs/README-sbt-mike5.md
+    15714 2024-03-04 13:25 docs/README-sbt-v04.md
+     1337 2024-03-04 13:20 docs/README-sbt-v04-py2.md
+     6380 2024-03-04 13:20 docs/README-sbt-v04-vars.md
+  7983738 2024-02-22 12:27 docs/tc-superBT-climate-studies-20221017.pdf
+ 14658603 2024-05-08 13:29 docs/MF-TCC-2024-superBT-202240418-V3.pptx
+ 46975314 2024-02-22 12:27 docs/tc-superBT-20230310.pptx
+
+# -- plts used in various talks
+
+        0 2024-05-08 13:28 plts/
+        0 2024-05-08 13:28 plts/9X2NNformation/
+    27892 2024-04-10 11:12 plts/9X2NNformation/all.9xlife.0.l.07-11.png
+    26850 2024-04-10 11:12 plts/9X2NNformation/all.9xlife.0.l.18-22.png
+    27311 2024-04-10 11:11 plts/9X2NNformation/all.9xlife.0.w.18-22.png
+    26740 2024-04-10 11:11 plts/9X2NNformation/all.9xlife.0.w.07-11.png
+        0 2024-04-10 11:38 plts/dev-non/
+   583157 2024-04-10 11:37 plts/dev-non/og3-l-18-22.png
+   566081 2024-04-10 11:33 plts/dev-non/shrspd-l-18-22.png
+  1034496 2024-04-10 11:36 plts/dev-non/oi3-w-18-22.png
+   860317 2024-04-10 11:32 plts/dev-non/shrspd-w-18-22.png
+   605394 2024-04-10 11:34 plts/dev-non/oi3-l-18-22.png
+  1067493 2024-04-10 11:36 plts/dev-non/og3-w-18-22.png
+
 ```
 
 edit the [sbtLocal.py](../py2/sbtLocal.py) file to set the full path of the
 local directory with the distribution (sets the location of .py and .csv files)
+
+``` for this development machine:
+# -- full path with local installation directories
+#
+sbtRoot='/tmp/uname/sbtv04'
+sbtVersion='V04'
+#sbtRootV04=sbtRoot
+
+```
 
 - ***pull*** from github.com/tenkiman/superBT-V04
 

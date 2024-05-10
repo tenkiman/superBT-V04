@@ -5,7 +5,7 @@
 
 Mike Fiorino (mfiorino@gmu.edu)</br>
 <b> 30 January 2024 </b></br>
-<b>  9 May 2024 </b>
+<b> 10 May 2024 </b>
 </div>
 
 Welcome to the 1st beta release (V04) of Mike Fiorino's <ins><b>superBT</ins></b> -- a <ins><b>super</b></ins>position of **TC-centric** *dynamical*
@@ -237,7 +237,8 @@ talks given while I was in Japan and for a US-UK project.
     
 - this [talk at AORI/UofTokyo in 202210](https://tenkiman.github.io/superBT-V04/docs/tc-superBT-climate-studies-20221017.pdf "https://tenkiman.github.io/superBT-V04/docs/tc-superBT-climate-studies-20221017.pdf") shows how a superBT should be useful for TC climate studies.
 
-- this [presentation at the 2024 Annual INDOPACOM Tropical Cyclone Conference on 20240419](https://github.com/tenkiman/superBT-V04/blob/v04/docs/MF-TCC-2024-superBT-202240418-V3.pptx 	"https://github.com/tenkiman/superBT-V04/blob/v04/docs/MF-TCC-2024-superBT-202240418-V3.pptx") shows how the superBT could be used in TC forecast tool development.
+- this [presentation at the 2024 Annual INDOPACOM Tropical Cyclone Conference on 20240419](https://tenkiman.github.io/superBT-V04/docs/MF-TCC-2024-superBT-202240418-V3.pptx
+"https://tenkiman.github.io/superBT-V04/docs/MF-TCC-2024-superBT-202240418-V3.pptx") shows how the superBT could be used in TC forecast tool development.
 											         
 #### docs/ directory
 
@@ -330,7 +331,7 @@ will make in /tmp/uname/sbtv04 these files:
 
 ```
 
-edit the [sbtLocal.py](../py2/sbtLocal.py) file to set the full path of the
+	edit the [sbtLocal.py](../py2/sbtLocal.py) file to set the full path of the
 local directory with the distribution (sets the location of .py and .csv files)
 
 ``` for this development machine:
@@ -351,13 +352,14 @@ sbtVersion='V04'
 
   - **clone** the git repo: `git clone git@github.com:tenkiman/superBT-V04.git superBT`
 
-- **test the python2 applications in distribution**</br>
+- **[optional] test the python2 applications in distribution**</br>
 
 four .py2 applications are provided to list and analyze both the ***mdeck3***
 (extended best track position/structure variables) and the ***sbt*** (superBT)
-data</br> see
+data</br> see this doc: [README-sbt-v04-py2.md](https://tenkiman.github.io/superBT-V04/docs/README-sbt-v04-py2.md) for more details.
 
--
+NB: the doc is under development...
+
 
 
 ### Contact info:

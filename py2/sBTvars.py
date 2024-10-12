@@ -43,19 +43,20 @@ md3VarsMeta='h-meta-md3-vars.csv'
 
 sbtVerDirDat="%s/dat"%(sbtRootVer)
 
-sbtDatDir="%s/dat"%(sbtRoot)
-sbtProdDir='%s/products/tcdiag'%(sbtRoot)
-sbtSrcDir="%s/src"%(sbtRoot)
+sbtDatDir="%s/dat-%s"%(sbtRoot,versionDev)
+sbtProdDir='%s/products-%s/tcdiag'%(sbtRoot,versionDev)
+sbtSrcDir="%s/src-%s"%(sbtRoot,versionDev)
 
-sbtVerDirTcPrc="%s/%s"%(sbtRoot,versionDev)
-sbtVerDir=sbtRootVer
+sbtVerDirDev="%s/%s"%(sbtRoot,versionDev)
 
-sbtVerDirDatTcPrc="%s/dat"%(sbtVerDirTcPrc)
+sbtVerDirTcPrc=sbtVerDirDev
+
+sbtVerDirDatTcPrc=sbtDatDir
 sbtPrcDirTcdiag="%s/prc/tcdiag"%(sbtVerDirTcPrc)
 sbtPrcDirTctrk="%s/prc/tctrk"%(sbtVerDirTcPrc)
 
-sbtGeogDatDir="%s/geog"%(sbtVerDirDatTcPrc)
-sbtGslibDir="%s/gslib"%(sbtVerDirTcPrc)
+sbtGeogDatDir="%s/geog"%(sbtDatDir)
+sbtGslibDir="%s/gslib"%(sbtVerDirDev)
 
 tsbdbdir="%s/tcdiag"%(sbtDatDir)
 adeckSdir="%s/adeck-dtg"%(sbtDatDir)
@@ -63,15 +64,25 @@ tmtrkbdir="%s/tmtrkN"%(sbtDatDir)
 abdirStm='%s/adeck-stm'%(sbtDatDir)
 abdirDtg='%s/adeck-dtg'%(sbtDatDir)
 
-TcNamesDatDir="%s/tc/names"%(sbtVerDirDat)
+TcNamesDatDir="%s/tc/names"%(sbtDatDir)
 TcVitalsDatDir="%s/tc/tcvitals"%(sbtDatDir)
 
 W2BaseDirPrc="%s/prc/"%(sbtVerDirTcPrc)
+
+# -- era5
+#
+endEra5Year=2024
+endEra5Dtg='2024060100'
 
 # -- lsdiag
 #
 TcTcanalDatDir="%s/tcdiag"%(sbtDatDir)
 TcDiagDatDir=TcTcanalDatDir
+
+opsaids={}
+opsaids['jtwc']=['jtwc','jtwi','c120','clip','clim','conw','mbam','wbar','xtrp']
+opsaids['nhc']=['ofcl','ofci','clp5','clip','clim','xtrp','tvcn']
+
 
 # -- wxmap2 dirs not part of repo
 #

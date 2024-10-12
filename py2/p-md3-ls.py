@@ -199,7 +199,8 @@ class TmtrkCmdLine(CmdLine):
         self.options={
             'override':         ['O',0,1,'override'],
             'verb':             ['V',0,1,'verb=1 is verbose'],
-            'doBT':             ['B',0,1,'only display best track info'],
+            'doBT':             ['B',0,1,'only display best track info, if bd2 then set to 1'],
+            'doBdeck2':         ['2',0,1,'use bdeck2'],
             'yearOpt':          ['Y:',None,'a','yearOpt -- to select byear-eyear range default is 2007-2022 in sBTvars.py'],
             'stmopt':           ['S:',None,'a',' stmid target'],
             'sumonly':          ['s',0,1,'list stmids only'],
@@ -232,72 +233,58 @@ CL=TmtrkCmdLine(argv=argv)
 CL.CmdLine()
 exec(CL.estr)
 if(verb): print CL.estr
+(oyearOpt,doBdeck2)=getYears4Opts(stmopt,dtgopt,yearOpt)
 
-if(yearOpt != None):
-    tt=yearOpt.split('.')
+if(verb):
+    print 'sss---',stmopt
+    print 'ddd---',dtgopt
+    print 'yyy---',yearOpt
     
-    if(len(tt) == 2):
-        byear=tt[0]
-        eyear=tt[1]
-        years=yyyyrange(byear, eyear)
-        oyearOpt="%s-%s"%(byear,eyear)
+    print 'ooo---yyy',oyearOpt
+    print 'ooo---BBB',doBdeck2
     
-    elif(len(tt) == 1):
+if(doBdeck2):
+    doBT=1
     
-        years=[yearOpt]
-        oyearOpt=yearOpt
-else:
-    oyearOpt=yearOpt
-
-
-
 MF.sTimer('ALL')
 MF.sTimer('md3-load')
-md3=Mdeck3(oyearOpt=oyearOpt,verb=verb)
+md3=Mdeck3(oyearOpt=oyearOpt,doBT=doBT,verb=verb)
 MF.dTimer('md3-load')
 
 dtgs=None
 if(dtgopt != None):
+    
     dtgs=dtg_dtgopt_prc(dtgopt)
-    
-    if(doVitals):
 
-        for dtg in dtgs:
-            
-            trks={}
-            stmids=md3.getMd3Stmids4dtg(dtg,dobt=dobt)
-            for stmid in stmids:
-                (rc,m3trk)=md3.getMd3track(stmid)
-                m3trkdtg=m3trk[dtg]
-                trks[stmid]=m3trkdtg
-                
-            (tcVcards,tcvpath)=md3.makeTCvCards(stmids,dtg,trks,verb=verb)
-                
-            
-        
-        
-        
-    else:
+    for dtg in dtgs:
+
+        (dtgstms,m3trks)=md3.getMd3tracks4dtg(dtg,dobt=dobt,doBdeck2=doBdeck2, 
+                                              verb=verb)
+
+        for stmid in dtgstms:
+            card=printMd3Trk(m3trks[stmid],dtg)
+            print card
     
-        for dtg in dtgs:
-            stmdtgs=md3.getMd3Stmids4dtg(dtg,dobt=dobt)
-            #print 'DDD',dtg,stmdtgs
-            for stmid in stmdtgs:
-                (rc,m3trk)=md3.getMd3track(stmid,dobt=dobt,verb=verb)
-                if(rc == 0):
-                    print 'EEE m3trk for: ',stmid
-                else:
-                    card=printMd3Trk(m3trk[dtg],dtg)
-                    print card
+        if(doVitals):
+            print
+            print 'VVVitals for dtg:'
+            (tcVcards,tcvpath,ostmids)=md3.makeTCvCards(dtgstms,dtg,m3trks,verb=verb)
+        
             
 stmids=None
 if(stmopt != None):
     
     if(doBT):
-        dobt=1
-        dofilt9x=0
-        doNNand9X=0
-
+        if(doBdeck2):
+            dobt=0
+            dofilt9x=0
+            doNNand9X=1
+        else:
+            dobt=1
+            dofilt9x=0
+            doNNand9X=0
+            
+            
     
     stmids=[]
     stmopts=getStmopts(stmopt)
@@ -317,12 +304,14 @@ if(stmopt != None):
                 gendtg=rc[-1]
 
                 stmid9X='%s.%s'%(b3id.lower(),year)
-                (rc,scard9X)=md3.getMd3StmMeta(stmid9X)
-                last9xdtg=rc[-1]
-                gdtgdiff=mf.dtgdiff(gendtg,last9xdtg)
-                scard9X="%s genDiff: %3.0f"%(scard9X,gdtgdiff)
-                print scard9X
-             
+                if(Is9XNN(stmid9X) == 0):
+                    (rc,scard9X)=md3.getMd3StmMeta(stmid9X)
+                    last9xdtg=rc[-1]
+                    gdtgdiff=mf.dtgdiff(gendtg,last9xdtg)
+                    scard9X="%s genDiff: %3.0f"%(scard9X,gdtgdiff)
+                    print scard9X
+                    print
+                
             continue
         
         # -- get track
@@ -362,26 +351,28 @@ if(stmopt != None):
                     b3id=rc[-2].split()[-1]
                     gendtg=rc[-1]
                     stmid9X='%s.%s'%(b3id.lower(),year)
-                    (rc,scard9X)=md3.getMd3StmMeta(stmid9X)
-                    last9xdtg=rc[-1]
-                    gdtgdiff=mf.dtgdiff(gendtg,last9xdtg)
-                    scard9X="%s genDiff: %3.0f"%(scard9X,gdtgdiff)
-                    print scard9X
+                    if(Is9XNN(stmid9X) == 0):
+                        (rc,scard9X)=md3.getMd3StmMeta(stmid9X)
+                        last9xdtg=rc[-1]
+                        gdtgdiff=mf.dtgdiff(gendtg,last9xdtg)
+                        scard9X="%s genDiff: %3.0f"%(scard9X,gdtgdiff)
+                        print scard9X
+                        
+                        
+            (rc,scard)=md3.getMd3StmMeta(stmid)
+            stmDevType=rc[-5]
+            (snum,b1id,year,b2id,stm2id,stm1id)=getStmParams(stmid)
+            #print 'ssssss',stmDevType,rc,scard
 
-            else:
-                (rc,scard)=md3.getMd3StmMeta(stmid)
-                print scard
-                (snum,b1id,year,b2id,stm2id,stm1id)=getStmParams(stmid)
-
-                if(mf.find(scard,'NN:')):
-                    b3id=rc[-2].split()[-1]
-                    last9xdtg=rc[-1]
-                    stmidNN="%s.%s"%(b3id.lower(),year)
-                    (rcNN,scardNN)=md3.getMd3StmMeta(stmidNN)
-                    gendtg=rcNN[-1]
-                    gdtgdiff=mf.dtgdiff(gendtg,last9xdtg)
-                    scardNN="%s genDiff: %3.0f"%(scardNN,gdtgdiff)
-                    print scardNN
+            if(mf.find(scard,'NN:')):
+                b3id=rc[-2].split()[-1]
+                last9xdtg=rc[-1]
+                stmidNN="%s.%s"%(b3id.lower(),year)
+                (rcNN,scardNN)=md3.getMd3StmMeta(stmidNN)
+                gendtg=rcNN[-1]
+                gdtgdiff=mf.dtgdiff(gendtg,last9xdtg)
+                scardNN="%s genDiff: %3.0f"%(scardNN,gdtgdiff)
+                print scardNN
                     
                     
     

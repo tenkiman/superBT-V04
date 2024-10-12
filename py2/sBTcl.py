@@ -3650,7 +3650,7 @@ class Mdeck3(MFutils):
                  tbdir=None,
                  oyearOpt=None,
                  verb=0,
-                 doclean=0,
+                 doMd3Only=0,
                  stmdtg=None,
                  basinopt=None,
                  doBT=0,
@@ -3665,10 +3665,7 @@ class Mdeck3(MFutils):
         self.doBT=doBT
         
         if(tbdir == None):
-            tbdir=sbtSrcDir
-            tbdir=sbtVerDir
             tbdir=sbtVerDirDat
-            #tbdir=sbtRoot
 
         self.tbdir=tbdir
         
@@ -3682,50 +3679,62 @@ class Mdeck3(MFutils):
         # -- (sumCvsPath) = md3 storm summary cards 
         #
         rc=self.getCvsYearPaths(doBT=doBT)
-        (allCvsPath,sumCvsPath)=rc
+        (allCvsPaths,sumCvsPaths)=rc
+        
         if(verb):
-            print 'allCvsPath: ',allCvsPath
-            print 'sumSvsPath: ',sumCvsPath
+            print 'allCvsPaths: ',allCvsPaths
+            print 'sumSvsPaths: ',sumCvsPaths
 
+        # -- just instantiate for methods
+        #
+        if(doMd3Only):
+            return
+        
+        
         # -- get hashes with storm summary and names
         #
         stmSum={}
         tcNamesHash={}
-        scards=open(sumCvsPath).readlines()
-        for scard in scards[1:]:
-            #print scard[0:-1]
-            tt=scard.split(',')
-            stmid=tt[0]
-            ss=stmid.split(".")
-            year=ss[1]
-            b3id=ss[0]
-            tccode=tt[1]
-            tcdev=tt[2]
-            name=tt[3]
-            tcNamesHash[(year,b3id)]=name
-            stmSum[stmid]=tt
+        
+        for sumCvsPath in sumCvsPaths:
+            scards=open(sumCvsPath).readlines()
+            for scard in scards[1:]:
+                #print scard[0:-1]
+                tt=scard.split(',')
+                stmid=tt[0]
+                ss=stmid.split(".")
+                year=ss[1]
+                b3id=ss[0]
+                tccode=tt[1]
+                tcdev=tt[2]
+                name=tt[3]
+                tcNamesHash[(year,b3id)]=name
+                stmSum[stmid]=tt
             
         self.stmSum=stmSum
         self.tcNamesHash=tcNamesHash
         
         stmMetaMd3={}
         stmMetaMd3Card={}
-        
+
+        # --get all md3 posits
+        #
         if(not(doSumOnly)):
+            
             dtgMd3={}
             stmMd3={}
             
-            # -- get the md3 track
-            #
-            acards=open(allCvsPath).readlines()
-            #print 'aaa',allCvsPath
-            for acard in acards[1:]:
-                # -- the last entry has '\n' skip
-                tt=acard.split(',')
-                dtg=tt[0]
-                stmid=tt[1]
-                MF.appendDictList(dtgMd3, dtg, stmid)
-                MF.appendDictList(stmMd3, stmid, tt[0:-1])
+            for allCvsPath in allCvsPaths:
+
+                acards=open(allCvsPath).readlines()
+                #print 'aaa',allCvsPath
+                for acard in acards[1:]:
+                    # -- the last entry has '\n' skip
+                    tt=acard.split(',')
+                    dtg=tt[0]
+                    stmid=tt[1]
+                    MF.appendDictList(dtgMd3, dtg, stmid)
+                    MF.appendDictList(stmMd3, stmid, tt[0:-1])
             
 
             dtgMd3=MF.uniqDict(dtgMd3)
@@ -3737,19 +3746,22 @@ class Mdeck3(MFutils):
             md3stmids.sort()
             self.md3stmids=md3stmids
             self.stmMd3=stmMd3
+            #print 'kkkkk------',md3stmids
 
 
         # -- get the summary cards with stmid meta data
         #
-        acards=open(sumCvsPath).readlines()
-        for acard in acards[1:]:
-            #print 'sss',acard
-            tt=acard.split(',')
-            stmid=tt[0]
-            #print 'sss',stmid,tt[-1]
-            # skip the last entry which is always '\n'
-            stmMetaMd3[stmid]=tt[0:-1]
-            stmMetaMd3Card[stmid]=acard[0:-1]
+        for sumCvsPath in sumCvsPaths:
+            
+            acards=open(sumCvsPath).readlines()
+            for acard in acards[1:]:
+                #print 'sss',acard
+                tt=acard.split(',')
+                stmid=tt[0]
+                #print 'sss',stmid,tt[-1]
+                # skip the last entry which is always '\n'
+                stmMetaMd3[stmid]=tt[0:-1]
+                stmMetaMd3Card[stmid]=acard[0:-1]
 
         # -- decorate
         #
@@ -4104,20 +4116,38 @@ class Mdeck3(MFutils):
         
         return(stmids)
     
-    def getCvsYearPaths(self,doBT=0):
+    def getCvsYearPaths(self,doBT=0,verb=0):
         """
 not sure about this...MRG has BT .csv has working best track
-always use all-BT because m-md3-all-cpy does a merge process
+always use all-BT because m-md3-all-cp.py does a merge process
 that generates of -MRG.txt where the working is updated with BT
         """
-        if(doBT == -1):
-            allCvsPath="%s/all-md3-%s.csv"%(self.tbdir,self.oyearOpt)
-            sumCvsPath="%s/sum-md3-%s.csv"%(self.tbdir,self.oyearOpt)
+        allCvsPaths=[]
+        sumCvsPaths=[]
+        
+        if(mf.find(self.oyearOpt,'-')):
+            oyearOpts=[self.oyearOpt]
         else:
-            allCvsPath="%s/all-md3-%s-MRG.csv"%(self.tbdir,self.oyearOpt)
-            sumCvsPath="%s/sum-md3-%s-MRG.csv"%(self.tbdir,self.oyearOpt)
+            oyearOpts=self.oyearOpt.split('.')
+        
+        for oyearOpt in oyearOpts:
+            
+            if(verb): print 'setting all/sum cvspath for year: ',oyearOpt
+            
+            if(doBT == -1):
+                allCvsPath="%s/all-md3-%s.csv"%(self.tbdir,oyearOpt)
+                sumCvsPath="%s/sum-md3-%s.csv"%(self.tbdir,oyearOpt)
+            elif(doBT == 1):
+                allCvsPath="%s/all-md3-%s-BT.csv"%(self.tbdir,oyearOpt)
+                sumCvsPath="%s/sum-md3-%s-BT.csv"%(self.tbdir,oyearOpt)
+            else:
+                allCvsPath="%s/all-md3-%s-MRG.csv"%(self.tbdir,oyearOpt)
+                sumCvsPath="%s/sum-md3-%s-MRG.csv"%(self.tbdir,oyearOpt)
+                
+            allCvsPaths.append(allCvsPath)
+            sumCvsPaths.append(sumCvsPath)
     
-        return(allCvsPath,sumCvsPath)
+        return(allCvsPaths,sumCvsPaths)
 
     
     def getCvsYearOptPaths(self,tbdir,oyearOpt,headAll,headSum):
@@ -4250,7 +4280,8 @@ that generates of -MRG.txt where the working is updated with BT
         return(allStm)    
     
     
-    def getMd3Stmids4dtg(self,dtg,dobt=0,verb=0,warn=0):
+    def getMd3Stmids4dtg(self,dtg,dobt=0,convertXstm=0,
+                         verb=0,warn=0):
         
         try:
             stmids=self.dtgMd3[dtg]
@@ -4261,8 +4292,14 @@ that generates of -MRG.txt where the working is updated with BT
 
         ostmids=stmids
         
-        if(dobt):
+        if(convertXstm):
             ostmids=[]
+            for ostmid in stmids:
+                ostmid=getBD2stmid4Xstmid(ostmid)
+                ostmids.append(ostmid)
+        
+        if(dobt):
+            stmids=[]
             for stmid in stmids:
                 if(IsNN(stmid)): ostmids.append(stmid)
                 
@@ -4359,7 +4396,10 @@ that generates of -MRG.txt where the working is updated with BT
 
         
     
-    def getMd3track(self,stmid,dobt=0,undef=-999.,verb=0,domiss=0):
+    def getMd3track(self,stmid,dobt=0,
+                    doBdeck2=0,
+                    undef=-999.,
+                    verb=0,domiss=0):
         
         #mkFloat=self.mkFloat
         
@@ -4400,22 +4440,33 @@ that generates of -MRG.txt where the working is updated with BT
         m3trk={}
         stmid=stmid.lower()
 
-        try:
-            smeta=self.stmMetaMd3[stmid]
-        except:
-            print 'EEE in getMd3track for: ',stmid
-            return(0,m3trk)
+
+        if(not(doBdeck2)):
+            try:     smeta=self.stmMetaMd3[stmid]
+            except:  return(0,m3trk)
             
             
         m3trk={}
-        stmcards=self.stmMd3[stmid]
 
-        if(IsNN(stmid)):
+        stmcards=self.stmMd3[stmid]
+        
+        #for stmcard in stmcards:
+        #    print stmcard
+
+        if(IsNN(stmid) and not(doBdeck2)):
+            
             # --smeta[-1] has the type of gendtg
+            try:     smeta=self.stmMetaMd3[stmid]
+            except:  return(-1,m3trk)
+            
             smkey=len(smeta)
-            stmid9x="%s.%s"%(smeta[-4],stmid.split('.')[-1])
-            stmcards9x=self.stmMd3[stmid9x]
-            stmcards=stmcards9x+stmcards
+
+            # -- check if NN only storm -- no smid9x for bdeck2
+            #
+            if(smeta[-5] == '9X' and smeta[-3] != 'NaN'):
+                stmid9x="%s.%s"%(smeta[-4],stmid.split('.')[-1])
+                stmcards9x=self.stmMd3[stmid9x.lower()]
+                stmcards=stmcards9x+stmcards
             
         for mm in stmcards:
 
@@ -4427,6 +4478,17 @@ that generates of -MRG.txt where the working is updated with BT
                     print 'Mdeck3.getMd3track stmcard: ',orc
             
             if(rc == None):continue
+
+            # -- from TcData.gettrk()
+            #
+            #trk=(self.rlat,self.rlon,self.vmax,self.pmin,
+                 #self.dir,self.spd,
+                 #self.tccode,self.wncode,
+                 #self.trkdir,self.trkspd,self.dirtype,
+                 #self.b1id,self.tdo,self.ntrk,self.ndtgs,
+                 #self.r34m,self.r50m,self.alf,self.sname,
+                 #self.r34,self.r50,self.depth,
+                 #)
 
             (dtg,rlat,rlon,vmax,pmin,tdir,tspd,r34m,r50m,
              tcstate,warn,
@@ -4505,7 +4567,7 @@ that generates of -MRG.txt where the working is updated with BT
                     dtgis=mf.dtgrange(dtgib, dtgie)
                     iden=dtgdiff(dtg1, dtg2)
                     if(iden > 36.0):
-                        print'EEE big iterp interval for stmid',stmid,dtg1,dtg2,iden
+                        print'EEE --getMd3track-- big iterp interval for stmid',stmid,dtg1,dtg2,iden
                         sys.exit()
                     m1=m3trk[dtg1]
                     m2=m3trk[dtg2]
@@ -4531,13 +4593,40 @@ that generates of -MRG.txt where the working is updated with BT
             
         return(1,m3trk)
             
-    def getMd3tracks(self,stmids,dobt=0,undef=-999.,verb=0):
+    def getMd3tracks(self,stmids,
+                     dobt=0,doBdeck2=0,
+                     undef=-999.,verb=0):
         m3trks={}
         for stmid in stmids:
-            (rc,m3trk)=self.getMd3track(stmid,dobt=dobt)
+            (rc,m3trk)=self.getMd3track(stmid,dobt=dobt,doBdeck2=doBdeck2,
+                                       verb=verb)
+            
             m3trks[stmid]=m3trk
         return(m3trks)
     
+    def getMd3tracks4dtg(self,dtg,
+                         dobt=0,doBdeck2=0,
+                         undef=-999.,verb=0):
+        m3trks={}
+        dtgstms=self.getMd3Stmids4dtg(dtg,dobt=dobt)
+        odtgstms=[]
+        for stmid in dtgstms:
+            (rc,m3trk)=self.getMd3track(stmid,dobt=dobt,doBdeck2=doBdeck2,
+                                       verb=verb)
+            if(rc == 0):
+                print 'EEE m3trk for NON-bd2 storm: ',stmid,'dtg: ',dtg
+                sys.exit()
+            elif(rc == -1):
+                print 'EEE m3trk for BD2 storm: ',stmid,' dtg: ',dtg
+                sys.exit()
+            elif(rc == 1):
+                odtgstms.append(stmid)
+                m3trkdtg=m3trk[dtg]
+                m3trks[stmid]=m3trkdtg
+
+        return(odtgstms,m3trks)
+
+
     def getMd3StmDtgs4Stmopt(self,stmopt,syear=None,dobt=0,undef=-999.,verb=0):
         stmopts=getStmopts(stmopt)
         
@@ -4598,120 +4687,126 @@ that generates of -MRG.txt where the working is updated with BT
     
     def makeTCvCard(self,stmid,dtg,trk,verb=0):
     
-            # -- set rmax to None
+        # -- set rmax to None
 
-            rmax=None
-            (rlat,rlon,vmax,pmin,tdir,tspd,r34m,r50m,
-             tcstate,warn,roci,poci,alf,depth,eyedia,tdo,ostmid,ostmname,r34,r50)=trk[dtg]
-            (clat,clon)=Rlatlon2Clatlon(rlat,rlon,dozero=1)
     
-            carqvmax=vmax*knots2ms
-            if(carqvmax > 0.0):
-                vitvmax="%02d"%(nint(carqvmax))
-            else:
-                carqvmax=-9
-                vitvmax="%02d"%(carqvmax)
-    
-    
-            if(poci != None and poci != undef):
-                carqpoci=poci
-                vitpoci="%04d"%(nint(carqpoci))
-            else:
-                carqpoci=-999.
-                vitpoci="%04d"%(carqpoci)
-    
-    
-            if(roci != None and roci != undef):
-                carqroci=roci*nm2km
-                vitroci="%04d"%(nint(carqroci))
-            else:
-                carqroci=-999
-                vitroci="%04d"%(carqroci)
-    
-            if(rmax != None):
-                carqrmax=rmax*nm2km
-                vitrmax="%03d"%(nint(carqrmax))
-            else:
-                carqrmax=-99
-                vitrmax="%03d"%(carqrmax)
-    
-    
-            tcdepth=depth
-            if(not(depth == 'S' or depth == 'M' or depth == 'D')): tcdepth='X'
-    
-            # -- one posit for c7w.07
-            #
-            if(tdir == undef):
-                vitdir='-99'
-            else:
-                vitdir="%03.0f"%(tdir)
-    
-            if(tspd == undef):
-                vitspd='-99'
-            else:
-                vitspd="%03.0f"%(tspd*10.0*knots2ms)
-    
-    
-            if(pmin != None and pmin != undef):
-                vitpmin="%04d"%int(pmin)
-            else:
-                pmin=-999
-                vitpmin="%04d"%int(pmin)
-    
-            carqr34ne=r34[0]*nm2km
-            carqr34se=r34[1]*nm2km
-            carqr34sw=r34[2]*nm2km
-            carqr34nw=r34[3]*nm2km
-            
-            if(carqr34ne > 0.0):
-                vitr34ne="%04.0f"%(carqr34ne)
-            else:
-                r34ne=-999.
-                vitr34ne="%04.0f"%(r34ne)
-    
-            if(carqr34se > 0.0):
-                vitr34se="%04.0f"%(carqr34se)
-            else:
-                r34se=-999.
-                vitr34se="%04.0f"%(r34se)
-    
-            if(carqr34sw > 0.0):
-                vitr34sw="%04.0f"%(carqr34sw)
-            else:
-                r34sw=-999.
-                vitr34sw="%04.0f"%(r34sw)
-    
-            if(carqr34nw > 0.0):
-                vitr34nw="%04.0f"%(carqr34nw)
-            else:
-                r34nw=-999.
-                vitr34nw="%04.0f"%(r34nw)
-    
-            vitdepth=tcdepth
-    
-            # MFTC 97S UNKNOWN   20100415 1200 083S 1017E 130 007 1010 -999 -999 08 -99 -999 -999 -999 -999 X
-    
-            stm3id=stmid.split('.')[0].upper()
-            tcvitalscard="%4s %3s %-9s %8s %04d %s %s %s %s %s %s %s %s %s %s %s %s %s %s"%\
-                (tcVcenterid,stm3id,ostmname[0:9],
-                 dtg[0:8],int(dtg[8:10])*100,
-                 clat,clon,
-                 vitdir,vitspd,
-                 vitpmin,
-                 vitpoci,vitroci,
-                 vitvmax,vitrmax,
-                 vitr34ne,vitr34se,vitr34sw,vitr34nw,
-                 vitdepth)
-    
-            if(verb): print tcvitalscard
-            return(tcvitalscard)
+        rmax=None
+        (rlat,rlon,vmax,pmin,tdir,tspd,r34m,r50m,
+         tcstate,warn,roci,poci,alf,depth,eyedia,tdo,ostmid,ostmname,r34,r50)=trk
+
+        (clat,clon)=Rlatlon2Clatlon(rlat,rlon,dozero=1)
+
+        carqvmax=vmax*knots2ms
+        if(carqvmax > 0.0):
+            vitvmax="%02d"%(nint(carqvmax))
+        else:
+            carqvmax=-9
+            vitvmax="%02d"%(carqvmax)
+
+
+        if(poci != None and poci != undef):
+            carqpoci=poci
+            vitpoci="%04d"%(nint(carqpoci))
+        else:
+            carqpoci=-999.
+            vitpoci="%04d"%(carqpoci)
+
+
+        if(roci != None and roci != undef):
+            carqroci=roci*nm2km
+            vitroci="%04d"%(nint(carqroci))
+        else:
+            carqroci=-999
+            vitroci="%04d"%(carqroci)
+
+        if(rmax != None):
+            carqrmax=rmax*nm2km
+            vitrmax="%03d"%(nint(carqrmax))
+        else:
+            carqrmax=-99
+            vitrmax="%03d"%(carqrmax)
+
+
+        tcdepth=depth
+        if(not(depth == 'S' or depth == 'M' or depth == 'D')): tcdepth='X'
+
+        # -- one posit for c7w.07
+        #
+        if(tdir == undef):
+            vitdir='-99'
+        else:
+            vitdir="%03.0f"%(tdir)
+
+        if(tspd == undef):
+            vitspd='-99'
+        else:
+            vitspd="%03.0f"%(tspd*10.0*knots2ms)
+
+
+        if(pmin != None and pmin != undef):
+            vitpmin="%04d"%int(pmin)
+        else:
+            pmin=-999
+            vitpmin="%04d"%int(pmin)
+
+        carqr34ne=r34[0]*nm2km
+        carqr34se=r34[1]*nm2km
+        carqr34sw=r34[2]*nm2km
+        carqr34nw=r34[3]*nm2km
+        
+        if(carqr34ne > 0.0):
+            vitr34ne="%04.0f"%(carqr34ne)
+        else:
+            r34ne=-999.
+            vitr34ne="%04.0f"%(r34ne)
+
+        if(carqr34se > 0.0):
+            vitr34se="%04.0f"%(carqr34se)
+        else:
+            r34se=-999.
+            vitr34se="%04.0f"%(r34se)
+
+        if(carqr34sw > 0.0):
+            vitr34sw="%04.0f"%(carqr34sw)
+        else:
+            r34sw=-999.
+            vitr34sw="%04.0f"%(r34sw)
+
+        if(carqr34nw > 0.0):
+            vitr34nw="%04.0f"%(carqr34nw)
+        else:
+            r34nw=-999.
+            vitr34nw="%04.0f"%(r34nw)
+
+        vitdepth=tcdepth
+
+        # MFTC 97S UNKNOWN   20100415 1200 083S 1017E 130 007 1010 -999 -999 08 -99 -999 -999 -999 -999 X
+
+        stm3id=stmid.split('.')[0].upper()
+        tcvitalscard="%4s %3s %-9s %8s %04d %s %s %s %s %s %s %s %s %s %s %s %s %s %s"%\
+            (tcVcenterid,stm3id,ostmname[0:9],
+             dtg[0:8],int(dtg[8:10])*100,
+             clat,clon,
+             vitdir,vitspd,
+             vitpmin,
+             vitpoci,vitroci,
+             vitvmax,vitrmax,
+             vitr34ne,vitr34se,vitr34sw,vitr34nw,
+             vitdepth)
+
+        if(verb): print tcvitalscard
+        return(tcvitalscard)
     
     
     def makeTCvCards(self,stmids,dtg,trks,override=0,verb=0,filename='tcvitals',tcvPath=None):
 
         cards=''
+        ostmids=[]
         for stmid in stmids:
-            cards=cards+self.makeTCvCard(stmid,dtg,trks[stmid])+'\n'
+            ostmid=stmid
+            ostmid=getBD2stmid4Xstmid(stmid)
+            cards=cards+self.makeTCvCard(ostmid,dtg,trks[stmid])+'\n'
+            ostmids.append(ostmid)
 
         if(verb): 
             print
@@ -4721,10 +4816,10 @@ that generates of -MRG.txt where the working is updated with BT
         if(tcvPath != None):
             tcvpath=tcvPath
             rc=MF.WriteString2File(cards,tcvPath,verb=verb)
-            return(cards,tcvpath)
+            return(cards,tcvpath,ostmids)
         else:
             tcvpath="%s/%s.%s.txt"%(TcVitalsDatDir,filename,dtg)
-            return(cards,tcvpath)
+            return(cards,tcvpath,ostmids)
 
 
 # -- CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCc
@@ -9326,6 +9421,7 @@ class MDdataset(MFbase):
         self.of24={}
 
 
+
     def setMDtrk(self,verb=0,docq00=1,btonly=0,only6h=1,useVmax4TcCode=1,
                  dob1idSet=0):
 
@@ -9676,10 +9772,10 @@ class MDdataset(MFbase):
                     tccode='TW'
                 else:
                     tccode='NT'
-                
-            # -- final qc
-            #
-            if(vmax == None): vmax=-999
+            
+            print 'qasdfasdfasdf',tccode,vmax
+            if(tccode == 'TW' and vmax > 0.0):
+                tccode=self.TCCodeVmax(vmax)
 
             if(verb):
                 print 'WWW',dtg,tccode,wncode,wtccode,o0,w0,o12,o24,wncode
@@ -10559,7 +10655,8 @@ class MD3trk(MDdataset):
 
     undef=-999.
     
-    def __init__(self,cards,stm1id,stm9xid,gendtg=None,
+    def __init__(self,cards,stm1id,stm9xid,isBD2=0,
+                 useVmax4TcCode=0,gendtg=None,
                  dom3=0,basin=None,sname=None,stmDev=None,
                  dobt=0,doPutDSs=0,verb=0):
 
@@ -10580,6 +10677,9 @@ class MD3trk(MDdataset):
         self.ostm2id=stm2id
         self.stm1id=stm1id
         self.stm9xid=stm9xid
+        self.isBD2=isBD2
+        self.useVmax4TcCode=useVmax4TcCode
+
         self.basin=basin
         self.sname=sname
         self.stmDev=stmDev
@@ -10608,13 +10708,22 @@ class MD3trk(MDdataset):
             
         idtgs=itrk.keys()
         idtgs.sort()
-        
         if(self.verb):
             for idtg in idtgs:
-                print 'iii',idtg,itrk[idtg]
+                print 'iii-md3',idtg,itrk[idtg]
             
         return(itrk,idtgs)
     
+    def TCCodeVmax(self,vmax):
+        
+        tctype='DB'
+        if(vmax >= 25 and vmax <= 34): tctype='TD'
+        if(vmax >= 35 and vmax <= 63): tctype='TS'
+        if(vmax >= 64 and vmax <= 129): tctype='TY'
+        if(vmax >= 130): tctype='STY'
+        if(vmax <= 20): tctype='NT'
+        return(tctype)
+     
     def getTrkData4Itrk(self,dtg,ntrk,ndtgs,verb=0):
 #     01W.2019', '', '11.2', '125.6', '20', '', '183', '9', '195', '8', '', '', '', '', '', '', '', '', '', '', 'NT', 'NW', 'c', 'c', '', '', '0.27', '', '', '', '', '---']   
         #     0   1      2        3     4    5     6    7      8    9   10  11  12  13  14  15  16  17  18  19   20    21    22   23  24  25     26   27  28  29  30    31
@@ -10661,7 +10770,9 @@ class MD3trk(MDdataset):
 
         n=0
         stmid=trk[n] ; n=n+1                       # 0
-        sname=trk[n] ; n=n+1                       # 1
+        isname=trk[n] ; n=n+1                       # 1
+        if(self.sname != None): sname=self.sname
+        else: sname=isname
         
         if(self.dom3): n=4
         
@@ -10737,7 +10848,9 @@ class MD3trk(MDdataset):
         
         tccode=trk[n]     #20
         n=n+1
-
+        rcTcCode=IsTc(tccode)
+        #print 'qqqqq----tttt',n,tccode,rcTcCode,self.useVmax4TcCode,vmax
+        
         wncode=trk[n]     #21
         n=n+1
 
@@ -10776,6 +10889,14 @@ class MD3trk(MDdataset):
         tdo=trk[n]   #30
         if(tdo == 'NaN' or tdo == '---'): tdo='   '
         n=n+1
+        #if(self.useVmax4TcCode and vmax != undef and rcTcCode <= 0):
+        #print 'asdfasdfasdf-----',rcTcCode,vmax
+        if(self.useVmax4TcCode and vmax != undef):
+            tccode=self.TCCodeVmax(vmax)
+            #print 'hhh-111-222',tccode,vmax,verb
+                
+        
+
 
         if(verb):
             print self.b1id,rlat,rlon,vmax,pmin,dir,spd
@@ -10802,29 +10923,29 @@ class MD3trk(MDdataset):
         ntrk=0
         ndtgs=0
 
-        tdtgs=[]
-        for idtg in self.idtgs:
-            gendiff=-999
-            cmpdtg=idtg
-
-            if(self.gendtg != None and self.gendtg != 'None'):
-                cmpdtg=mf.dtginc(self.gendtg,-6)
-                gendiff=mf.dtgdiff(idtg,cmpdtg)
-                
-            if(gendiff >= 0.0):
-                if(verb): print 'ddddddddddddddddddddddddddddddddddddd',idtg,cmpdtg,gendiff
-                tdtgs.append(idtg)
+        if(self.isBD2):
+            tdtgs=[]
+            for idtg in self.idtgs:
+                gendiff=-999
+                cmpdtg=idtg
+    
+                if(self.gendtg != None and self.gendtg != 'None'):
+                    cmpdtg=mf.dtginc(self.gendtg,-6)
+                    gendiff=mf.dtgdiff(idtg,cmpdtg)
+                    
+                if(gendiff >= 0.0):
+                    if(verb): print 'ddddddddddddddddddddddddddddddddddddd',idtg,cmpdtg,gendiff
+                    tdtgs.append(idtg)
         
-        self.idtgs=tdtgs
+        else:
+            self.idtgs=tdtgs
         
         dtgs=self.idtgs
         for dtg in dtgs:
-            if(verb): print 'ddd',dtg,len(self.itrk[dtg]),self.itrk[dtg]
-            self.getTrkData4Itrk(dtg,ntrk,ndtgs)
+            if(self.verb): print 'ddd',dtg,len(self.itrk[dtg]),self.itrk[dtg]
+            self.getTrkData4Itrk(dtg,ntrk,ndtgs,verb=verb)
             ntrk=ntrk+1
             ndtgs=ndtgs+1
-            
-            
         
         # -- get prev 12-h track dir/spd
         #
@@ -10890,7 +11011,7 @@ class MD3trk(MDdataset):
 
         (ltln,latmn,latmx,lonmn,lonmx,latb,lonb)=self.getlatlon()
         
-        (gendtg,gendtgs,genstdd,time2gen,gendtgWN,gendtgBT)=self.getgenesis()
+        (gendtg,gendtgs,genstdd,time2gen,gendtgWN,gendtgBT)=self.getgenesis(verb=verb)
         if(self.sname != None): sname=self.sname
         else:
             sname=self.getname()
@@ -11073,9 +11194,9 @@ class MD3trk(MDdataset):
         return(sname)
 
         
-    def getgenesis(self,dtgm=-18,dtgp=+12,vmaxTD=25.0,vmaxMin=10.0,verb=0):
+    def getgenesis(self,dtgm=-18,dtgp=+12,vmaxTD=25.0,vmaxNN=35.0,vmaxMin=10.0,verb=0):
 
-        gendtg=gendtgWN=gendtgBT=gendtgBT1=gendtgBT2=None
+        gendtg=gendtgWN=gendtgBT=gendtgBT1=gendtgBT2=gendtgNN=None
         stdd=0.0
         
         gendtgs=[]
@@ -11095,31 +11216,52 @@ class MD3trk(MDdataset):
         for dtg in self.dtgs:
             tt=self.trk[dtg]
             istc=IsTc(tt.tccode)
-            if(istc == 1 and gendtgBT1 == None and not(is9x)): 
-                tcCodeWind=1
-                gendtgBT1=dtg
+            isNN=(tt.vmax >= vmaxNN)
+            
+            #print 'ddddd---',dtg,tt.tccode,tt.vmax,istc,isNN,self.useVmax4TcCode
+            
+            if(not(is9x)):
+               
+                if(self.useVmax4TcCode):
 
-            if(istc > 1 and gendtgBT2 == None and not(is9x)): 
-                tcCodeWind=2
-                gendtgBT2=dtg
-                
+                    if(istc == 1 and isNN and gendtgNN == None):
+                        tcCodeWind=3
+                        gendtgNN=dtg
 
+                else:
+                    
+                    if(istc == 1 and gendtgBT1 == None and not(self.useVmax4TcCode)): 
+                        tcCodeWind=1
+                        gendtgBT1=dtg
+                        
+                    if(istc == 2 and gendtgBT2 == None and not(self.useVmax4TcCode)): 
+                        tcCodeWind=2
+                        gendtgBT2=dtg
+                    
+        
         if(gendtgWN != None):
             if(tcCodeWind >= 0):  gendtg=gendtgWN
             
         else:                 
-            time2gen1=time2gen2=-999
+            time2gen1=time2gen2=time2genNN=-999
+            
+            #print 'ggg--ggg',gendtgBT1,gendtgBT2,gendtgNN
             if(gendtgBT1 != None and not(is9x)):
                 time2gen1=mf.dtgdiff(self.dtgs[0],gendtgBT1)
             if(gendtgBT2 != None and not(is9x)):
                 time2gen2=mf.dtgdiff(self.dtgs[0],gendtgBT2)
-
+            if(gendtgNN != None and not(is9x)):
+                time2genNN=mf.dtgdiff(self.dtgs[0],gendtgNN)
+                
             # -- go first for TC
             if(time2gen1 > 0.0):
                 gendtgBT=gendtgBT1
             # --  else subTC
             elif(time2gen2 > 0.0):
                 gendtgBT=gendtgBT2
+            # -- set genesis as first dtg to TS
+            elif(time2genNN > 0.0):
+                gendtgBT=gendtgNN
             else:
                 gendtg=None
                 time2gen=0.0
@@ -11133,7 +11275,6 @@ class MD3trk(MDdataset):
             bdtg=mf.dtginc(gendtg,dtgm)
             edtg=mf.dtginc(gendtg,dtgp)
             gendtgs=mf.dtgrange(bdtg,edtg)
-
 
             stddtime=0.0
             ngd=len(gendtgs)
@@ -11366,25 +11507,32 @@ class MD3trk(MDdataset):
                     stmDev='nonDEV'
             else:
                 stmDev=self.stmDev
-            
-            if(IsNN(ostmid9x)):
-                stm9x=stm9x+pad+"NN , %s"%(ostmid9x.split('.')[0])
+            #print '9999---',ostmid9x,stmid,self.time2gen,Is9XNN(ostmid9x)
+            if(Is9XNN(ostmid9x)):
+                if(self.time2gen >= 0):
+                    stm9x=stm9x+pad+"9X , %s"%(ostmid9x.split('.')[0].lower())
+                else:
+                    stm9x='NaN'
+                
             else:
-                stm9x=stm9x+pad+"9X , %s"%(ostmid9x.split('.')[0])
+                stm9x=stm9x+pad+"9X , %s"%(ostmid9x.split('.')[0].lower())
 
 
             otimeGen='NaN'
+            ogendtg='NaN'
             if(hasattr(self,'time2gen') and not(Is9X(stmid))):
-                if(self.time2gen >= 0.0):
+                if(self.time2gen > 0.0):
                     timeGen="tG:%3.0f"%(self.time2gen)
                     otimeGen="%3.0f"%(self.time2gen)
+                    ogendtg="%s"%(self.gendtg)
                     
             oACE=self.ace
             if(Is9X(stmid)): oACE=0.0
 
 
             ovmax="%3d"%(self.vmax)
-            if(self.vmax == self.undef): ovmax='***'
+            # -- 20240925 -- if no intensity, then set to 19 kts
+            if(self.vmax == self.undef): ovmax=' 19'
 
             #if(find(stmid,'CC')):
                 #tctype='___'
@@ -11395,22 +11543,17 @@ class MD3trk(MDdataset):
                      #stm9x)
             #else:
 
-            try:
-                n=int(stm[0:2])
-                ogendtg="%s"%(self.gendtg)
-            except:
-                ogendtg='NaN'
-                
             ogenType='NaN'
             if(IsNN(stmid)):
                 if(self.gendtgWN != None): ogenType='wn'
                 if(self.gendtgWN == None and self.gendtgBT != None): ogenType='bt'
 
-            ocard="%s.%s ,  %3s , %s , %s , %s , %5.1f , %5.1f , %5.1f , %5.1f , %s , %s , %5.1f , %-5.1f , %5.1f , %-5.1f , %4.1f , %4.1f , %2d , %2d , %2d , %s , %s , %s , %s , %s"%(stm,yyyy,tctype,stmDev,sname,ovmax,self.tclife,self.stmlife,self.latb,self.lonb,bdtg,edtg,
-             self.latmn,self.latmx,self.lonmn,self.lonmx,
-             self.stcd,oACE,
-             self.nRI,self.nED,self.nRW,
-             RIstatus,stm9x,otimeGen,ogendtg,ogenType)
+            ocard="%s.%s ,  %3s , %s , %s , %s , %5.1f , %5.1f , %5.1f , %5.1f , %s , %s , %5.1f , %-5.1f , %5.1f , %-5.1f , %4.1f , %4.1f , %2d , %2d , %2d , %s , %s , %s , %s , %s"%\
+                (stm,yyyy,tctype,stmDev,sname,ovmax,self.tclife,self.stmlife,self.latb,self.lonb,bdtg,edtg,
+                 self.latmn,self.latmx,self.lonmn,self.lonmx,
+                 self.stcd,oACE,
+                 self.nRI,self.nED,self.nRW,
+                 RIstatus,stm9x,otimeGen,ogendtg,ogenType)
             
                 
                 
@@ -12409,7 +12552,6 @@ vars %d
         gadir=self.gadatDir
         gadatPath="%s/ts-%s-%s.dat"%(gadir,tsType,self.stmopt)
         gactlPath="%s/ts-%s-%s.ctl"%(gadir,tsType,self.stmopt)
-        print 'qqqqq',gactlPath
         if(MF.ChkPath(gadatPath)):
             if(not(override)):
                 print 'gadatPath exists and override=0...press...'
@@ -15606,7 +15748,7 @@ class gXpolyCircle(MFbase):
             hemiDir=None,
             ):
         
-        from tcbase import rumltlg
+        #from tcbase import rumltlg
 
         self.clat=clat
         self.clon=clon

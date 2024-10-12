@@ -27,7 +27,6 @@ def ndaymo(yyyymm):
     else:
         return(mday[mm])
 
-
 def TimeZoneName():
 
     import time
@@ -2243,6 +2242,159 @@ def mercat(rlat,rlon):
 
     return(x,y)
 
+
+def gc_theta(blat1,blon1,flat1,flon1):
+
+    verb=0
+    (xa,ya)=mercat(flat1,flon1)
+    (xr,yr)=mercat(blat1,blon1)
+
+    difx=xa-xr
+    dify=ya-yr
+
+    difx=difx*rad2deg*deglat2nm
+    dify=dify*rad2deg*deglat2nm
+
+    if (difx == 0.0):
+
+        if(dify >= 0.0): theta=pi2
+        if(dify < 0.0): theta=3*pi/2.0 
+
+    else:
+
+        slope=dify/difx
+        if (abs(slope) < 1e-10):
+            if(dify >= 0.0): theta=pi2 
+            if(dify <= 0.0): theta=pi
+        else:
+            theta=atan2(dify,difx)
+            #if(theta < 0.0):
+            #   theta=theta + 2.0*pi
+            theta=theta*rad2deg
+            return(difx,dify,theta)
+
+        if (difx > 0.0):
+            if(dify < 0.0): theta=pi-theta
+        else:
+            if (dify > 0.0):
+                theta=2*pi+theta
+                theta=theta
+            else:
+                theta=pi+theta
+                theta=theta
+
+
+    #if(theta < 0.0):
+    #    theta=theta + 2.0*pi
+
+    theta=theta*rad2deg
+    return(difx,dify,theta)
+
+
+def dist_err(blat,blon,blat1,blon1,flat,flon,tcunits=tcunits):
+
+    verb=0
+    (xa,ya)=mercat(flat,flon)
+    (xb,yb)=mercat(blat,blon)
+    (xr,yr)=mercat(blat1,blon1)
+
+    difx=xb-xr
+    dify=yb-yr
+
+    if (difx == 0.0):
+
+        if(dify >= 0.0): theta=0.0
+        if(dify < 0.0): theta=pi 
+
+    else:
+
+        slope=dify/difx
+        if (abs(slope) < 1e-10):
+            if(difx > 0): theta=pi2 
+            if(difx < 0): theta=3*pi/2.0
+        else:
+            theta=atan(1./slope)
+            if (difx > 0.0):
+                if(dify < 0.0): theta=pi-theta
+            else:
+                if (dify > 0.):
+                    theta=2*pi+theta
+                else:
+                    theta=pi+theta
+
+    biasx=cos(theta)*(xa-xb)-sin(theta)*(ya-yb)
+    biasy=sin(theta)*(xa-xb)+cos(theta)*(ya-yb)
+    factor=cos(deg2rad*(blat+flat)*0.5)
+    biasx=biasx*rearth*factor
+    biasy=biasy*rearth*factor
+
+    biasew=(xa-xb)*rearth*factor
+    biasns=(ya-yb)*rearth*factor
+    rr=sqrt(biasx*biasx+biasy*biasy)
+    #dist_x=abs(biasx)
+    #dist_y=abs(biasy)
+
+    if(tcunits =='english'):
+        rr=rr*km2nm
+        biasx=biasx*km2nm
+        biasy=biasy*km2nm
+        biasew=biasew*km2nm
+        biasns=biasns*km2nm
+
+
+    if(verb):
+        print "mmm ",blat,blon,flat,flon,rr,biasx,biasy
+
+    return(rr,biasx,biasy,biasew,biasns)
+
+
+def rumltlg(course,speed,dt,rlat0,rlon0):
+
+    ####  print "qqq course,speed,dt,rlat0,rlon0\n"
+    #c****	    routine to calculate lat,lon after traveling "dt" time
+    #c****	    along a rhumb line specifed by the course and speed
+    #c****	    of motion
+    #
+    #--- assume DEG E!!!!!!!!!!!!!!!!!!!!!!!!
+    #
+    #  assume speed is in kts and dt is hours
+    #
+    #      
+    distnce=speed*dt
+
+    icrse=int(course+0.01)
+
+    if(icrse == 90.0 or icrse == 270.0):
+
+    #      
+    #*****		  take care of due east and west motion
+    #
+        dlon=distnce/(60.0*cos(rlat0*deg2rad))
+        if(icrse == 90.0): rlon1=rlon0+dlon
+        if(icrse == 270.0): rlon1=rlon0-dlon 
+        rlat1=rlat0
+    else:
+        rlat1=rlat0+distnce*cos(course*deg2rad)/60.0
+        d1=(45.0+0.5*rlat1)*deg2rad
+        d2=(45.0+0.5*rlat0)*deg2rad
+        td1=tan(d1)
+        td2=tan(d2)
+        #
+        # going over the poles!
+        #
+        if(abs(rlat0) >= 90.0 or abs(rlat1) >= 90.0):
+            rlat1=rlon1=None
+        else:
+            rlogtd1=log(td1)
+            rlogtd2=log(td2)
+            rdenom=rlogtd1-rlogtd2 
+            rlon1=rlon0+(tan(course*deg2rad)*rdenom)*rad2deg
+
+    return(rlat1,rlon1)
+
+
+
+
 def basin2Chk(b2id):
     """
     convert local b2id to standard atcf b2id
@@ -2795,7 +2947,6 @@ def getStmName3id(stmid):
     stmyear=stmid.split('.')[1]
 
     tcnames=GetTCnamesHash(stmyear)
-
     kk=tcnames.keys()
 
     stmname='unknown'
@@ -2806,6 +2957,7 @@ def getStmName3id(stmid):
         if(stm3 == stm3id): stmname=tcnames[k]
 
     return(stm3id,stmname)
+
 
 def GetTCnamesHash(yyyy,source=''):
 
@@ -2916,6 +3068,16 @@ def aceTC(vmax):
         ace=0.0
     return(ace)
 
+def isXStimd(stmid):
+    isXstm=0
+    try:
+        xx=int(stmid[1:3])
+        isXstm=1
+    except:
+        isXstm=0
+        
+    return(isXstm)
+
 def getStmParams(stmid,convert9x=0):
 
     istmid=stmid
@@ -2956,16 +3118,35 @@ def getStmParams(stmid,convert9x=0):
         stm2id=b2id+'cc'+snum+'.'+year
         stm2id=stm2id.lower()
     else:
-        snum=istmid[0:2]
-        b1id=istmid[2]
-        b2id=Basin1toBasin2[b1id.upper()]
-        stm2id=b2id+snum+'.'+year
-        stm2id=stm2id.lower()
-
-    stm1id=snum+b1id+'.'+year
+        isXstm=isXStimd(istmid)
+        if(isXstm):
+            # -- 20240926 -- special case of bdeck2 NOT having an adeck to detect warning
+            #
+            snum=istmid[1:3]
+            b1id=istmid[0]
+            b2id=Basin1toBasin2[b1id.upper()]
+            stm1id=b1id+snum+'.'+year
+            stm2id=b2id+snum+'.'+year
+            stm2id=stm2id.lower()
+            
+        else:
+            snum=istmid[0:2]
+            b1id=istmid[2]
+            b2id=Basin1toBasin2[b1id.upper()]
+            stm2id=b2id+snum+'.'+year
+            stm2id=stm2id.lower()
+            stm1id=snum+b1id+'.'+year
 
     return(snum,b1id,year,b2id,stm2id,stm1id)
 
+def getBD2stmid4Xstmid(istmid):
+    ostmid=istmid
+    if(isXStimd(istmid)):
+        b1id=istmid[0]
+        bnum=istmid[1:3]
+        ostmid=bnum+b1id+istmid[3:]
+    return(ostmid)
+    
 
 def get9Xnum(stmid):
     (snum,b1id,year,b2id,stm2id,stm1id)=getStmParams(stmid,convert9x=1)
@@ -2980,9 +3161,16 @@ def Is9X(stmid):
     rc=0
     (snum,b1id,year,b2id,stm2id,stm1id)=getStmParams(stmid)
     
-    # -- case where no 9x for a NN storm
+    # -- case where no 9x for a NN storm and the storm is coded as BNN.YYYY
     #
-    if(stmid[0:2].lower() == 'xx'):
+    isXstm=0
+    try:
+        xx=int(stmid[1:3])
+        isXstm=1
+    except:
+        isXstm=0
+        
+    if(stmid[0:2].lower() == 'xx' or isXstm):
         rc=1
     elif((snum[0].isalpha() and int(snum[1]) >=0 and int(snum[1]) <= 9) or
        (snum.isdigit() and (int(snum) >= 90 and int(snum) <= 99) )
@@ -2991,6 +3179,20 @@ def Is9X(stmid):
 
     return(rc)
 
+def Is9XNN(stmid):
+    rc=0
+    (snum,b1id,year,b2id,stm2id,stm1id)=getStmParams(stmid)
+    
+    # -- case where no 9x for a NN storm and the storm is coded as BNN.YYYY
+    #
+    try:
+        xx=int(stmid[1:3])
+        isXstm=1
+    except:
+        isXstm=0
+    return(isXstm)
+
+
 def IsNN(stmid):
     rc=0
     (snum,b1id,year,b2id,stm2id,stm1id)=getStmParams(stmid)
@@ -2998,6 +3200,17 @@ def IsNN(stmid):
         (snum.isdigit() and (int(snum) >= 1 and int(snum) <= maxNNnum) )
         ):
         rc=1
+    return(rc)
+
+def IsNNWarn(stmid):
+    rc=0
+    (snum,b1id,year,b2id,stm2id,stm1id)=getStmParams(stmid)
+    if(
+        (snum.isdigit() and (int(snum) >= 1 and int(snum) <= maxNNnum) and b1id != 'x')
+        ):
+        rc=1
+        
+    #print 'qq11',stmid,snum,b1id,year,rc
     return(rc)
 
 def IsJtwcBasin(b1id):
@@ -3073,7 +3286,7 @@ def IsTc(tcstate):
         tcstate == 'TS' or
         tcstate == 'TY' or
         tcstate == 'HU' or
-        tcstate == 'ST' or
+        tcstate == 'ST' or tcstate == 'STY' or
         tcstate == 'TC' 
         #or tcstate == 'TW' no -- this is a Tropical Wave
         ):
@@ -3087,6 +3300,10 @@ def IsTc(tcstate):
         tcstate == 'EX'
         ):
         tc=3
+    elif(
+        tcstate == 'TW'
+        ):
+        tc=4
     elif(
         tcstate.lower() == 'xx' or
         tcstate == '  ' or
@@ -3721,7 +3938,10 @@ def getStmopts(stmopt):
     bb=ss[0].split(',')
     yy=ss[1]
 
-    if(len(yy) == 2): yy='20%s'%(yy)
+    if(len(yy) == 2 and int(yy) <= 30): 
+        yy='20%s'%(yy)
+    else:
+        yy='19%s'%(yy)
 
     stmopts=[]
     
@@ -3821,7 +4041,7 @@ def printTrk(stmid,dtg,rlat,rlon,vmax,pmin,
 
     if(tdo == 'NaN' or tdo == ''): tdo='---'
     card=card+"%s %s %s  %s  %s %s"%(cvmax,cpmin,clat,clon,cr34m,cr50m)
-    card=card+"  %s %s %s  %s %s  %s"%(cdir,cspd,dirtype,tccode,wncode,tdo)
+    card=card+"  %s %s %s  %3s %s  %s"%(cdir,cspd,dirtype,tccode,wncode,tdo)
     card=card+" %3d/%-3d lf: %s %-9s"%(ntrk,ndtgs,clf,sname[0:9])
     if(gentrk): card=card+" <**Genesis"
     if(doprint): print card
@@ -4097,7 +4317,7 @@ def setMd3track(m3trk,stmid,verb=0):
                 iden=dtgdiff(dtg1, dtg2)
                 
                 if(iden > 36.0):
-                    print'EEE big iterp interval for stmid',stmid,dtg1,dtg2,iden
+                    print'EEE --setMd3track big--- iterp interval for stmid',stmid,dtg1,dtg2,iden
                     sys.exit()
                 
                 m1=m3trk[dtg1]
@@ -4123,7 +4343,6 @@ def setMd3track(m3trk,stmid,verb=0):
     
 
 def parseMd3Card(mm,dobt=0,verb=0):
-    
     
     #n:  0 2019122118
     #n:  1 30w.2019
@@ -4168,7 +4387,6 @@ def parseMd3Card(mm,dobt=0,verb=0):
     ostmid=mm[1]
 
     ostmname=mm[2].strip()
-    ostmname="9X-%s"%(ostmid.split('.')[0].upper())
     tcstate=mm[3].strip()
     stmDev=mm[4].strip()
     
@@ -4256,12 +4474,12 @@ def parseMd3Card(mm,dobt=0,verb=0):
 
     #if(verb):
         #print 'rrrrr',dtg,rlat,rlon,vmax,pmin,tdir,tspd,r34m,r50m,tcstate,warn,roci,poci,ostmid
-        
+
     rc=(dtg,rlat,rlon,vmax,pmin,tdir,tspd,r34m,r50m,tcstate,warn,roci,poci,alf,depth,eyedia,tdo,ostmid,ostmname,r34,r50)
     return(rc)
 
 
-def makeMd3Card(dtg,m3t,m3i,m2t,verb=0):
+def makeMd3Card(dtg,m3t,m3i,m2t,useM3Iname=0,verb=0):
 
     def getr34(r34):
         or34='   '
@@ -4322,7 +4540,7 @@ def makeMd3Card(dtg,m3t,m3i,m2t,verb=0):
         print 'mmm',dtg,m3t[0:9],m3i,len(m3t),len(m3i),m2t.sname,m2t.stmid
         print '000',dtg,ostmid,ostmname,tctype,stmDev
     #(rlat,rlon,vmax,pmin,tdir,tspd,r34m,r50m,tcstate,warn
-    
+
     n=0
     nb=n
     rlat=m3t[n] ; n=n+1
@@ -4356,7 +4574,8 @@ def makeMd3Card(dtg,m3t,m3i,m2t,verb=0):
     nb=n
     ne=len(m3t)
     ostmidm3=m3t[n] ; n=n+1
-    ostmname=m3t[n] ; n=n+1
+    ostmname3=m3t[n] ; n=n+1
+    if(not(useM3Iname)): ostmname=ostmname3
     r34=m3t[n] ; n=n+1
     r50=m3t[n] ; n=n+1
     
@@ -4408,7 +4627,8 @@ def makeMd3Card(dtg,m3t,m3i,m2t,verb=0):
     opoci='NaN '
     if(poci != None and poci != undef and poci != 0):
         opoci="%4.0f"%(poci)
-        
+
+    ovmax='NaN '
     if(vmax != None and vmax != undef):
         ovmax="%3.0f"%(vmax)
  
@@ -4798,7 +5018,27 @@ def makePrCard(dtgdat,tcdat,ctpr6bm,ctpr6em,gtpr6bm,gtpr6em,itpr6bm,itpr6em,eprm
     if(verb): print fcard
     return(fcard)
 
-def parseDssTrk(dtg,dds,verb=0):
+def getTCCode4Vmax(vmax):
+        
+    tctype='DB'
+    if(vmax >= 25 and vmax <= 34): tctype='TD'
+    if(vmax >= 35 and vmax <= 63): tctype='TS'
+    if(vmax >= 64 and vmax <= 129): tctype='TY'
+    if(vmax >= 130): tctype='STY'
+    if(vmax <= 20): tctype='NT'
+    return(tctype)
+
+def getVmax4TCCode4(tctype):
+        
+    vmax=-99
+    if(tctype == 'DB' or tctype == 'NT'): vmax=20
+    elif(tctype == 'TD'): vmax=25
+    elif(tctype == 'TS'): vmax=50
+    elif(tctype == 'TY' or tctype == 'HU'): vmax=75
+    elif(tctype == 'STY'): vmax=130
+    return(vmax)
+
+def parseDssTrk(dtg,dds,useVmax4TcCode=1,verb=0):
     
     def getr34(r34):
         or34='   '
@@ -4856,7 +5096,8 @@ def parseDssTrk(dtg,dds,verb=0):
     opoci='    '
     if(poci != None and poci != undef and poci != 0):
         opoci="%4.0f"%(poci)
-        
+
+    ovmax='NaN'
     if(vmax != None and vmax != undef):
         ovmax="%3.0f"%(vmax)
  
@@ -4906,8 +5147,21 @@ def parseDssTrk(dtg,dds,verb=0):
         odepth='%s'%(depth)
         
     otdo='NaN'
-    print 'ttt',tdo
     
+    # -- use TC wind for code
+    #
+    itccode=tccode
+    rcTcCode=IsTc(itccode)
+    if(useVmax4TcCode and vmax != 'NaN' and rcTcCode == 0):
+        tccode=getTCCode4Vmax(vmax)
+        #print 'ttttt-----',itccode,vmax,tccode,rcTcCode
+            
+    if(ovmax == 'NaN' and rcTcCode >= 1):
+        vmax=getVmax4TCCode4(tccode)
+        ovmax="%3.0f"%(vmax)
+        print 'NNN---AAA---NNN vmax: ',tccode,ovmax,'pmin: ',opmin
+        
+        
     omotion="%3.0f , %2.0f , "%(dir,spd)
     otrkmotion="%3.0f , %2.0f , "%(trkdir,trkspd)
     odtgstm="%s , %s , %s , "%(dtg,stmid,osname)
@@ -5037,9 +5291,10 @@ def parseDssTrkMD3(dtg,dds,stm1id,stm9xid,basin,rcsum=None,sname=None,verb=0,war
     if(poci != None and poci != undef and poci != 0):
         opoci="%4.0f"%(poci)
         
+    ovmax='NaN '
     if(vmax != None and vmax != undef):
         ovmax="%3.0f"%(vmax)
- 
+        
     opmin='NaN '   
     if(pmin != None and pmin != undef):
         opmin="%4.0f"%(pmin)
@@ -5094,8 +5349,11 @@ def parseDssTrkMD3(dtg,dds,stm1id,stm9xid,basin,rcsum=None,sname=None,verb=0,war
         ostmid=stm1id.lower()
     elif(stmDev == 'NONdev' and Is9X(ostmid)): 
         ostmid=stm9xid.lower()
-    if(IsNN(ostmid)): ostmid=stm1id.lower()
-
+    elif(stmDev == 'NN' and Is9X(ostmid)): 
+        ostmid=stmid.lower()
+    elif(IsNNWarn(ostmid)): 
+        #print 'ooooo---------',stmDev,ostmid
+        ostmid=stm1id.lower()
 
     odtgstm="%s , %s , %s , %s , %s ,"%(dtg,ostmid,osname,tctype,stmDev)
     omotion="%3.0f , %2.0f , "%(dir,spd)
@@ -6115,6 +6373,494 @@ def cleanMD3Opaths(sdir,ostm1id,verb=0):
     cmd="rm %s"%(omask)
     mf.runcmd(cmd)
             
+def getMd2Years(stmopt=None,dtgopt=None):
+
+    curdtg=mf.dtg()
+    
+    years=[int(curdtg[0:4])]
+    
+    if(dtgopt != None):
+        
+        dtgs=mf.dtg_dtgopt_prc(dtgopt,ddtg=6)
+
+        years=[]
+        for dtg in dtgs:
+            (rc,nhemyears)=getNhemYearsInt(dtg)
+            years=years+nhemyears
+
+            curyear=int(dtg[0:4])
+            shemyear=int(getShemYear(dtg))
+            if(curyear != shemyear):
+                years.append(shemyear)
+                
+        years=mf.uniq(years)
+
+    if(stmopt != None):
+
+        if(type(stmopt) is ListType):
+            stmids=stmopt
+        else:
+            # -- use this one because makeStmListMdeck is a method on TcData() -- this is stand-alone
+            stmids=MakeStmList(stmopt)
+
+        if(len(stmids) > 0):
+            years=[]
+            for stmid in stmids:
+                year=int(stmid.split('.')[1])
+                years.append(year)
+            years=mf.uniq(years)
+        
+    return(years)
+
+
+def getShemYear(dtg):
+    """
+     convert year in stm dtg to basinyear
+    """
+
+    yyyy=int(dtg[0:4])
+    mm=int(dtg[4:6])
+
+    if(mm >= 7): yyyy=yyyy+1
+    cyyyy=str(yyyy)
+    return(cyyyy)
+
+def getNhemYears(dtg):
+    """
+     get nhem years for case of storm crossing new year
+    """
+
+    year1=dtg[0:4]
+    dtgnhemMax=year1+'011500'
+    dtnhem=mf.dtgdiff(dtg,dtgnhemMax)
+    year2=year1
+    if(dtnhem >= 0.0): year2=str(int(year1)-1)
+    years=[year2,year1]
+    return(years)
+
+def getNhemYearsInt(dtg,mmddhh='011500'):
+    """
+     get nhem years for case of storm crossing new year as Int
+    """
+
+    year1=dtg[0:4]
+    dtgnhemMax=year1+mmddhh
+    dtnhem=mf.dtgdiff(dtg,dtgnhemMax)
+    year1=int(year1)
+    year2=year1
+    if(dtnhem >= 0.0): year2=year2-1
+    rc=0
+    if(year2 != year1):rc=1
+    years=[year2,year1]
+    return(rc,years)
+
+def getNhemShemYearsFromDtg(dtg):
+    """
+get years for a dtg to handle two situations nhem storms crossing new year
+shem storms 070100-123118
+"""
+    (rcnhem,nhemyears)=getNhemYearsInt(dtg)
+    shemyear=int(getShemYear(dtg))
+    
+    if(rcnhem):
+        rc=1
+        year=nhemyears[0]
+        shemyear=nhemyears[1]
+    else:
+        rc=2
+        year=nhemyears[0]
+        if(year == shemyear): rc=0
+        
+    return(rc,year,shemyear)
+
+def add2000(y):
+    if(len(y) == 1):
+        yyyy=str(2000+int(y))
+    elif(len(y) == 2):
+        if(int(y) > 25):
+            yyyy=str(1900+int(y))
+        else:
+            yyyy=str(2000+int(y))
+    else:
+        yyyy=y
+    return(yyyy)
+
+
+def getyears(yyy):
+
+    if(yyy == 'cur'):
+        curdtg=mf.dtg()
+        yyy=curdtg[0:4]
+
+    years=[]
+    n1=0
+    n2=0
+
+    tt0=yyy.split('-')
+    tt1=yyy.split(',')
+
+    if(len(tt1) > 1):
+        for tt in tt1:
+            yyyy=add2000(tt)
+            years.append(yyyy)
+        return(years)
+
+    if(len(tt0) > 1):
+        y1=tt0[0]
+        y2=tt0[1]
+        yyyy1=add2000(y1)
+        yyyy2=add2000(y2)
+
+        if(len(yyyy1) != 4 or len(yyyy2) != 4):
+            print 'EEEE getyears tt:',tt
+            return(None)
+
+        else:
+            n1=int(yyyy1)
+            n2=int(yyyy2)
+            for n in range(n1,n2+1):
+                years.append(str(n))
+
+    else:
+        if(len(yyy) <= 2): yyy=add2000(yyy)
+        years=[yyy]
+
+    return(years)
+
+
+def MakeStmList(stmopt,yearopt=None,dofilt9x=0,verb=0):
+
+    def getyears(yyy):
+
+        if(yyy == 'cur'):
+            curdtg=mf.dtg()
+            yyy=curdtg[0:4]
+
+        years=[]
+        n1=0
+        n2=0
+
+        tt0=yyy.split('-')
+        tt1=yyy.split(',')
+
+        if(len(tt1) > 1):
+            for tt in tt1:
+                yyyy=add2000(tt)
+                years.append(yyyy)
+            return(years)
+
+        if(len(tt0) > 1):
+            y1=tt0[0]
+            y2=tt0[1]
+            yyyy1=add2000(y1)
+            yyyy2=add2000(y2)
+
+            if(len(yyyy1) != 4 or len(yyyy2) != 4):
+                print 'EEEE getyears tt:',tt
+                return(None)
+
+            else:
+                n1=int(yyyy1)
+                n2=int(yyyy2)
+                for n in range(n1,n2+1):
+                    years.append(str(n))
+
+        else:
+            if(len(yyy) <= 2): yyy=add2000(yyy)
+            years=[yyy]
+
+        return(years)
+
+
+    def getstmids(sss,year,dofilt9x=dofilt9x):
+
+        sids=[]
+        n1=0
+        n2=0
+        tt=sss.split('-')
+
+        if(len(tt) > 1):
+            if(len(tt[0]) != 2 or len(tt[1]) != 3):
+                print 'EEEE getstmids tt:',tt
+                return(None)
+
+            else:
+                n1=int(tt[0])
+                n2=int(tt[1][0:2])
+                bid=tt[1][2].upper()
+
+                for n in range(n1,n2+1):
+                    sid="%02d%1s.%s"%(n,bid,year)
+                    sids.append(sid)
+
+        elif(len(sss) == 1):
+
+            tcnames=GetTCnamesHash(year)
+            bchk=sss.upper()
+
+            for tcname in tcnames:
+                # -- improved subbasin checking...
+                #
+                tcsubbasin=tcname[1][2:3]
+                chk1=(tcsubbasin == bchk)
+                chk2=(isIOBasinStm(tcsubbasin) and isIOBasinStm(bchk))
+                chk3=(isShemBasinStm(tcsubbasin) and isShemBasinStm(bchk))
+                if(chk1 or chk2 or chk3):
+                    sid="%s.%s"%(tcname[1],tcname[0])
+                    sids.append(sid)
+                else:
+                    sid=None
+                    
+        elif(len(tt) == 1):
+
+            if(len(sss) == 3):
+                if(sss[0].upper() == 'M'):
+                    nback=int(sss[1])
+                    bchk=sss[2].upper()
+                    tcnames=GetTCnamesHash(year)
+                    for tcname in tcnames:
+                        if(tcname[1][2:3] == bchk):
+                            sid="%s.%s"%(tcname[1],tcname[0])
+                            sids.append(sid)
+                        else:
+                            sid=None
+
+                    sids.sort()
+                    osids=[]
+
+                    nsids=len(sids)
+                    for n in range(nsids-nback,nsids):
+                        osids.append(sids[n])
+
+                    return(osids)
+
+                elif(mf.find(sss[0:2].lower(),'9x')):
+
+                    # -- turn off dofilt9x if here...
+                    if(dofilt9x): print 'WWW(tcVM.MakeStmList) -- dofilt9x=1 but you want 9X stmids...set dofilt9x=0'
+                    for n in range(90,100):
+                        sid="%2d"%(n) + sss[2].upper() + '.'+year
+                        sids.append(sid)
+                    
+
+                else:
+
+                    sid="%s.%s"%(sss.upper(),year)
+                    sids.append(sid)
+
+
+
+        else:
+            print 'EEEE getstmids sss:',sss
+            return(None)
+
+
+        sids.sort()
+        return(sids)
+
+    #
+    # start.......................
+    #
+
+    curdtg=mf.dtg()
+    curyear=curdtg[0:4]
+
+    #
+    # single storm
+    #
+
+    if(stmopt == None):
+
+        sopt='w,e,c,l,i,a,b,p,s'
+        if(yearopt == None):
+            yopt='cur'
+        else:
+            yopt=yearopt
+        years=getyears(yopt)
+
+    elif(stmopt != None and stmopt != 'all'):
+
+        ttt=stmopt.split('-')
+        ttc=stmopt.split(',')
+        tt=stmopt.split('.')
+        
+        if(len(tt) == 1 and len(ttt) == 1 and len(ttc) == 1):
+            if(len(tt[0]) == 3):
+                stmid=tt[0][2]
+            elif(len(tt[0]) != 1):
+                print 'tcVM.MakeStmList() EEEE bad stm3id: tt:',tt,'ttt: ',ttt,'ttc: ',ttc,'stmopt: ',stmopt
+                sys.exit()
+            else:
+                stmid=tt[0]
+
+            if(isShemBasinStm(stmid)):
+                stmyear=getShemYear(curdtg)
+            else:
+                stmyear=curyear
+
+            if(isIOBasinStm(stmid)):
+                stmyear=curyear
+                
+            stmyear=add2000(stmyear)
+
+            stmopt=stmopt+'.'+stmyear
+            tt=stmopt.split('.')
+            
+        #
+        # stm spanning using current year
+        #
+
+        elif(len(ttt) > 1 and len(ttc) == 1 and len(tt) == 1):
+
+            stmids=getstmids(stmopt,curyear,dofilt9x)
+            return(stmids)
+
+        #
+        # list of individual stmid (sss.y)
+        #
+
+        if(len(ttc) > 1):
+
+            stmids=[]
+            for stmopt in ttc:
+                stmids=stmids+MakeStmList(stmopt,dofilt9x=dofilt9x,
+                                          verb=verb)
+
+            return(stmids)
+
+
+        if(len(ttc) > 1 and len(tt) > 2):
+
+            stmids=[]
+
+            for stmid in ttc:
+                ss1=stmid.split('.')
+                if(len(ss1) != 2):
+                    print 'EEE invalid individual stm: ',stmmid
+                    sys.exit()
+
+                sid=ss1[0]
+                yid=ss1[1]
+                if(len(yid) >= 1): yid=add2000(yid)
+                rc=getstmids(sid,yid,dofilt9x)
+                stmids=stmids+rc
+
+            return(stmids)
+
+        sopt=tt[0]
+        yopt=tt[1]
+        years=getyears(yopt)
+
+    else:
+
+        sopt='w,e,c,l,i,a,b,p,s'
+        if(yearopt == None):
+            yopt='cur'
+        else:
+            yopt=yearopt
+        years=getyears(yopt)
+
+
+    if(verb):
+        print '(tcbase.makeStmList) sopt: ',sopt
+        print '(tcbase.makeStmList) yopt: ',yopt,years
+
+
+    stmids=[]
+
+    for year in years:
+
+        ss=sopt.split(',')
+        if(len(ss) > 1):
+            for sss in ss:
+                rc=getstmids(sss,year,dofilt9x=dofilt9x)
+                if(rc != None):
+                    stmids=stmids+rc
+
+        else:
+            stmopt="%s.%s"%(sopt,year)
+            rc=getstmids(sopt,year,dofilt9x=dofilt9x)
+            if(rc != None):
+                stmids=stmids+rc
+
+    #
+    # filter out 9X
+    #
+    if(dofilt9x):
+        nstmids=[]
+        for stmid in stmids:
+            num=int(stmid[0:2])
+            if(num < 80):
+                nstmids.append(stmid)
+
+        stmids=nstmids
+
+
+    if(verb):
+        for stmid in stmids:
+            print '(tcbase.makeStmList) stmid: ',stmid
+
+    # -- case 
+    return(stmids)
+
+def getYears4Opts(stmopt,dtgopt,yearOpt):
+    
+    oyearOpt=None
+    doBdeck2=0
+    
+    if(yearOpt != None):
+        
+        if(mf.find(yearOpt,'-')):
+            return(yearOpt,doBdeck2)
+        
+        tt=yearOpt.split('.')
+        
+        if(len(tt) == 2):
+            byear=tt[0]
+            eyear=tt[1]
+            years=yyyyrange(byear, eyear)
+            oyearOpt="%s-%s"%(byear,eyear)
+        
+        elif(len(tt) == 1):
+        
+            years=[yearOpt]
+            oyearOpt=yearOpt
+            
+        for year in years:
+            if(int(year) < 2007):
+                doBdeck2=1
+                
+        return(oyearOpt,doBdeck2)
+    
+    else:
+        
+        syears=getMd2Years(stmopt,dtgopt)
+        
+        if(len(syears) == 0):
+            print 'qqq--invalid stmopt,dtgopt',stmopt,dtgopt
+            sys.exit()
+            
+        elif(len(syears) == 1):
+            byear=syears[0]
+            eyear=syears[0]
+
+        elif(len(syears) > 1):
+            byear=syears[0]
+            eyear=syears[-1]
+            
+        if(byear == eyear):
+            oyearOpt="%s"%(byear)
+        else:
+            oyearOpt="%s-%s"%(byear,eyear)
+            oyearOpt="%s.%s"%(byear,eyear)
+            
+        if(byear < 2007 or eyear < 2007):
+            doBdeck2=1
+            doBT=1
+        
+    return(oyearOpt,doBdeck2)
+
+
      
 def getMD3Opaths(mpath,doM2=1,verb=0):
     
@@ -6767,6 +7513,703 @@ def setModel2(model,bdir2=None):
 
     return(fmodel)
 
+
+# -- tttttcccccVVVVVMMMMM methods
+#
+def VeriTcFlag(tcind,tcwarn):
+    vflg=0
+    if(tcind == 'TC' or tcwarn == 'WN'):
+        vflg=1
+
+    return(vflg)
+
+
+def ParseMdeckCard2Btcs(mdcard):
+
+#new format for mdeck
+#
+#  0 2007090800
+#  1 09L.2007
+#  2 020
+#  3 1009
+#  4 23.5
+#  5 274.5
+#  6 -999
+#  7 -999
+#  8 360.0
+#  9 0.0
+#  10 0
+#  11 FL:
+#  12 NT
+#  13 DB
+#  14 NC
+#  15 NC
+#  16 NW
+#  17 LF:
+#  18 0.00
+#  19 TDO:
+#  20 ___
+#  21 C:
+#  22 -99.9
+#  23 -999.9
+#  24 -999
+#  25 999.9
+#  26 99.9
+#  27 ______
+#  28 W:
+#  29 -99.9
+#  30 -999.9
+#  31 -999
+#  32 999.9
+#  33 99.9
+#  34 RadSrc:
+#  35 none
+#  36 r34:
+#  37 -999
+#  38 -999
+#  39 -999
+#  40 -999
+#  41 r50:
+#  42 -999
+#  43 -999
+#  44 -999
+#  45 -999
+#  46 CP/Roci:
+#  47 9999.0
+#  48 999.0
+#  49 CRm:
+#  50 999.0
+#  51 CDi:
+#  52 999.0
+#  53 Cdpth:
+#  54 K
+
+    tt=mdcard.split()
+    ntt=len(tt)
+
+    #for n in range(0,ntt):
+    #    print 'mmmmmmm ',n,tt[n]
+
+    i=0
+
+    dtg=tt[i] ; i=i+1
+    sid=tt[i] ; i=i+1
+    bvmax=float(tt[i])  ; i=i+1
+    bpmin=float(tt[i]) ; i=i+1
+    blat=float(tt[i]) ; i=i+1
+    blon=float(tt[i]) ; i=i+1
+    r34=float(tt[i]) ; i=i+1
+    r50=float(tt[i]) ; i=i+1
+    bdir=float(tt[i]) ; i=i+1
+    bspd=float(tt[i]) ; i=i+1
+    tsnum=int(tt[i]) ; i=i+1
+    dum=tt[i] ; i=i+1
+    flgtc=tt[i] ; i=i+1
+    flgind=tt[i] ; i=i+1
+    flgcq=tt[i] ; i=i+1
+    flgwn=tt[i] ; i=i+1
+    dum=tt[i] ; i=i+1
+    lf=float(tt[i]) ; i=i+1
+    dum=tt[i] ; i=i+1
+    tdo=tt[i] ; i=i+1
+
+    ic=21
+    cqlat=float(tt[ic])  ; ic=ic+1
+    cqlon=float(tt[ic])  ; ic=ic+1
+    cqvmax=float(tt[ic]) ; ic=ic+1
+    cqdir=float(tt[ic])  ; ic=ic+1
+    cqspd=float(tt[ic])  ; ic=ic+1
+    cqpmin=float(tt[ic])  ; ic=ic+1
+
+    iw=29
+    wlat=float(tt[iw])  ; iw=iw+1
+    wlon=float(tt[iw])  ; iw=iw+1
+    wvmax=float(tt[iw]) ; iw=iw+1
+
+    if(ntt == 55):
+        ir=37
+        r34ne=int(tt[ir]) ; ir=ir+1
+        r34se=int(tt[ir]) ; ir=ir+1
+        r34sw=int(tt[ir]) ; ir=ir+1
+        r34nw=int(tt[ir]) ; ir=ir+2
+
+        r50ne=int(tt[ir]) ; ir=ir+1
+        r50se=int(tt[ir]) ; ir=ir+1
+        r50sw=int(tt[ir]) ; ir=ir+1
+        r50nw=int(tt[ir]) ; ir=ir+2
+
+        ir=47
+        poci=float(tt[ir]) ; ir=ir+1
+        roci=float(tt[ir]) ; ir=ir+2
+
+        rmax=float(tt[ir]) ; ir=ir+2
+        reye=float(tt[ir]) ; ir=ir+2
+        tcdepth=tt[ir]
+
+    else:
+        r34ne=r34se=r34sw=r34nw=-999.0
+        r50ne=r50se=r50sw=r50nw=-999.0
+        poci=roci=rmax=reye=-999.0
+        tcdepth='X'
+
+    r34quad=[r34ne,r34se,r34sw,r34nw]
+    r50quad=[r50ne,r50se,r50sw,r50nw]
+
+    if(cqdir > 720.0):
+        cqdir=-999.9
+        cqspd=-99.9
+
+    btdic=[flgtc,flgind,flgcq,flgwn,tdo,lf,cqlat,cqlon,cqvmax,wlat,wlon,wvmax,tsnum]
+    cqdic=[cqlat,cqlon,cqvmax,cqdir,cqspd,cqpmin]
+    bwdic=[bvmax,r34,r50,rmax,reye,poci,roci,tcdepth]
+    btc=[blat,blon,bvmax,bpmin,bdir,bspd,btdic,cqdic,bwdic,r34quad,r50quad]
+
+    return(btc)
+
+
+
+def ParseMdeck2Btcs(dtgs,mdcards):
+
+    btcs={}
+
+    for dtg in dtgs:
+        mdcard=mdcards[dtg]
+        btc=ParseMdeckCard2Btcs(mdcard)
+        btcs[dtg]=btc
+
+    return(btcs)
+
+
+
+def GetMdeckBts(stmid,dofilt9x=1,verb=0):
+
+##    mdcards=findtc(stmid,dofilt9x)
+    mdcards=findMdeckTC(stmid,do9x=dofilt9x)
+    if(len(mdcards) == 0):
+        print 'WWW(GetMdeckBts): mdcards = []'
+        return(None,None)
+    else:
+        dtgs=mdcards.keys()
+        dtgs.sort()
+        bts=ParseMdeck2Btcs(dtgs,mdcards)
+        return(dtgs,bts)
+
+
+def findMdeckTC(tstm,do9x=1,verb=0):
+
+    from tcbase import MdeckDir
+    
+    tt=tstm.split('.')
+
+    if(len(tt) != 2):
+        print 'EEE invalid tstm in findMdckTC: ',tstm
+        sys.exit()
+
+    tstmid=tt[0].upper()
+    yyyy=tt[1]
+
+    mddir="%s/%s"%(MdeckDir,yyyy)
+    mdmask="%s/mdeck.*.%s.*.txt"%(mddir,tstmid)
+    mdpaths=glob.glob(mdmask)
+
+    omdcards={}
+
+    if(len(mdpaths) > 0):
+
+        mdpath=mdpaths[-1]
+        mdcards=open(mdpath).readlines()
+
+        for mdcard in mdcards:
+            dtg=mdcard.split()[0]
+            omdcards[dtg]=mdcard
+
+
+    return(omdcards)
+
+
+def GetMdeckBts(stmid,dofilt9x=1,verb=0):
+
+##    mdcards=findtc(stmid,dofilt9x)
+    mdcards=findMdeckTC(stmid,do9x=dofilt9x)
+    if(len(mdcards) == 0):
+        print 'WWW(GetMdeckBts): mdcards = []'
+        return(None,None)
+    else:
+        dtgs=mdcards.keys()
+        dtgs.sort()
+        bts=ParseMdeck2Btcs(dtgs,mdcards)
+        return(dtgs,bts)
+
+
+
+def GetBtcardsLatLonsFromMdeck(stmid,dtg,nhback=48,nhplus=120,verb=0):
+
+    btcards=[]
+    btcardsgt0=[]
+
+    lats=[]
+    lons=[]
+    vmaxs=[]
+    pmins=[]
+
+    (btdtgs,btcs)=GetMdeckBts(stmid,dofilt9x=0,verb=verb)
+
+    if(btdtgs == None):
+        print 'WWW(tcbase.GetBtcardsLatLonsFromMdeck): no bts for stmid: ',stmid
+        return(btcards,btcardsgt0,lats,lons,vmaxs,pmins)
+
+
+    btdtgs.sort()
+
+    obtdtgs=[]
+    obtdtgsgt0=[]
+    for btdtg in btdtgs:
+        dt=mf.dtgdiff(dtg,btdtg)
+        if(dt <= 0 and dt >= -nhback):
+            obtdtgs.append(btdtg)
+        if(dt >= 0):
+            obtdtgsgt0.append(btdtg)
+
+
+    btcard="N bt: %d"%(len(obtdtgs))
+    btcards.append(btcard)
+
+    for dtg in obtdtgs:
+
+        (blat,blon,bvmax,bpmin,bdir,bspd,btdic,cqdic,bwdic,r34quad,r50quad)=btcs[dtg]
+        (flgtc,flgind,flgcq,flgwn,tdo,lf,cqlat,cqlon,cqvmax,wlat,wlon,wvmax,tsnum)=btdic
+
+        flgveri=VeriTcFlag(flgtc,flgwn)
+
+        btcard="%s %6.1f %6.1f %3d %2d %6.0f"%(dtg,blat,blon,int(bvmax),flgveri,bpmin)
+        btcards.append(btcard)
+        lats.append(blat)
+        lons.append(blon)
+        vmaxs.append(bvmax)
+        pmins.append(bpmin)
+
+    btcardgt0="N bt: %d"%(len(obtdtgsgt0))
+    btcardsgt0.append(btcardgt0)
+
+    nbt0=0
+    # -- 20130703 -- caused gfs2 to crash on plotting in lsdiag
+    if(len(obtdtgsgt0) > 0):
+        dtg0=obtdtgsgt0[0]
+
+    for dtg in obtdtgsgt0:
+        dt=mf.dtgdiff(dtg0,dtg)
+        if(dt%12): continue
+        dhplus=mf.dtgdiff(dtg0,dtg)
+        if(dhplus > nhplus): continue
+
+        nbt0=nbt0+1
+
+        (blat,blon,bvmax,bpmin,bdir,bspd,btdic,cqdic,bwdic,r34quad,r50quad)=btcs[dtg]
+        (flgtc,flgind,flgcq,flgwn,tdo,lf,cqlat,cqlon,cqvmax,wlat,wlon,wvmax,tsnum)=btdic
+
+        flgveri=VeriTcFlag(flgtc,flgwn)
+
+        btcard="%s %6.1f %6.1f %3d %2d %6.0f"%(dtg,blat,blon,int(bvmax),flgveri,bpmin)
+        btcardsgt0.append(btcard)
+        lats.append(blat)
+        lons.append(blon)
+        vmaxs.append(bvmax)
+        pmins.append(bpmin)
+
+    # replace nbt with count from culling out tau12 increment
+
+    btcardsgt0[0]="N bt: %d"%(nbt0)
+    return(btcards,btcardsgt0,lats,lons,vmaxs,pmins)
+
+
+def GetOpsRefTrk(dtg,stmid,rtaus=None,override=0,verb=0,btc=None,inputAD=None):
+
+    from w2local import W2
+    w2=W2()
+
+    print  'qqqqq====',stmid
+    rc=getStmParams(stmid, convert9x=1)
+    stm1id=rc[-1]
+    astm2id=rc[-2]
+    
+    stmid=stm1id
+    if(rtaus != None):
+        taus=rtaus
+    else:
+        taus=[0,12,24,36,48,60,72,84,96,108,120]
+    year=dtg[0:4]
+
+    # --- set up the reftrk path
+    #
+
+    refbdir=w2.TcRefTrkDatDir
+    refdir="%s/%s"%(refbdir,year)
+    mf.ChkDir(refdir,'mk')
+    refpath="%s/reftrk.%s.%s.txt"%(refdir,stmid,dtg)
+
+    if(verb): print 'RRR in GetOpsRefTrk refpath: ',refpath,MF.GetPathSiz(refpath)
+
+
+    #rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
+    # -- set up the reftrk path and open if there
+
+    # -- always get storm ops adecks and make ad Adeck obj
+    #
+    snum=stmid[0:2]
+    b1id=stmid[2].upper()
+    b2id=Basin1toBasin2[b1id].lower()
+
+    if(IsJtwcBasin(b1id)):
+        sdir="%s/%s"%(w2.TcAdecksJtwcDir,year)
+        (shemoverlap,cy,cyp1)=CurShemOverlap(dtg)
+        if(shemoverlap):
+            mask=[]
+            sdir="%s/%s"%(w2.TcAdecksJtwcDir,cy)
+            sdirp1="%s/%s"%(w2.TcAdecksJtwcDir,cyp1)
+            mask.append("%s/a%s%s%s.dat"%(sdir,b2id,snum,cy))
+            mask.append("%s/a%s%s%s.dat"%(sdirp1,b2id,snum,cyp1))
+        else:
+            mask="%s/a%s%s%s.dat"%(sdir,b2id,snum,year)
+
+        oaids=opsaids['jtwc']
+
+    elif(IsNhcBasin(b1id)):
+        sdir="%s/%s"%(w2.TcAdecksNhcDir,year)
+        mask="%s/a%s%s%s.dat"%(sdir,b2id,snum,year)
+        oaids=opsaids['nhc']
+
+    else:
+        print 'EEE(tcbase.GetOpsRefTrk): invalid b1id: ',b1id,'is not jt|nhc'
+        sys.exit()
+
+    #from adCL import Adeck
+    #from adVM import GetStm2idFromAdeck
+    #ad=Adeck(mask)
+
+
+    # -- if not there get the adecks and make
+    #
+    if(MF.GetPathSiz(refpath) <= 0 or override):
+
+        # get storm ops adecks and make the ad Adeck obj
+        #
+        snum=stmid[0:2]
+        b1id=stmid[2].upper()
+        b2id=Basin1toBasin2[b1id].lower()
+        if(IsJtwcBasin(b1id)):
+            sdir="%s/%s"%(w2.TcAdecksJtwcDir,year)
+            (shemoverlap,cy,cyp1)=CurShemOverlap(dtg)
+            if(shemoverlap):
+                mask=[]
+                sdir="%s/%s"%(w2.TcAdecksJtwcDir,cy)
+                sdirp1="%s/%s"%(w2.TcAdecksJtwcDir,cyp1)
+                mask.append("%s/a%s%s%s.dat"%(sdir,b2id,snum,cy))
+                mask.append("%s/a%s%s%s.dat"%(sdirp1,b2id,snum,cyp1))
+            else:
+                mask="%s/a%s%s%s.dat"%(sdir,b2id,snum,year)
+
+            oaids=opsaids['jtwc']
+
+        elif(IsNhcBasin(b1id)):
+            sdir="%s/%s"%(w2.TcAdecksNhcDir,year)
+            mask="%s/a%s%s%s.dat"%(sdir,b2id,snum,year)
+            oaids=opsaids['nhc']
+
+        from tcbase import Adeck,GetStm2idFromAdeck
+        ad=Adeck(mask)
+
+        try:
+            REF=open(refpath,'w')
+        except:
+            print 'EEE unable to open reftrk output: ',refpath
+            sys.exit()
+
+        # -- check if refcards sufficent...if not, try to regen...
+        #
+        if(REF != None):
+            refcards=open(refpath).readlines()
+            if(len(refcards) <= 1):
+                REF=None
+
+        refcards=None
+
+    else:
+        
+        # -- get the reftrk...
+        #
+        REF=None
+        refcards=open(refpath).readlines()
+
+
+    #rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
+    # -- parse reftrk if already done
+    #
+
+    reflats=[]
+    reflons=[]
+
+    if(REF == None and refcards != None):
+
+        reftrk={}
+
+        nr=len(refcards)
+        tt=refcards[0].split()
+
+        refdtg=tt[1]
+        refstmid=tt[3]
+        refaid=tt[5]
+        reftau=tt[7]
+
+        if(verb):
+            print 'RRR reftrk: ',refpath
+            print 'RRR reftrk: ',refdtg,refstmid,refaid,reftau,nr
+
+        for n in range(1,nr):
+            tt=refcards[n].split()
+            tau=int(tt[0])
+            lat=float(tt[1])
+            lon=float(tt[2])
+            vmax=float(tt[3])
+            pmin=float(tt[4])
+            reftrk[tau]=(lat,lon,vmax,pmin)
+            reflats.append(lat)
+            reflons.append(lon)
+            if(verb): print 'RRR lat,lon: ',lat,lon
+
+        return(reflats,reflons,refaid,reftau,reftrk)
+
+
+    #rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
+    # -- otherwise make  it
+    #
+
+    try:
+        REF=open(refpath,'w')
+    except:
+        print 'EEE unable to open reftrk output: ',refpath
+        sys.exit()
+
+
+    dd=ad.dtgs
+    dd.sort()
+
+    nposits=0
+
+    gottau={}
+    for tau in taus:
+        gottau[tau]=0
+
+    #
+    # define a target tau
+    #
+
+    ttaus=[72,48,24]
+    refaid=None
+    reftau=None
+
+    for ttau in ttaus:
+        gottau[tau]=0
+
+        for oaid in oaids:
+            if(gottau[tau] == 0):
+                try:
+                    rc=ad.aidtrks[oaid,astm2id][dtg][ttau]
+                    if(len(rc) >= 4): 
+                        (lat,lon,pmin,vmax)=rc[0:4]
+                    
+                    #
+                    # get the first posit...
+                    #
+                    gottau[ttau]=1
+                    refaid=oaid
+                    reftau=ttau
+                    if(verb): print 'HHHHH ',ttau,oaid,gottau[ttau]
+                    break
+
+                except:
+                    if(gottau[tau] == 0):
+                        if(verb): print 'NNNN111 no tracks for ',oaid,astm2id,dtg,ttau
+
+        if(gottau[ttau]):
+            break
+
+    # -- after loop see what aid is the ref and at what tau
+    #
+
+    b1id=stmid[2].lower()
+
+    print 'RRR (refpath):',refpath
+    print 'RRR  (reftrk):',dtg,stmid,b1id,refaid,reftau
+
+    #---------------------------------------------------
+    # get btcards
+    # nhback=48 as the default or only consider previous 48 h of BT
+
+    (btcards,btcardsgt0,btlats,btlons,btvmaxs,btpmins)=GetBtcardsLatLonsFromMdeck(stmid,dtg,verb=0)
+
+    #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    # 
+    # for 9X storms, mdeck might not be there...findtcs and the pull out from btops.dtg.txt
+    #
+
+    if(len(btcards) == 0 or int(btcards[0].split()[2]) == 0):
+        otcs=findtcs(dtg)
+        print 'otcs ',otcs
+        for tc in otcs:
+            tt=tc.split()
+            tstmid=tt[1]
+            print 'otc: ',tc,tstmid
+            if(stmid == tstmid):
+                tvmax=tt[2]
+                tpmin=tt[3]
+                trlat=float(tt[4])
+                trlon=float(tt[5])
+                #
+                # crossing the prime meridian -- for lant only
+                #
+                if(trlon <= primeMeridianChk and b1id == 'l'):
+                    trlon=trlon+360.0
+
+                reflats.append(trlat)
+                reflons.append(trlon)
+
+        print 'WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW -- no mdeck for: ',stmid,' dtg: ',dtg,' using btops.DTG.txt',reflons,reflats
+
+    #
+    # write the reftrk data to REF
+    #
+
+    rcard="dtg: %s stmid: %s refaid: %s reftau: %s"%(dtg,stmid,refaid,reftau)
+    REF.writelines(rcard+'\n')
+
+    reftrk={}
+
+    for btcard in btcards[1:]:
+        tt=btcard.split()
+        bdtg=tt[0]
+        blat=float(tt[1])
+        blon=float(tt[2])
+
+        reflats.append(blat)
+        reflons.append(blon)
+
+        bvmax=float(tt[3])
+        bvflg=tt[4]
+        bpmin=float(tt[5])
+        btau=mf.dtgdiff(dtg,bdtg)
+        if(btau == 0): btau=-1
+        reftrk[btau]=(blat,blon,bvmax,bpmin)
+        rcard="%4i  %5.1f  %6.1f  %3.0f  %6.0f BT"%(btau,blat,blon,bvmax,bpmin)
+        if(verb): print 'RRR rcard: ',rcard
+        REF.writelines(rcard+'\n')
+
+
+    nojoy=1
+    for tau in taus:
+        try:
+            rc=ad.aidtrks[oaid,astm2id][dtg][tau]
+            if(len(rc) >= 4):
+                (lat,lon,vmax,pmin)=rc[0:4]
+
+            #
+            # crossing the prime meridian; mod to get madagacar
+            #
+            if(lon <= primeMeridianChk and b1id == 'l'):
+                lon=lon+360.0
+
+            reflats.append(lat)
+            reflons.append(lon)
+            reftrk[tau]=(lat,lon,vmax,pmin)
+            rcard="%4i  %5.1f  %6.1f  %3.0f  %6.0f %s"%(tau,lat,lon,vmax,pmin,refaid)
+            if(verb): print 'RRR rcard: ',rcard
+            REF.writelines(rcard+'\n')
+            nojoy=0
+
+        except:
+            None
+
+    # -- no aids use climo motion 285 ; 12 kt
+    #
+    if(nojoy):
+
+        btaus=reftrk.keys()
+        btaus.sort()
+
+        if(btc != None):
+            (blat0,blon0,bvmax0,bpmin0)=btc[0:4]
+        else:
+            if(len(btaus) > 0 and btaus[-1] >= -6):
+                (blat0,blon0,bvmax0,bpmin0)=reftrk[btaus[-1]]
+            else:
+                print 'EEEEEEEEEEEEEEE no bt or forecast track in tcbase.GetOpsRefTrk()'
+                sys.exit()
+
+        if(blat0 > 0.0):
+
+            if(abs(blat0) < 25.0):
+                clmdir=285
+                clmspd=12
+            else:
+                clmdir=315
+                clmspd=6
+
+        else:
+
+            if(abs(blat0) < 25.0):
+                clmdir=265
+                clmspd=12
+            else:
+                clmdir=225
+                clmspd=6
+
+
+        nt=len(taus)
+        dtau=taus[1]-taus[0]
+        refaid='MFCLM'
+        for n in range(1,nt):
+            if(n == 1):
+                reflats.append(blat0)
+                reflons.append(blon0)
+                tau=taus[0]
+                if(bvmax0 == None): bvmax0=-99.
+                if(bpmin0 == None): bpmin0=-999.
+                reftrk[tau]=(blat0,blon0,bvmax0,bpmin0)
+                rcard="%4i  %5.1f  %6.1f  %3.0f  %6.0f %s"%(tau,blat0,blon0,bvmax0,bpmin0,refaid)
+                if(verb): print 'RRR rcard: ',rcard,' CCCCCCCCCClimo'
+                REF.writelines(rcard+'\n')
+
+                (rlat,rlon)=rumltlg(clmdir,clmspd,dtau,blat0,blon0)
+
+                reflats.append(rlat)
+                reflons.append(rlon)
+                tau=taus[1]
+                reftrk[tau]=(rlat,rlon,bvmax0,bpmin0)
+                rcard="%4i  %5.1f  %6.1f  %3.0f  %6.0f %s"%(tau,rlat,rlon,bvmax0,bpmin0,refaid)
+                if(verb): print 'RRR rcard: ',rcard,' CCCCCCCCCClimo'
+                REF.writelines(rcard+'\n')
+
+            else:
+
+                (blat0,blon0,bvmax0,bpmin0)=reftrk[taus[n-1]]
+                (rlat,rlon)=rumltlg(clmdir,clmspd,dtau,blat0,blon0)
+
+                reflats.append(rlat)
+                reflons.append(rlon)
+                tau=taus[n]
+                reftrk[tau]=(rlat,rlon,bvmax0,bpmin0)
+                rcard="%4i  %5.1f  %6.1f  %3.0f  %6.0f %s"%(tau,rlat,rlon,bvmax0,bpmin0,refaid)
+                if(verb): print 'RRR rcard: ',rcard,' CCCCCCCCCClimo'
+                REF.writelines(rcard+'\n')
+
+
+
+
+    if(verb): print 'RRR(refpath): ',refpath
+    REF.close()
+
+    return(reflats,reflons,refaid,reftau,reftrk)
+
+
 # -- CCCCCCCCCCCCCCCCCCCC -- wxmap2
 #
 class MFbase():
@@ -7060,7 +8503,6 @@ class MFbase():
         except:
             dict[key]=[]
             dict[key].append(value)
-
 
 
 

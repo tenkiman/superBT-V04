@@ -34,7 +34,7 @@ versionBT=sbtVersion.lower()
 #
 
 bm3year=2007
-em3year=2022
+em3year=2023
 em3yearP1=em3year+1
  
 sbtMeta='h-meta-sbt-%s-vars.csv'%(versionBT)

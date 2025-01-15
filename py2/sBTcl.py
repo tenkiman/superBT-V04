@@ -3678,7 +3678,7 @@ class Mdeck3(MFutils):
         # -- (allCvsPath) = md3 track cards with data by storm and dtg
         # -- (sumCvsPath) = md3 storm summary cards 
         #
-        rc=self.getCvsYearPaths(doBT=doBT)
+        rc=self.getCvsYearPaths(doBT=doBT,getNewYear=1,verb=verb)
         (allCvsPaths,sumCvsPaths)=rc
         
         if(verb):
@@ -4116,7 +4116,7 @@ class Mdeck3(MFutils):
         
         return(stmids)
     
-    def getCvsYearPaths(self,doBT=0,verb=0):
+    def getCvsYearPaths(self,doBT=0,getNewYear=0,verb=0):
         """
 not sure about this...MRG has BT .csv has working best track
 always use all-BT because m-md3-all-cp.py does a merge process
@@ -4125,13 +4125,31 @@ that generates of -MRG.txt where the working is updated with BT
         allCvsPaths=[]
         sumCvsPaths=[]
         
-        if(mf.find(self.oyearOpt,'-')):
-            oyearOpts=[self.oyearOpt]
-        else:
-            oyearOpts=self.oyearOpt.split('.')
+        oo=self.oyearOpt.split('.')
+        tt=self.oyearOpt.split('-')
         
-        for oyearOpt in oyearOpts:
+        if(mf.find(self.oyearOpt,'-') or len(oo) == 1):
+            oyearOpts=[self.oyearOpt]
             
+        if(len(oo) == 2):
+            byear=oo[0]
+            eyear=oo[1]
+            oyearOpts=mf.yyyyrange(byear,eyear)
+            
+
+        for oyearOpt in oyearOpts:
+
+            ioyearOpt=int(oyearOpt)
+            
+            # -- set bt based on year
+            #
+            doBT=0
+            if(ioyearOpt < 2007): doBT=1
+            #print 'iiiiii',ioyearOpt,doBT
+            if(ioyearOpt > em3year and not(getNewYear)): 
+                if(verb): print 'no data past: ',em3year,' ioyearOpt: ',ioyearOpt
+                continue
+
             if(verb): print 'setting all/sum cvspath for year: ',oyearOpt
             
             if(doBT == -1):
@@ -4375,14 +4393,14 @@ that generates of -MRG.txt where the working is updated with BT
         
         stm=stm.upper()
         
-        ocard="%s %s%1s %3s %-10s :%3s :%4.1f;%4.1f :%5.1f %5.1f : %s<->%s :%5.1f<->%-5.1f :%5.1f<->%-5.1f :%4.1f :%4.1f :%2d:%2d:%2d:%s :%s %s %s"%\
-            (yyyy,stm,livestatus,tctype,sname[0:9],ovmax,tclife,stmlife,latb,lonb,bdtg[4:],edtg[4:],
+        ocard="%s %s %3s %-s %-10s :%3s :%4.1f;%4.1f :%5.1f %5.1f : %s<->%s :%5.1f<->%-5.1f :%5.1f<->%-5.1f :%4.1f :%4.1f :%2d:%2d:%2d:%s :%s %s %s"%\
+            (yyyy,stm,tctype,stmDev,sname[0:9],ovmax,tclife,stmlife,latb,lonb,bdtg[4:],edtg[4:],
              latmn,latmx,lonmn,lonmx,
              stcd,oACE,
              nRI,nED,nRW,
              RIstatus,timeGen,stm9x,ogendtg)
 
-        rc=(yyyy,stm,livestatus,tctype,sname,ovmax,tclife,stmlife,latb,lonb,bdtg,edtg,
+        rc=(yyyy,stm,tctype,stmDev,sname,ovmax,tclife,stmlife,latb,lonb,bdtg,edtg,
             latmn,latmx,lonmn,lonmx,
             stcd,oACE,
             nRI,nED,nRW,
@@ -4448,7 +4466,12 @@ that generates of -MRG.txt where the working is updated with BT
             
         m3trk={}
 
-        stmcards=self.stmMd3[stmid]
+        # -- case where there are no storm cards in trying to pull old 9X
+        #
+        try:
+            stmcards=self.stmMd3[stmid]
+        except:
+            return(0,m3trk)
         
         #for stmcard in stmcards:
         #    print stmcard
@@ -6607,7 +6630,6 @@ class Adeck(ADutils):
                 distmin=dist
                 stm2idmin=stm
 
-            if(verb): print 'RRRRRRRR ',stm2id,stm,dtg,alat,alon,blat,blon,dist,self.distminHIT,self.distminHIT9X
             if(distmin < self.distminHIT or
                (stm2id[2] == '9' and (distmin < self.distminHIT9X)) ):
                 gothit=1
@@ -9773,7 +9795,6 @@ class MDdataset(MFbase):
                 else:
                     tccode='NT'
             
-            print 'qasdfasdfasdf',tccode,vmax
             if(tccode == 'TW' and vmax > 0.0):
                 tccode=self.TCCodeVmax(vmax)
 
@@ -10889,13 +10910,10 @@ class MD3trk(MDdataset):
         tdo=trk[n]   #30
         if(tdo == 'NaN' or tdo == '---'): tdo='   '
         n=n+1
-        #if(self.useVmax4TcCode and vmax != undef and rcTcCode <= 0):
-        #print 'asdfasdfasdf-----',rcTcCode,vmax
+
         if(self.useVmax4TcCode and vmax != undef):
             tccode=self.TCCodeVmax(vmax)
             #print 'hhh-111-222',tccode,vmax,verb
-                
-        
 
 
         if(verb):
@@ -10937,8 +10955,8 @@ class MD3trk(MDdataset):
                     if(verb): print 'ddddddddddddddddddddddddddddddddddddd',idtg,cmpdtg,gendiff
                     tdtgs.append(idtg)
         
-        else:
-            self.idtgs=tdtgs
+        #else:
+            #self.idtgs=tdtgs
         
         dtgs=self.idtgs
         for dtg in dtgs:
@@ -11507,7 +11525,7 @@ class MD3trk(MDdataset):
                     stmDev='nonDEV'
             else:
                 stmDev=self.stmDev
-            #print '9999---',ostmid9x,stmid,self.time2gen,Is9XNN(ostmid9x)
+            print '9999---',ostmid9x,stmid,self.time2gen,Is9XNN(ostmid9x)
             if(Is9XNN(ostmid9x)):
                 if(self.time2gen >= 0):
                     stm9x=stm9x+pad+"9X , %s"%(ostmid9x.split('.')[0].lower())

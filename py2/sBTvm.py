@@ -1923,7 +1923,8 @@ def setGA(gaclass='gacore',Opts='',Bin='grads',Quiet=1,Window=0,verb=0,doLogger=
         from grads import GaCore,GrADSError
         MF.dTimer(tag='load grads gacore')
         
-
+        from sBTcl import W2GaBase,GradsEnv,GradsPlot,gxout,gxset,gxdefvar,gxget
+        
         class W2GaCore(GaCore,W2GaBase,GrADSError):
 
             Quiet=1
@@ -2207,6 +2208,34 @@ def add2000(y):
 
 # -- MMMMMMMMMM -- tcVM methods
 #
+def CurShemOverlap(curdtg):
+
+    #
+    # need to run twice in overlap between shem and nhem seasons
+    #
+
+    cy=curdtg[0:4]
+
+
+    icym0=int(cy)
+    icyp1=icym0+1
+    cyp1=str(icyp1)
+
+    icymd0=int(curdtg[0:8])
+
+    ccymd0e=str(icym0)+'1231'
+    icymd0e=int(ccymd0e)
+
+    ccymdshemb=str(icym0)+'0701'
+    icymdshemb=int(ccymdshemb)
+
+    shemoverlap=0
+    if(icymd0 >= icymdshemb and icymdshemb <= icymd0e): shemoverlap=1
+
+    return(shemoverlap,cy,cyp1)
+
+
+
 def gc_dist(rlat0,rlon0,rlat1,rlon1,tcunits=tcunits):
 
     # -- based on the spherical law of cosines 
@@ -3938,10 +3967,11 @@ def getStmopts(stmopt):
     bb=ss[0].split(',')
     yy=ss[1]
 
-    if(len(yy) == 2 and int(yy) <= 30): 
-        yy='20%s'%(yy)
-    else:
-        yy='19%s'%(yy)
+    if(len(yy) == 2):
+        if(int(yy) <= 30): 
+            yy='20%s'%(yy)
+        else:
+            yy='19%s'%(yy)
 
     stmopts=[]
     
@@ -5615,14 +5645,18 @@ def getW2fldsRtfimCtlpath(model,dtg,maxtau=None,dtau=6,details=1,override=0,verb
     
     
     
-def getCtlpathTaus(model,dtg,maxtau=168,verb=0,doSfc=0):
+def getCtlpathTaus(model,dtg,maxtau=168,verb=0,doSfc=0,doBail=1):
     
     taus=[]
     ctlpath=taus=nfields=tauOffset=None
     rc=getW2fldsRtfimCtlpath(model,dtg,maxtau=maxtau,verb=verb,doSfc=doSfc)
     if(rc == None):
-        print 'EEEE---tcVM-getCtlpathTaus-w2base.getW2fldsRtfimCtlpath...sayounara...for model: ',model,' dtg: ',dtg
-        sys.exit()
+        if(doBail):
+            print 'EEEE---tcVM-getCtlpathTaus-w2base.getW2fldsRtfimCtlpath...sayounara...for model: ',model,' dtg: ',dtg
+            sys.exit()
+        else:
+            return(ctlpath,taus,nfields,tauOffset)
+
     if(rc[0]):
         ctlpath=rc[1]
         taus=rc[2]
@@ -5631,7 +5665,7 @@ def getCtlpathTaus(model,dtg,maxtau=168,verb=0,doSfc=0):
 
     return(ctlpath,taus,nfields,tauOffset)
 
-def getInvPath4Dtgopt(dtgopt,invdir='./inv',getonly=0):
+def getInvPath4Dtgopt(dtgopt,invdir='./inv',getonly=0,override=0):
 
     invmask="%s/inv-sbt-track-v??-%s.txt"%(invdir,dtgopt)
     invs=glob.glob(invmask)
@@ -5647,7 +5681,8 @@ def getInvPath4Dtgopt(dtgopt,invdir='./inv',getonly=0):
         
     if(getonly): nnver=npver
         
-    nver="v%02d"%(nnver)
+    if(override): nver='v00'
+    else:         nver="v%02d"%(nnver)
     
     invpath="inv/inv-sbt-track-%s-%s.txt"%(nver,dtgopt)
     return(invpath)
@@ -5781,7 +5816,7 @@ def dtg2gtime(dtg):
     return(gtime)
 
 
-def getSrcSumTxt(stmid,qc2paths=1,verb=0):
+def getSrcSumTxt(stmid,qc2paths=1,bd2Update=0,verb=0):
 
     (snum,b1id,year,b2id,stm2id,stm1id)=getStmParams(stmid)
     basin=sbtB1id2Basin[b1id]
@@ -5797,13 +5832,16 @@ def getSrcSumTxt(stmid,qc2paths=1,verb=0):
     mmask="%s/%s*/*-sum.txt"%(tdir,stmid3)
     mmaskM2B="%s/%s*/*-sum-M2B.txt"%(tdir,stmid3)
     mmaskBT="%s/%s*/*-sum-BT.txt"%(tdir,stmid3)
+    if(bd2Update):
+        mmaskBT="%s/%s*/*-sum-BT2.txt"%(tdir,stmid3)
     mmaskMBT="%s/%s*/*-sum-MBT.txt"%(tdir,stmid3)
 
     if(verb):
-        print 'tdir:     ',tdir,basin
-        print 'mmask:    ',mmask
-        print 'mmaskBT:  ',mmaskBT
-        print 'mmaskMBT: ',mmaskMBT
+        print 'tdir:      ',tdir,basin
+        print 'bd2Update: ',bd2Update
+        print 'mmask:     ',mmask
+        print 'mmaskBT:   ',mmaskBT
+        print 'mmaskMBT:  ',mmaskMBT
 
     mpaths=glob.glob(mmask)
     mpathBTs=glob.glob(mmaskBT)
@@ -6375,6 +6413,8 @@ def cleanMD3Opaths(sdir,ostm1id,verb=0):
             
 def getMd2Years(stmopt=None,dtgopt=None):
 
+    from tcbase import TcData
+    
     curdtg=mf.dtg()
     
     years=[int(curdtg[0:4])]
@@ -6403,11 +6443,26 @@ def getMd2Years(stmopt=None,dtgopt=None):
             # -- use this one because makeStmListMdeck is a method on TcData() -- this is stand-alone
             stmids=MakeStmList(stmopt)
 
+        # -- use TcData if no ids...
+        #
+        if(len(stmids) == 0):
+            
+            stmopts=getStmopts(stmopt)
+            if(len(stmopts) == 1):
+                stmopt=stmopts[0]
+                year=stmopt.split('.')[-1]
+                year=int(year)
+            
+            tcD=TcData(years=[year])
+            stmids=tcD.makeStmListMdeck(stmopt)
+            
+
         if(len(stmids) > 0):
             years=[]
             for stmid in stmids:
                 year=int(stmid.split('.')[1])
-                years.append(year)
+                if(year <= em3year):
+                    years.append(year)
             years=mf.uniq(years)
         
     return(years)
@@ -6865,7 +6920,7 @@ def getYears4Opts(stmopt,dtgopt,yearOpt):
 def getMD3Opaths(mpath,doM2=1,verb=0):
     
     isBT=0
-    if(mf.find(mpath, '-BT.txt')):  isBT=1
+    if(mf.find(mpath, '-BT.txt') or mf.find(mpath, '-BT2.txt')):  isBT=1
 
     rc=getStmids4SumPath(mpath)
     (stmDev,ostm1id,sname,ostm9xid,basin,sdir)=rc
@@ -6920,6 +6975,8 @@ def getMD3Opaths(mpath,doM2=1,verb=0):
 
 
 def makeMD3(mpath,rcM3,gendtg=None,doM2=1,verb=0):
+
+    from sBTcl import MD3trk
 
     (opath,opathS,opathThere,opathSThere,ofile,ofileS,sdir,
      isBT,sfile,stmDev,ostm1id,sname,stm1id,stm9xid,basin)=rcM3
@@ -7019,15 +7076,20 @@ def makeMD3(mpath,rcM3,gendtg=None,doM2=1,verb=0):
     
 
 def mergeMD3(mpath3,mpath3BT,doM2=0,verb=0):
+
+    from sBTcl import MD3trk
     
     # -- write out mpath -> opath for 9X; mergeMd3Cvs handles no BT
     #
     rc=getStmids4SumPath(mpath3)
     (stmDev,stm1id,sname,stm9xid,basin,sdir)=rc
-    isBT=0
-    if(stmDev == 'NN'):  isBT=1
     
-
+    isBT=0
+    isDev=0
+    isNon=0
+    if(stmDev == 'NN'):  isBT=1
+    if(stmDev == 'DEV'):  isDev=1
+    
     if(doM2):
         # -- if do merge with md2 do merge here, just make the md3 and sum 
         #
@@ -7049,7 +7111,16 @@ def mergeMD3(mpath3,mpath3BT,doM2=0,verb=0):
             ocards=mergeMd3Cvs9X(mpath3,mpath3BT,opath3,verb=verb)
 
     MF.WriteList2Path(ocards, opath3,verb=verb)
-    md3=MD3trk(ocards,stm1id,stm9xid,dom3=1,sname=sname,basin=basin,stmDev=stmDev,verb=verb)
+    
+    # -- switch names if 9X DEV
+    #
+    ostm1id=stm1id
+    ostm9xid=stm9xid
+    if(isDev):
+        ostm1id=stm9xid
+        ostm9xid=stm1id
+        
+    md3=MD3trk(ocards,ostm1id,ostm9xid,dom3=1,sname=sname,basin=basin,stmDev=stmDev,verb=verb)
     (m3sum,rcsum)=md3.lsDSsStmSummary(doprint=0)
     m3sum=m3sum.replace(' ','')
     m3sum=m3sum+',\n'
@@ -7126,6 +7197,8 @@ def getStmidsDirs(years,basins,doQC=0,bspdmax=30):
 
 def doTrkPlot(mpath,plttag=None,override=1,title2=None,doM3=0,doX=1,verb=0):
 
+    from sBTcl import MD3trk,TcBtTrkPlot
+
     xgrads='grads'
     xgrads=setXgrads(useX11=0,useStandard=0)
     zoomfact=None
@@ -7170,6 +7243,54 @@ def doTrkPlot(mpath,plttag=None,override=1,title2=None,doM3=0,doX=1,verb=0):
     if(doX): tP.xvPlot(zfact=0.75)
     
 
+def setQcPassPath(rcc,qcpath,opath3,stmid,qcpass=0,bspdmax=30.0,
+                  verb=0,override=0):
+    
+    
+    (pqcdir,pqcfile)=os.path.split(opath3)
+    pqclines=[]
+    
+    rccQC=0
+    if(rcc == 1 and qcpath == None):
+        print 'GGGoodQQCC - NNN qcpath for %s rcc: %d NNNNN qcpath'%(stmid,rcc)
+        rccQC=1
+    elif(rcc == 1 and qcpath != None):
+        print 'GGGoodQQCC - YYY qcpath for %s rcc: %d YYYYY qcpath: %s'%(stmid,rcc,qcpath)
+        rccQC=2
+    elif(rcc == 0 and qcpath == None):
+        print 'FFFailQQCC - NNN qcpath for %s rcc: %d NNNNN qcpath: %s'%(stmid,rcc,qcpath)
+        rccQC=3
+    elif(rcc == 0 and qcpath != None):
+        print 'FFFailQQCC - YYY qcpath for %s rcc: %d YYYYY qcpath: %s'%(stmid,rcc,qcpath)
+        rccQC=4
+    else:
+        print 'IIIvalid return code: ',rcc
+    
+    ibspdmax=int(bspdmax)
+    pqcline="QC-P%02d-S%02d-RC-%02d-CurTime:%s"%(qcpass,ibspdmax,rccQC,mf.dtg('dtg.hms'))
+    pqclines.append(pqcline)
+    pqclineNotime="QC-P%02d-S%02d-RC-%02d"%(qcpass,ibspdmax,rccQC)
+    pqcfile="%s-%s"%(pqclineNotime,pqcfile)
+    pqcpath="%s/%s"%(pqcdir,pqcfile)
+    nlQc=MF.getPathNlines(pqcpath)
+    
+    if(override):
+        cmd="rm -i %s"%(pqcpath)
+        mf.runcmd(cmd)
+    
+    if(verb):
+        print 'pqcpath:      ',pqcpath
+        print 'pqclines:     ',pqclines
+        print 'pqcpath nlQc: ',nlQc
+        
+    if(nlQc > 0):
+        rc=MF.WriteList2Path(pqclines,pqcpath,append=1,verb=0)
+    else:
+        rc=MF.WriteList2Path(pqclines,pqcpath,append=0,verb=0)
+        
+    return(rccQC)
+    
+    
 
 
 def chkSpdDirMd3Mrg(mpath3,mpath,
@@ -7186,11 +7307,12 @@ def chkSpdDirMd3Mrg(mpath3,mpath,
 
     exDtgs=[]
     qcM3Cards={}
-    
+
     qcpath="%s-QC-%02.0f"%(mpath,bspdmax)
     iqcpath=qcpath
     iqcThere=MF.getPathNlines(iqcpath)
-
+    if(iqcThere < 0): iqcThere=0
+    
     pp=mpath.split('/')
     ss=pp[-2][0:8].replace('-','.')
     stmid=ss.lower()
@@ -7307,11 +7429,11 @@ def chkSpdDirMd3Mrg(mpath3,mpath,
         oqcpath=qcpath
         
     if(oqcpath == None):
-        if(iqcThere):
-            print '<<<<< QC PPPAAASSSSSS for stmid: ',stmid,'BUT qcpath: ',iqcpath
+        if(iqcThere > 0):
+            #print '<<<<< QC PPPAAASSSSSS for stmid: ',stmid,'BUT qcpath: ',iqcpath
             return(1,iqcpath)
         else:
-            print '<<<<<<<<<<<<<<<<<<<<<QC PPPAAASSSSSS for stmid: ',stmid,' return qcpath=None'
+            #print '<<<<<<<<<<<<<<<<<<<<<QC PPPAAASSSSSS for stmid: ',stmid,' return qcpath=None'
             return(1,None)
         
     else:
@@ -7353,9 +7475,13 @@ def doQCTrk(mpath3,mpath,mpathBT,qcpath,savPath,plttag=None,title2=None,ropt='')
 
     return(rcQC)
     
-def doMd2Md3Mrg(stmid,doM2=1,doRedo=0,qc2paths=1,doGenChk=0,override=0,ropt='',verb=0):
+
+def doMd2Md3Mrg(stmid,doM2=1,doRedo=0,qc2paths=1,
+                doGenChk=0,override=0,
+                bd2Update=0,
+                ropt='',verb=0):
     
-    (mpath,mpathBT)=getSrcSumTxt(stmid,verb=0)
+    (mpath,mpathBT)=getSrcSumTxt(stmid,bd2Update=bd2Update,verb=1)
     
     savPath="%s-SAV"%(mpath)
     if(mpathBT != None):
@@ -7386,15 +7512,16 @@ def doMd2Md3Mrg(stmid,doM2=1,doRedo=0,qc2paths=1,doGenChk=0,override=0,ropt='',v
                         
     # -- first get paths and do clean
     #
-    rcM3=getMD3Opaths(mpath,doM2=1,verb=verb)
+    rcM3=getMD3Opaths(mpath,doM2=1,verb=1)
     (opath,opathS,opathThere,opathSThere,ofile,ofileS,sdir,
      isBT,sfile,stmDev,ostm1id,sname,stm1id,stm9xid,basin)=rcM3
+    print 'QQ!!!',rcM3
     
     # -- get the NN if dev
     #
     gendtg=None
     if(stmDev == 'DEV' and doGenChk):
-        (mpath9X,mpathBT9x)=getSrcSumTxt(stm9xid,verb=0)
+        (mpath9X,mpathBT9x)=getSrcSumTxt(stm9xid,bd2Update=bd2Update,verb=0)
         rcM39X=getMD3Opaths(mpath9X,verb=verb)
         opathS39X=rcM39X[1]
         opathS39XThere=rcM39X[3]
@@ -7473,6 +7600,7 @@ def doMd2Md3Mrg(stmid,doM2=1,doRedo=0,qc2paths=1,doGenChk=0,override=0,ropt='',v
     # -- merge m2 first...
     #
     mpathm=mpath
+    print '000---1111',doM2,mpath,mpathBT
     if(doM2):
         mpathm=mergeMD(mpath, mpathBT)
 
@@ -7497,7 +7625,155 @@ def doMd2Md3Mrg(stmid,doM2=1,doRedo=0,qc2paths=1,doGenChk=0,override=0,ropt='',v
     
     rc=(opath3,mpath,mpathBT,savPath,savPathBT)
     return(rc)
-     
+
+
+def doMd2Md3MrgGenChk(stmid,doM2=1,doRedo=0,qc2paths=1,doGenChk=0,
+                      bd2Update=0,
+                      override=0,ropt='',verb=0):
+    
+    (mpath,mpathBT)=getSrcSumTxt(stmid,bd2Update=bd2Update,verb=0)
+    
+    savPath="%s-SAV"%(mpath)
+    if(mpathBT != None):
+        savPathBT="%s-SAV"%(mpathBT)
+    else:
+        savPathBT=None
+        savThereBT=0
+    
+    savThere=(MF.getPathNlines(savPath) > 0)
+    if(not(savThere)):
+        cmd="cp %s %s"%(mpath,savPath)
+        mf.runcmd(cmd,ropt)
+        
+    # -- BT
+    if(mpathBT != None):
+        savThereBT=(MF.getPathNlines(savPathBT) > 0)
+        if(not(savThereBT)):
+            cmd="cp %s %s"%(mpathBT,savPathBT)
+            mf.runcmd(cmd,ropt)
+            
+    if(doRedo):
+        if(savThere):
+            cmd="cp -i %s %s"%(savPath,mpath)
+            mf.runcmd(cmd,ropt)
+        if(savThereBT):
+            cmd="cp -i %s %s"%(savPathBT,mpathBT)
+            mf.runcmd(cmd,ropt)
+                        
+    # -- first get paths and do clean
+    #
+    
+    rcM3=getMD3Opaths(mpath,doM2=1,verb=1)
+    (opath,opathS,opathThere,opathSThere,ofile,ofileS,sdir,
+     isBT,sfile,stmDev,ostm1id,sname,stm1id,stm9xid,basin)=rcM3
+    
+    
+    # -- get the NN if dev
+    #
+    gendtg=None
+    if(stmDev == 'NN' and doGenChk):
+        
+        (mpath9X,mpathBT9x)=getSrcSumTxt(stm9xid,bd2Update=bd2Update,verb=1)
+        
+        rcM39X=getMD3Opaths(mpath9X,verb=1)
+        opathS39X=rcM39X[1]
+        opathS39XThere=rcM39X[3]
+        
+        print 'asdf',opathS39X,opathS39XThere
+        print 'mmmm',mpath,mpathBT
+        print 'rrr333',rcM3
+        print 'rrr999',rcM39X
+
+        if(not(opathS39XThere)):
+            mpathm=mergeMD(mpath, mpathBT)
+            gendtg=None
+            (mpath3,m3sum,rcsum)=makeMD3(mpathm,rcM3,gendtg=gendtg,doM2=doM2,verb=verb)
+    
+            (mpath3BT,m3sumBT,rcsumBT)=makeMD3(mpathBT,rcM3,verb=verb)
+            (mpath39X,m3sum9X,rcsum9X)=makeMD3(mpath9X,rcM39X,verb=verb)
+    
+            print 'mpath:    ',mpath
+            print 'mpath3:   ',mpath3,m3sum,rcsum
+            print 'mpathBT:  ',mpathBT
+            print 'mpath3BT: ',mpath3BT,m3sumBT,rcsumBT
+            print 'mpath39X: ',mpath39X,m3sum9X,rcsum9X
+        
+        
+        # -- get last9xdtg and gendtg
+        #
+        gendtg=last9xdtg=None
+        
+        # -- last9xdtg from 9x
+        #
+        if(opathS39XThere):
+            m3sum9x=open(opathS39X).readlines()
+            mm=m3sum9x[0].strip().split(',')
+            last9xdtg=mm[10]
+            
+        # -- gendtg from NN
+        #
+        if(opathSThere):
+            m3sum=open(opathS).readlines()
+            mm=m3sum[0].strip().split(',')
+            gendtg=mm[-3]
+            
+        print 'asdfasdfasdf',gendtg,last9xdtg
+        
+        if(gendtg != None and last9xdtg != None):
+            gen9xdtg=dtginc(gendtg,-6)
+            
+            gen9xdiff=dtgdiff(gen9xdtg,last9xdtg)
+            
+            print 'gggg',gen9xdtg,gen9xdiff
+
+            if(gen9xdiff > 0 or override):
+                print 'gendtg:    ',gendtg
+                print 'last9xdtg: ',last9xdtg
+                print 'gen9xdtg:  ',gen9xdtg
+                print 'gen9xdiff:  %4.0f'%(gen9xdiff)
+                    
+                print 'RRREEEDDDOOO dev 9x: ',stmid,' NN: ',stm9xid,'gen9xdiff: %4.0f'%(gen9xdiff)
+                print 'original  opath: ',opath
+                print 'original opathS: ',opathS
+                cmd="meld %s %s %s"%(mpath9X,mpath,mpathBT)
+                print 'mmmccc',cmd
+                mf.runcmd(cmd)
+
+                # -- now regen md3
+                #
+                mpathm=mergeMD(mpath, mpathBT)
+                (mpath3,m3sum,rcsum)=makeMD3(mpathm,rcM3,gendtg=gendtg,doM2=doM2,verb=verb)
+                mpath3BT=m3sumBT=rcsumBT=None
+                if(mpathBT != None and IsNN(stmid)): 
+                    rcM3=getMD3Opaths(mpathBT,doM2=doM2,verb=verb)
+                    (mpath3BT,m3sumBT,rcsumBT)=makeMD3(mpathBT,rcM3,verb=verb)
+                    (mpath39X,m3sum9X,rcsum9X)=makeMD3(mpath9X,rcM39X,verb=verb)
+            
+                if(verb):
+                    print 'mpath:    ',mpath
+                    print 'mpath3:   ',mpath3,m3sum,rcsum
+                    print 'mpathBT:  ',mpathBT
+                    print 'mpath3BT: ',mpath3BT,m3sumBT,rcsumBT
+                    print 'mpath39X: ',mpath39X,m3sum9X,rcsum9X
+                    
+            
+                opath3=opath39X=None
+                #if(mpathBT != None and IsNN(stmid)):
+                opath3=mergeMD3(mpath3, mpath3BT,doM2=0,verb=verb)
+                
+                # -- now do 9x
+                #
+                opath39X=mergeMD3(mpath39X, mpath3BT,doM2=0,verb=verb)
+
+
+                print 'OOOOONNNN',opath3
+                print 'OOOOO9999',opath39X
+                rc=(opath3,mpath,mpathBT,savPath,savPathBT)
+                
+                return(rc)
+            
+
+
 def setModel2(model,bdir2=None):
 
     model=model.lower()
@@ -7820,6 +8096,152 @@ def GetBtcardsLatLonsFromMdeck(stmid,dtg,nhback=48,nhplus=120,verb=0):
 
     btcardsgt0[0]="N bt: %d"%(nbt0)
     return(btcards,btcardsgt0,lats,lons,vmaxs,pmins)
+
+
+def getmdecktcs(ddir,cdtg,dofilt9x=0,verb=0):
+
+    bdmdeckpath="%s/btops.%s.txt"%(ddir,cdtg)
+    try:
+        tcs=open(bdmdeckpath).readlines()
+    except:
+        tcs=[]
+
+    otcs=[]
+    if(len(tcs) > 0):
+        for tc in tcs:
+            stm=tc.split()[1]
+            stm3id=stm.split('.')[0]
+            if(not(dofilt9x and int(stm3id[0:2]) >= 90)):
+                otcs.append(tc)
+
+
+    return(otcs)
+
+
+
+def findtcs(cdtg,dofilt9x=0,srcopt='btops',doLF=1,verb=0):
+
+    from w2local import W2
+    w2=W2()
+    
+    from tcbase import TcCarqDatDir
+    if(srcopt == 'btops'):
+        yyyy=cdtg[0:4]
+        ddir="%s/%s"%(TcCarqDatDir,yyyy)
+        tcs=getmdecktcs(ddir,cdtg,dofilt9x)
+        return(tcs)
+
+    #-----------------------------------------------------------------
+    #
+    # if srcopt != btops, then go for dtg in mdecks directly
+    #
+    #-----------------------------------------------------------------
+
+    #
+    # setup land-sea fraction
+    #
+
+    if(doLF):
+        lf=w2.SetLandFrac()
+
+    stms=[]
+    stmcards={}
+
+    yyyy=cdtg[0:4]
+    mm=cdtg[4:6]
+
+    yyyym1=int(yyyy)-1
+    yyyym1=str(yyyym1)
+    yyyyp1=int(yyyy)+1
+    yyyyp1=str(yyyyp1)
+
+    (shemoverlap,shyyyy,shyyyyp1)=CurShemOverlap(cdtg)
+
+    tcs=[]
+    mdtcs=[]
+
+    doprevyear=0
+    if(mm == '01' or mm == '02'): doprevyear=1
+
+    mddir=w2.TcMdecksFinalDir
+    mdprefix='MdOps'
+
+    mdmkyyyy="%s/%s/%s.???.*"%(mddir,yyyy,mdprefix)
+    mdmkyyyym1="%s/%s/%s.???.*"%(mddir,yyyym1,mdprefix)
+    mdmkyyyyp1="%s/%s/%s.???.*"%(mddir,yyyyp1,mdprefix)
+
+    mdp=glob.glob(mdmkyyyy)
+    mdpm1=glob.glob(mdmkyyyym1)
+    mdpp1=glob.glob(mdmkyyyyp1)
+
+    if(verb):
+        print 'MMM mdmkyyyy:   ',mdmkyyyy
+        print 'MMM mdmkyyyym1: ',mdmkyyyym1
+        print 'MMM mdmkyyyyp1: ',mdmkyyyyp1
+
+        print 'PPPPPPPPPPP doprevyear: ',doprevyear,' shemoverlap ',shemoverlap
+
+    if(doprevyear):
+
+        GrepCdtgMdecks(mdtcs,cdtg,mdpm1)
+
+        if(shemoverlap):
+            GrepCdtgMdecks(mdtcs,cdtg,mdpp1)
+
+        GrepCdtgMdecks(mdtcs,cdtg,mdp)
+
+    else:
+
+        if(shemoverlap):
+            GrepCdtgMdecks(mdtcs,cdtg,mdpp1)
+
+        GrepCdtgMdecks(mdtcs,cdtg,mdp)
+
+    if(verb):
+        for tc in mdtcs:
+            print 'tcccccccccccccccccccccccccccccc',tc[:-1]
+
+    ntcs=len(mdtcs)
+
+    # -- remove dups, increas drmin for 9X
+    #
+    mdtcs=DupChkTcs(mdtcs,drmin=1.5,verb=verb)
+
+    if(ntcs != 0):
+
+        ntcok=0
+        for tc in mdtcs:
+
+            tt=tc.split()
+
+            btyear=tt[0]
+            btid=tt[1]
+
+            dtg=tt[2]
+            stmid="%s.%s"%(btid,btyear)
+
+            vmax=tt[4]
+            pmin=tt[5]
+            stmnum=int(stmid[0:2])
+
+            doit=1
+            if(dofilt9x and stmnum >= 90): doit=0
+
+            if(doit):
+                stms.append(stmid)
+                stmcards[stmid]=tc
+                ntcok=ntcok+1
+
+        if(ntcok == 0):
+            tcs=[]
+            return(tcs)
+
+        stms=mf.uniq(stms)
+
+        for stm in stms:
+            tcs.append(stmcards[stm])
+
+    return(tcs)
 
 
 def GetOpsRefTrk(dtg,stmid,rtaus=None,override=0,verb=0,btc=None,inputAD=None):

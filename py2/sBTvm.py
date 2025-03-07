@@ -7717,14 +7717,14 @@ def doMd2Md3MrgGenChk(stmid,doM2=1,doRedo=0,qc2paths=1,doGenChk=0,
             mm=m3sum[0].strip().split(',')
             gendtg=mm[-3]
             
-        print 'asdfasdfasdf',gendtg,last9xdtg
         
         if(gendtg != None and last9xdtg != None):
+            
             gen9xdtg=dtginc(gendtg,-6)
             
             gen9xdiff=dtgdiff(gen9xdtg,last9xdtg)
             
-            print 'gggg',gen9xdtg,gen9xdiff
+            print 'gggg',gendtg,last9xdtg,gen9xdtg,gen9xdiff
 
             if(gen9xdiff > 0 or override):
                 print 'gendtg:    ',gendtg

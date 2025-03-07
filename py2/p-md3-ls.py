@@ -246,11 +246,10 @@ if(verb):
 if(doBdeck2):
     doBT=1
     
-MF.sTimer('ALL')
-MF.sTimer('md3-load')
+if(verb): MF.sTimer('ALL')
+if(verb): MF.sTimer('md3-load')
 md3=Mdeck3(oyearOpt=oyearOpt,doBT=doBT,verb=verb)
-MF.dTimer('md3-load')
-
+if(verb): MF.dTimer('md3-load')
 dtgs=None
 if(dtgopt != None):
     
@@ -581,7 +580,7 @@ if(stmopt != None):
         #for k in kks9X:
             #print 'k9:',k,s9X[k]
 
-MF.dTimer('ALL')
+if(verb): MF.dTimer('ALL')
 
 
 

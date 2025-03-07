@@ -3668,10 +3668,15 @@ class Mdeck3(MFutils):
             tbdir=sbtVerDirDat
 
         self.tbdir=tbdir
+
+        # -- just instantiate for methods
+        #
+        if(doMd3Only):
+            return
         
         if(oyearOpt == None):
             oyearOpt='%s-%s'%(bm3year,em3year)
-            
+        
         oyearOpt="%s"%(oyearOpt)
         self.oyearOpt=oyearOpt
 
@@ -3684,11 +3689,6 @@ class Mdeck3(MFutils):
         if(verb):
             print 'allCvsPaths: ',allCvsPaths
             print 'sumSvsPaths: ',sumCvsPaths
-
-        # -- just instantiate for methods
-        #
-        if(doMd3Only):
-            return
         
         
         # -- get hashes with storm summary and names

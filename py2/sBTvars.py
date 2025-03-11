@@ -26,6 +26,7 @@ from sbtLocal import *
 #sbtRootVer="%s/%s"%(sbtRoot,sbtVersion)
 # -- root ver is the root in the v04 distro
 sbtRootVer = sbtRoot
+sbtHost=gethostname()
 
 versionDev='v03'
 versionBT=sbtVersion.lower()
@@ -44,6 +45,7 @@ md3VarsMeta='h-meta-md3-vars.csv'
 sbtVerDirDat="%s/dat"%(sbtRootVer)
 
 sbtDatDir="%s/dat-%s"%(sbtRoot,versionDev)
+sbtLogDir="%s/log-sbt"%(sbtRoot)
 sbtProdDir='%s/products-%s/tcdiag'%(sbtRoot,versionDev)
 sbtSrcDir="%s/src-%s"%(sbtRoot,versionDev)
 

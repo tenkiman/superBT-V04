@@ -6411,7 +6411,7 @@ def cleanMD3Opaths(sdir,ostm1id,verb=0):
     cmd="rm %s"%(omask)
     mf.runcmd(cmd)
             
-def getMd2Years(stmopt=None,dtgopt=None):
+def getMd2Years(stmopt=None,dtgopt=None,lastyear=None):
 
     from tcbase import TcData
     
@@ -6430,7 +6430,14 @@ def getMd2Years(stmopt=None,dtgopt=None):
 
             curyear=int(dtg[0:4])
             shemyear=int(getShemYear(dtg))
-            if(curyear != shemyear):
+
+            # -- 20250311 -- new logic for making sure we don't go past the 
+            #    md3 last year (lastyear,em3yearq)
+            #
+            lasttest=(lastyear != None and shemyear == lastyear)
+            curtest=(curyear != shemyear )
+
+            if(curtest and lasttest):
                 years.append(shemyear)
                 
         years=mf.uniq(years)
@@ -6889,7 +6896,7 @@ def getYears4Opts(stmopt,dtgopt,yearOpt):
     
     else:
         
-        syears=getMd2Years(stmopt,dtgopt)
+        syears=getMd2Years(stmopt,dtgopt,em3year)
         
         if(len(syears) == 0):
             print 'qqq--invalid stmopt,dtgopt',stmopt,dtgopt

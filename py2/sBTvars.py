@@ -81,6 +81,27 @@ endEra5Dtg='2024060100'
 TcTcanalDatDir="%s/tcdiag"%(sbtDatDir)
 TcDiagDatDir=TcTcanalDatDir
 
+# -- local dirs -- lllllllllllllllllllllllllllllllllllllllllllllllll
+#
+
+sbtDatDirL="%s/dat"%(sbtRootLocal)
+sbtProdDirL='%s/products/tcdiag'%(sbtRootLocal)
+sbtLogDirL="%s/log-sbt"%(sbtRootLocal)
+
+tsbdbdirL="%s/tcdiag"%(sbtDatDirL)
+adeckSdirL="%s/adeck-dtg"%(sbtDatDirL)
+tmtrkbdirL="%s/tmtrkN"%(sbtDatDirL)
+abdirStmL='%s/adeck-stm'%(sbtDatDirL)
+abdirDtgL='%s/adeck-dtg'%(sbtDatDirL)
+
+TcTcanalDatDirL="%s/tcdiag"%(sbtDatDirL)
+TcDiagDatDirL=TcTcanalDatDirL
+
+#
+# -- local dirs -- lllllllllllllllllllllllllllllllllllllllllllllllll
+
+# -- VARS
+
 opsaids={}
 opsaids['jtwc']=['jtwc','jtwi','c120','clip','clim','conw','mbam','wbar','xtrp']
 opsaids['nhc']=['ofcl','ofci','clp5','clip','clim','xtrp','tvcn']

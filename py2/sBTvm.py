@@ -6434,7 +6434,7 @@ def getMd2Years(stmopt=None,dtgopt=None,lastyear=None):
             # -- 20250311 -- new logic for making sure we don't go past the 
             #    md3 last year (lastyear,em3yearq)
             #
-            lasttest=(lastyear != None and shemyear == lastyear)
+            lasttest=(lastyear != None and int(shemyear) <= int(lastyear))
             curtest=(curyear != shemyear )
 
             if(curtest and lasttest):

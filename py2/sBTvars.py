@@ -65,6 +65,7 @@ adeckSdir="%s/adeck-dtg"%(sbtDatDir)
 tmtrkbdir="%s/tmtrkN"%(sbtDatDir)
 abdirStm='%s/adeck-stm'%(sbtDatDir)
 abdirDtg='%s/adeck-dtg'%(sbtDatDir)
+abdirAtcf="%s/atcf-form"%(sbtDatDir)
 
 TcNamesDatDir="%s/tc/names"%(sbtDatDir)
 TcVitalsDatDir="%s/tc/tcvitals"%(sbtDatDir)

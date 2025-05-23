@@ -6471,7 +6471,12 @@ def getMd2Years(stmopt=None,dtgopt=None,lastyear=None):
                 if(year <= em3year):
                     years.append(year)
             years=mf.uniq(years)
-        
+            
+        elif(len(stmids) == 0):
+            print 'WWW-getMd2Years-- no storms for stmopt: ',stmopt
+            print 'WWW-setyears to em3year: ',em3year
+            years=[em3year]
+            
     return(years)
 
 

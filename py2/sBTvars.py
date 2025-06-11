@@ -46,7 +46,8 @@ sbtVerDirDat="%s/dat"%(sbtRootVer)
 
 sbtDatDir="%s/dat-%s"%(sbtRoot,versionDev)
 sbtLogDir="%s/log-sbt"%(sbtRoot)
-sbtProdDir='%s/products-%s/tcdiag'%(sbtRoot,versionDev)
+sbtProdDir='%s/products-%s'%(sbtRoot,versionDev)
+sbtProdDirDiag='%s/tcdiag'%(sbtProdDir)
 sbtSrcDir="%s/src-%s"%(sbtRoot,versionDev)
 
 sbtVerDirDev="%s/%s"%(sbtRoot,versionDev)
@@ -86,7 +87,7 @@ TcDiagDatDir=TcTcanalDatDir
 #
 
 sbtDatDirL="%s/dat"%(sbtRootLocal)
-sbtProdDirL='%s/products/tcdiag'%(sbtRootLocal)
+sbtProdDirDiagL='%s/products/tcdiag'%(sbtRootLocal)
 sbtLogDirL="%s/log-sbt"%(sbtRootLocal)
 
 tsbdbdirL="%s/tcdiag"%(sbtDatDirL)

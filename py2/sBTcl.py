@@ -3301,13 +3301,13 @@ class LsDiagFile(MFutils):
 
         self.dtg=dtg
         self.lsdiagpath=lsdiagpath
-        self.sbtProdDir=sbtProdDir
+        self.sbtProdDir=sbtProdDirDiag
         self.verb=verb
         self.dobail=dobail
 
         self.year=dtg[0:4]
         
-        wdir=sbtProdDir
+        wdir=sbtProdDirDiag
         dtgdir="%s/%s"%(self.year,dtg)
         urldir="%s/%s"%(dtgdir,self.model)
         pltdir="%s/%s"%(wdir,urldir)
@@ -4000,8 +4000,6 @@ class Mdeck3(MFutils):
             ttc=stmopt.split(',')
             tt=stmopt.split('.')
             
-            #print 'sssssssssssssss',stmopt,len(ttt),len(ttc),len(tt)
-            
             if(len(tt) == 1 and len(ttt) == 1 and len(ttc) == 1):
                 if(len(tt[0]) == 3):
                     stmid=tt[0][2]
@@ -4033,9 +4031,9 @@ class Mdeck3(MFutils):
             # -- list of individual stmid (sss.y)
             #
             if(len(ttc) > 1):
-        
                 stmids=[]
                 for stmopt in ttc:
+                    print 'safdsfs',stmopt
                     stmids=stmids+self.getMd3Stmids(stmopt,self.tcNamesHash,dobt=dobt,dofilt9x=dofilt9x,
                                               verb=verb)
         

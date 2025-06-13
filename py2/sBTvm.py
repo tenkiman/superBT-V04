@@ -10732,4 +10732,17 @@ looks for all instances of the job first to set the code
         else:
             return(rc)
 
+
+def IsBadEra5Dtg(idtg):
+    rc=1
+    if(is0012Z(idtg)):
+        tdtg=idtg
+    else:
+        tdtg=mf.dtginc(idtg,-6)
+        
+    if(tdtg in badEra5Dtgs):rc=0
+    return(rc)
+        
+
+
 MF=MFutils()

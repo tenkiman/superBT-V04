@@ -721,5 +721,29 @@ badEra5Dtgs=[
 '1958010700',
 '2024122012',
 ]
+# -- after cleanup of raid01
+#
+badEra5Dtgs=[
+    
+'2022041500',
+'2022041612',
+'2024122012',
 
+]
 
+# -- using the ext4 drives
+#  all sfc missing...
+#
+badEra5Dtgs=[
+    '1946021200',
+    '1946031912',
+    '1952052600',
+    '2024122012',
+
+]
+
+raid01Location='mike5'
+raid01Location='w21'
+
+raid02Location='mike8'
+raid02Location='mike5'

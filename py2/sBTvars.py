@@ -742,6 +742,11 @@ badEra5Dtgs=[
 
 ]
 
+badEra5Dtgs=[
+    '1952052600',
+    '2024122012',
+]
+
 raid01Location='mike5'
 raid01Location='w21'
 

@@ -752,3 +752,16 @@ raid01Location='w21'
 
 raid02Location='mike8'
 raid02Location='mike5'
+
+sdirBackEra5={}
+
+for yy in range(1940,1956+1):
+    sdirBackEra5[yy]='dat17'
+
+for yy in range(1957,1973+1):
+    sdirBackEra5[yy]='dat14'
+
+for yy in range(1974,2023+1):
+    sdirBackEra5[yy]='dat40/dat'
+
+sdirBackEra5[2024]='dat14'

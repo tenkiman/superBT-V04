@@ -8595,6 +8595,12 @@ def GetOpsRefTrk(dtg,stmid,rtaus=None,override=0,verb=0,btc=None,inputAD=None):
             else:
                 clmdir=225
                 clmspd=6
+                
+        # -- extreme lat in best track
+        #
+        if(abs(blat0) > 70.0):
+            clmdir=225
+            clmspd=0
 
 
         nt=len(taus)

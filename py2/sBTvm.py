@@ -5672,19 +5672,31 @@ def getInvPath4Dtgopt(dtgopt,invdir='./inv',getonly=0,override=0):
     
     nnver=0
     npver=0
+    
+    invs.sort()
+    # -- cycle through invs to get latest/greates
+    #
     if(len(invs) > 0):
-        previnv=invs[-1]
-        tt=previnv.split('-')
-        pver=tt[-2]
-        npver=int(pver[-2:])
-        nnver=npver+1
+     
+        for inv in invs:
+            tt=inv.split('-')
+            pver=tt[-2]
+            npver=int(pver[-2:])
+            nnver=npver+1
         
     if(getonly): nnver=npver
         
     if(override): nver='v00'
     else:         nver="v%02d"%(nnver)
     
+        
     invpath="inv/inv-sbt-track-%s-%s.txt"%(nver,dtgopt)
+    
+    if(override and (MF.getPathSiz(invpath) > 0)):
+        cmd='rm %s'%(invpath)
+        mf.runcmd(cmd)
+        
+    
     return(invpath)
 
 def Rlatlon2Clatlon(rlat,rlon,dotens=1,dodec=0,dozero=0):
@@ -6474,7 +6486,7 @@ def getMd2Years(stmopt=None,dtgopt=None,lastyear=None):
             
         elif(len(stmids) == 0):
             print 'WWW-getMd2Years-- no storms for stmopt: ',stmopt
-            print 'WWW-setyears to em3year: ',em3year
+            #print 'WWW-setyears to em3year: ',em3year
             years=[em3year]
             
     return(years)

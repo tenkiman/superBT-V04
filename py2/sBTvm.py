@@ -3961,36 +3961,72 @@ def getShemYear(dtg):
     cyyyy=str(yyyy)
     return(cyyyy)
 
-def getStmopts(stmopt):
+        
+def get4digitYearFrom2DigitYear(yy):
     
-    ss=stmopt.split('.')
-    bb=ss[0].split(',')
-    yy=ss[1]
-
-    if(len(yy) == 2):
+    if(len(str(yy)) == 2):
         if(int(yy) <= 30): 
             yy='20%s'%(yy)
         else:
             yy='19%s'%(yy)
-
-    stmopts=[]
+    return(yy)
     
-    if(ss[0] == 'all'):
-        for b1 in ['w','e','c','l','i','h']:
-            stm="%s.%s"%(b1,yy)
-            stmopts.append(stm)
+def getStmopts(stmopt,verb=0):
 
-    elif(len(bb) > 1):
-        for b1 in bb:
-            stm="%s.%s"%(b1,yy)
-            stmopts.append(stm)
-    else:
-        bb=ss[0]
-        stmopt="%s.%s"%(bb,yy)
-        stmopts.append(stmopt)
-        
-    return(stmopts)
+    # -- handle b.yy,b.yy
+    #
+    aas=stmopt.split(':')
+    if(len(aas) > 1):
+        stmopts=[]
+        for aa in aas:
+            stmopts=stmopts+getStmopts(aa)
             
+        if(len(stmopts) > 0):
+            return(stmopts)
+    
+    tt=stmopt.split('.')
+    yy=tt[-1]
+    bb=tt[0]
+    tt=bb.split(',')
+    if(len(tt) > 1):
+        bbs=tt
+    else:
+        bbs=[bb]
+    
+    tt=yy.split('-')
+
+    if(len(tt) == 2):
+        
+        t0=tt[0]
+        t1=tt[1]
+        t0=get4digitYearFrom2DigitYear(t0)
+        t1=get4digitYearFrom2DigitYear(t1)
+        y0=int(t0)
+        y1=int(t1)
+        yys=range(y0,y1+1)
+
+    else:
+        yys=[yy]
+    
+    if(mf.find(stmopt,'all')):
+        bbs=['h','i','w','c','e','l']
+        
+    stmopts=[]
+    for yy in yys:
+        yy=get4digitYearFrom2DigitYear(yy)
+        syy=str(yy)
+        iyy=int(yy)
+        for bb in bbs:
+            # -- epac best track starts in 1949
+            #
+            if(verb): print iyy,bb,(iyy >= 45 and iyy <= 48 and bb == 'e')
+            if(iyy >= 45 and iyy <= 48 and bb == 'e'):
+               continue 
+            stmopts=stmopts+[
+                '%s.%s'%(bb,syy),
+            ]
+    
+    return(stmopts)
 
 
 def getPyp(pyppath):

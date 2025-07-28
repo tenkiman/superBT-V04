@@ -3995,7 +3995,7 @@ class Mdeck3(MFutils):
         # -- by stmopt
         #
         elif(stmopt != None and stmopt != 'all'):
-            
+
             ttt=stmopt.split('-')
             ttc=stmopt.split(',')
             tt=stmopt.split('.')
@@ -4033,7 +4033,6 @@ class Mdeck3(MFutils):
             if(len(ttc) > 1):
                 stmids=[]
                 for stmopt in ttc:
-                    print 'safdsfs',stmopt
                     stmids=stmids+self.getMd3Stmids(stmopt,self.tcNamesHash,dobt=dobt,dofilt9x=dofilt9x,
                                               verb=verb)
         

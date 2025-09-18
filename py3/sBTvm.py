@@ -3001,6 +3001,23 @@ def GetTCnamesHash(yyyy,source=''):
         P.close()
     return(tcnames)
 
+def GetTCnamesHashAll(yyyy,tcnamesAll,verb=0):
+    
+    tcnames=[]
+    
+    for tt in tcnamesAll.keys():
+        year=tt[0]
+        if(year == yyyy):
+            if(verb): print(tt)
+            tcnames.append(tt)
+            
+        #impcmd="from TCnames%s import tcnames"%(yyyy)
+        #pyppath="%s/TCnames%s.pyp"%(ndir,yyyy)
+        #P=open(pyppath,'rb')
+        #tcnames=pickle.load(P)
+        #P.close()
+    return(tcnames)
+
 
 def getSubbasinStmid(stmid):
 
@@ -3119,19 +3136,34 @@ def getStmParams(stmid,convert9x=0):
     # -- case of genesis stmid tgNNNNN
     #
     if(len(tt) == 1):
-        year=-9999
-        snum='-99'
-        b1id='X'
-        b2id='XX'
-        stm2id='NNXX.YYYY'
-        stm1id='NNX.YYYY'
-        if(istmid[0:2] == 'tg'):     snum='-1'
+        if(len(stmid) != 8):
+            year=-9999
+            snum='-99'
+            b1id='X'
+            b2id='XX'
+            stm2id='NNXX.YYYY'
+            stm1id='NNX.YYYY'
+            if(istmid[0:2] == 'tg'):     snum='-1'
+            
+            return(snum,b1id,year,b2id,stm2id,stm1id)
+
+        elif(len(stmid) == 8):
         
-        return(snum,b1id,year,b2id,stm2id,stm1id)
-
-    else:
-        year=tt[1]
-
+            snum=stmid[2:4]
+            b2id=stmid[0:2]
+            year=stmid[-4:]
+            b1id=Basin2toBasin1[b2id.upper()]
+            stm2id="%s%s.%s"%(snum,b2id,year)
+            stm1id=snum+b1id+'.'+year
+            return(snum,b1id,year,b2id,stm2id,stm1id)
+            
+    #if(len(tt[0]) == 3):
+        #year=tt[1]
+        #snum=istmid[0:2]
+        #b1id=istmid[2]
+        #b2id=Basin1toBasin2[b1id.upper()]
+        #stm1id=istmid
+        #stm2id=b2id+snum+'.'+year
     if(len(tt[0]) == 4):
         snum=istmid[2:4]
         b2id=istmid[0:2]
@@ -3150,6 +3182,7 @@ def getStmParams(stmid,convert9x=0):
         stm2id=stm2id.lower()
     else:
         isXstm=isXStimd(istmid)
+        year=tt[1]
         if(isXstm):
             # -- 20240926 -- special case of bdeck2 NOT having an adeck to detect warning
             #
@@ -5791,6 +5824,74 @@ def Rlatlon2Clatlon(rlat,rlon,dotens=1,dodec=0,dozero=0):
         clon="%5.1f%s"%(rlon,hemew)
 
     return(clat,clon)
+def IsIoShemBasin(b1id):
+
+    bid=b1id.lower()
+
+    if(len(bid) == 1):
+        bid=b1id.lower()
+    elif(len(bid) >= 3):
+        # assume stmid if not 1char
+        tt=b1id.split('.')
+        bid=tt[0][2].lower()
+
+    rc=0
+    if(len(bid) == 1 and
+       bid == 'i' or bid == 'a' or bid == 'b' or bid == 's' or bid == 'p'
+       ):
+        rc=1
+    elif(len(bid) == 2 and
+         bid == 'io' or bid == 'aa' or bid == 'bb' or bid == 'sh' or bid == 'si' or bid == 'sp'
+         ):
+        rc=1
+
+    return(rc)
+
+def IsIoSubBasin(b1id):
+
+    bid=b1id.lower()
+
+    if(len(bid) == 1):
+        bid=b1id.lower()
+    elif(len(bid) >= 3):
+        # assume stmid if not 1char
+        tt=b1id.split('.')
+        bid=tt[0][2].lower()
+
+    rc=0
+    if(len(bid) == 1 and
+       bid == 'i' or bid == 'a' or bid == 'b'
+       ):
+        rc=1
+    elif(len(bid) == 2 and
+         bid == 'io' or bid == 'aa' or bid == 'bb' 
+         ):
+        rc=1
+
+    return(rc)
+
+def IsShemSubBasin(b1id):
+
+    bid=b1id.lower()
+
+    if(len(bid) == 1):
+        bid=b1id.lower()
+    elif(len(bid) >= 3):
+        # assume stmid if not 1char
+        tt=b1id.split('.')
+        bid=tt[0][2].lower()
+
+    rc=0
+    if(len(bid) == 1 and
+       bid == 's' or bid == 'p'
+       ):
+        rc=1
+    elif(len(bid) == 2 and
+         bid == 'si' or bid == 'sp'
+         ):
+        rc=1
+
+    return(rc)
 
 def isIOBasinStm(stmid):
 
@@ -6461,7 +6562,7 @@ def cleanMD3Opaths(sdir,ostm1id,verb=0):
     cmd="rm %s"%(omask)
     mf.runcmd(cmd)
             
-def getMd2Years(stmopt=None,dtgopt=None,lastyear=None):
+def getMd2Years(stmopt=None,dtgopt=None,tcnamesAll=None,lastyear=None):
 
     curdtg=mf.dtg()
     
@@ -6480,7 +6581,7 @@ def getMd2Years(stmopt=None,dtgopt=None,lastyear=None):
             shemyear=int(getShemYear(dtg))
 
             # -- 20250311 -- new logic for making sure we don't go past the 
-            #    md3 last year (lastyear,em3yearq)
+            #    md3 last year (lastyear,em3year)
             #
             lasttest=(lastyear != None and int(shemyear) <= int(lastyear))
             curtest=(curyear != shemyear )
@@ -6496,8 +6597,9 @@ def getMd2Years(stmopt=None,dtgopt=None,lastyear=None):
             stmids=stmopt
         else:
             # -- use this one because makeStmListMdeck is a method on TcData() -- this is stand-alone
-            stmids=MakeStmList(stmopt)
+            stmids=MakeStmList(stmopt,tcnamesAll=tcnamesAll)
 
+        #print ('ttt---ddd',stmids,stmopt)
         # -- use TcData if no ids...
         #
         if(len(stmids) == 0):
@@ -6647,8 +6749,10 @@ def getyears(yyy):
     return(years)
 
 
-def MakeStmList(stmopt,yearopt=None,dofilt9x=0,verb=0):
+def MakeStmList(stmopt,tcnamesAll=None,yearopt=None,doibtOnly=1,dofilt9x=0,verb=0):
 
+    if(tcnamesAll == None): doibtOnly=0
+    
     def getyears(yyy):
 
         if(yyy == 'cur'):
@@ -6690,6 +6794,15 @@ def MakeStmList(stmopt,yearopt=None,dofilt9x=0,verb=0):
 
         return(years)
 
+    def gettcnames(year,tcnamesAll,ib3year=2024):
+        
+        if((int(year) >= ib3year and not(doibtOnly)) or tcnamesAll == None):
+            tcnames=GetTCnamesHash(year)
+        else:
+            tcnames=GetTCnamesHashAll(year,tcnamesAll,verb=0)
+            
+        return(tcnames)
+        
 
     def getstmids(sss,year,dofilt9x=dofilt9x):
 
@@ -6697,7 +6810,7 @@ def MakeStmList(stmopt,yearopt=None,dofilt9x=0,verb=0):
         n1=0
         n2=0
         tt=sss.split('-')
-
+        
         if(len(tt) > 1):
             if(len(tt[0]) != 2 or len(tt[1]) != 3):
                 print('EEEE getstmids tt:',tt)
@@ -6713,15 +6826,18 @@ def MakeStmList(stmopt,yearopt=None,dofilt9x=0,verb=0):
                     sids.append(sid)
 
         elif(len(sss) == 1):
-            tcnames=GetTCnamesHash(year)
+
+            tcnames=gettcnames(year, tcnamesAll)
+                
             for tcname in tcnames:
                 # -- improved subbasin checking...
                 #
                 bchk=sss.upper()
-                tcsubbasin=tcname[1][2:3]
+                tcsubbasin=tcname[1][2:3].upper()
                 chk1=(tcsubbasin == bchk)
                 chk2=(isIOBasinStm(tcsubbasin) and isIOBasinStm(bchk))
                 chk3=(isShemBasinStm(tcsubbasin) and isShemBasinStm(bchk))
+                #print('ttt',tcname,chk1,chk2,chk3)
                 if(chk1 or chk2 or chk3):
                     sid="%s.%s"%(tcname[1],tcname[0])
                     sids.append(sid)
@@ -6729,12 +6845,15 @@ def MakeStmList(stmopt,yearopt=None,dofilt9x=0,verb=0):
                     sid=None
                     
         elif(len(tt) == 1):
-
+            
+            tcnames=gettcnames(year, tcnamesAll)
+            #print('ttt--asdf--',tt,len(sss),sss[0:2])
             if(len(sss) == 3):
+                
                 if(sss[0].upper() == 'M'):
                     nback=int(sss[1])
                     bchk=sss[2].upper()
-                    tcnames=GetTCnamesHash(year)
+                    tcnames=GetTCnamesHashAll(year,tcnamesAll)
                     for tcname in tcnames:
                         if(tcname[1][2:3] == bchk):
                             sid="%s.%s"%(tcname[1],tcname[0])
@@ -6761,9 +6880,48 @@ def MakeStmList(stmopt,yearopt=None,dofilt9x=0,verb=0):
                     
 
                 else:
-
+                    # -- check if in tcnames
+                    #print('asdf-sadf-sda-d-dddddddddddddd',year,sss,doibtOnly)
+                    schk1=schk2=None
+                    if(int(year) >= 2024 and not(doibtOnly) or tcnamesAll == None):
+                        tcnames=GetTCnamesHash(year)
+                        schk=(year,sss.upper())
+                        print ('sss---',schk)
+                    else:
+                        tcnames=GetTCnamesHashAll(str(year),tcnamesAll,verb=0)
+                        schk=(year,sss.lower())
+                        #print('asdfsp00sdf=',year,schk,sss)
+                        snum=sss[0:2]
+                        s1id=sss.lower()[-1]
+                        chkH=(isShemBasinStm(s1id))
+                        chkI=(isIOBasinStm(s1id))
+                        if(chkH):
+                            sid1="%sp"%(snum)
+                            schk1=(year,sid1) 
+                            sid2="%ss"%(snum)
+                            schk2=(year,sid2)
+                        if(chkI):
+                            sid1="%sa"%(snum)
+                            schk1=(year,sid1) 
+                            sid2="%sb"%(snum)
+                            schk2=(year,sid2)
+                            
+                        #print('dadfasdf',sid1,schk1,sid2,schk2)
+                    
                     sid="%s.%s"%(sss.upper(),year)
-                    sids.append(sid)
+                    if(schk1 != None and (schk1 in tcnames) ):
+                        #print ('fff1111',sid1,schk1,tcnames)
+                        sid1="%s.%s"%(sid1,year)
+                        sids.append(sid1)
+                            
+                    if(schk2 != None and (schk2 in tcnames) ):
+                        #print ('fff2222',sid2,schk2,tcnames)
+                        sid2="%s.%s"%(sid2,year)
+                        sids.append(sid2)
+                        
+                    else:
+                        if(schk in tcnames):
+                            sids.append(sid)
 
 
 
@@ -6773,6 +6931,7 @@ def MakeStmList(stmopt,yearopt=None,dofilt9x=0,verb=0):
 
 
         sids.sort()
+        #print('qqqqqqq----',sids)
         return(sids)
 
     #
@@ -6920,11 +7079,11 @@ def MakeStmList(stmopt,yearopt=None,dofilt9x=0,verb=0):
     # -- case 
     return(stmids)
 
-def getYears4Opts(stmopt,dtgopt,yearOpt):
+def getYears4Opts(stmopt,dtgopt,yearOpt,tcnamesAll=None):
     
     oyearOpt=None
     doBdeck2=0
-    
+    getMd2Years
     if(yearOpt != None):
         
         if(mf.find(yearOpt,'-')):
@@ -6951,10 +7110,10 @@ def getYears4Opts(stmopt,dtgopt,yearOpt):
     
     else:
         
-        syears=getMd2Years(stmopt,dtgopt,em3year)
+        syears=getMd2Years(stmopt,dtgopt,tcnamesAll=tcnamesAll)
         
         if(len(syears) == 0):
-            print('qqq--invalid stmopt,dtgopt',stmopt,dtgopt)
+            print('EEE stmopt: %s or dtgopt: %s not in md3 year range of %s - %s'%(stmopt,dtgopt,bm3year,em3year))
             sys.exit()
             
         elif(len(syears) == 1):
@@ -10787,6 +10946,155 @@ looks for all instances of the job first to set the code
             sys.exit()
         else:
             return(rc)
+        
+def WindRadiiCode2Normal(code,radii):
+
+    #
+    # convert pre 2004 codes -> ne/se/sw/nw quad standard
+    #
+
+    #
+    # default
+    #
+    rne=rse=rsw=rnw=-999.
+
+    if(radii[0] > 0): rne=float(radii[0])
+    if(radii[1] > 0): rne=float(radii[1])
+    if(radii[2] > 0): rne=float(radii[2])
+    if(radii[3] > 0): rne=float(radii[3])
+
+    if(len(code) != 3):
+        print ('EEE atcf: invalid wind radii code: ',code)
+        sys.exit()
+
+#AAA - full circle
+    if(code == 'AAA'):
+        rne=rse=rsw=rnw=radii[0]
+
+#NNS - north semicircle
+    elif(code == 'NNS'):
+        rne=rnw=radii[0]
+        rse=rsw=radii[1]
+
+#NES - northeast semicircle
+    elif(code == 'NES'):
+        rne=radii[0]
+        rse=0.5*radii[0]+0.5*radii[1]
+        rsw=radii[1]
+        rnw=0.5*radii[0]+0.5*radii[1]
+
+#EES - east semicircle
+    elif(code == 'EES'):
+        rne=rse=radii[0]
+        rnw=rsw=radii[1]
+
+#SES - southeast semicircle
+    elif(code == 'SES'):
+        rse=radii[0]
+        rsw=0.5*radii[0]+0.5*radii[1]
+        rnw=radii[1]
+        rne=0.5*radii[0]+0.5*radii[1]
+
+#SSS - south semicircle
+    elif(code == 'SSS'):
+        rsw=rse=radii[0]
+        rne=rnw=radii[1]
+
+#SWS - southwest semicircle
+    elif(code == 'SWS'):
+        rsw=radii[0]
+        rnw=0.5*radii[0]+0.5*radii[1]
+        rne=radii[1]
+        rse=0.5*radii[0]+0.5*radii[1]
+
+#WWS - west semicircle
+    elif(code == 'WWS'):
+        rnw=rsw=radii[0]
+        rne=rse=radii[1]
+
+#NWS - northwest semicircle
+    elif(code == 'NWS'):
+        rnw=radii[0]
+        rne=0.5*radii[0]+0.5*radii[1]
+        rse=radii[1]
+        rsw=0.5*radii[0]+0.5*radii[1]
+
+#NNQ, NEQ, EEQ, SEQ, SSQ, SWQ, WWQ, NWQ
+
+    elif(code[2] == 'Q'):
+
+        if(code[0:2] == 'NN'):
+
+            rne=0.5*radii[0] + 0.5*radii[1]
+            rse=0.5*radii[1] + 0.5*radii[2]
+            rsw=0.5*radii[2] + 0.5*radii[3]
+            rnw=0.5*radii[0] + 0.5*radii[3]
+
+        # ----------------- currrent (> 2005) standard
+
+        elif(code[0:2] == 'NE'):
+
+            rne=radii[0]
+            rse=radii[1]
+            rsw=radii[2]
+            rnw=radii[3]
+
+        elif(code[0:2] == 'EE'):
+
+            rne=0.5*radii[3] + 0.5*radii[0]
+            rse=0.5*radii[0] + 0.5*radii[1]
+            rsw=0.5*radii[1] + 0.5*radii[2]
+            rnw=0.5*radii[2] + 0.5*radii[3]
+
+        elif(code[0:2] == 'SE'):
+            rne=radii[3]
+            rse=radii[0]
+            rsw=radii[1]
+            rnw=radii[2]
+
+        elif(code[0:2] == 'SS'):
+
+            rne=0.5*radii[2] + 0.5*radii[3]
+            rse=0.5*radii[3] + 0.5*radii[0]
+            rsw=0.5*radii[0] + 0.5*radii[1]
+            rnw=0.5*radii[1] + 0.5*radii[2]
+
+        elif(code[0:2] == 'SW'):
+
+            rne=radii[2]
+            rse=radii[3]
+            rsw=radii[0]
+            rnw=radii[1]
+
+        elif(code[0:2] == 'WW'):
+
+            rne=0.5*radii[1] + 0.5*radii[2]
+            rse=0.5*radii[2] + 0.5*radii[3]
+            rsw=0.5*radii[3] + 0.5*radii[0]
+            rnw=0.5*radii[0] + 0.5*radii[1]
+
+        elif(code[0:2] == 'NW'):
+
+            rne=radii[1]
+            rse=radii[2]
+            rsw=radii[3]
+            rnw=radii[0]
+
+        else:
+
+            print ('EEEEEE atcf: invalid Q wind radii code: ',code)
+            sys.exit()
+
+    #
+    # it's not physically possible for all to be zero, if so, then set to undefined
+    #
+
+    if(rne == 0.0 and rse == 0.0 and rse == 0.0 and rnw == 0.0):
+        rne=rse=rsw=rnw=-999.
+
+    rquad=[rne,rse,rsw,rnw]
+
+    return(rquad)
 
 
 def IsBadEra5Dtg(idtg):

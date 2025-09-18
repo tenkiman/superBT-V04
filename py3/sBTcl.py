@@ -1379,13 +1379,13 @@ class MFutils(MFbase):
         return(list)
 
 
-    def ReadFile2String(self,path,verb=0):
+    def ReadFile2String(self,path,verb=0,warn=1):
 
         string=''
         try:
             list=open(path,'r').readlines()
         except:
-            print("EEE(ReadFile2String) unable to open path: %s"%(path))
+            if(warn): print("EEE(ReadFile2String) unable to open path: %s"%(path))
             return(string)
 
         for tt in list:
@@ -4924,6 +4924,85 @@ class Trkdata(MFbase):
                )
         return(posit)
 
+class ABdata(MFbase):
+    """TC vitals from ATCF A/Bdecks"""
+
+
+    undef=-999
+
+    def __init__(self,
+                 rlat,rlon,
+                 vmax,
+                 pmin=undef,
+                 dir=undef,
+                 spd=undef,
+                 tccode='XX',
+                 tdo=undef,
+                 poci=undef,
+                 roci=undef,
+                 rmax=undef,
+                 deye=undef,
+                 depth=undef,
+                 name=undef,
+                 b1id='X',
+                 b2id='XX',
+                 snum='XX',
+                 verb=0):
+
+        self.rlat=rlat
+        self.rlon=rlon
+
+        if(vmax  != self.undef): self.vmax=vmax
+        if(vmax  == 0):          self.vmax=self.undef
+        if(pmin  != self.undef): self.pmin=pmin
+        if(dir   != self.undef): self.dir=dir
+        if(spd   != self.undef): self.spd=spd
+        if(tccode != 'XX'):      self.tccode=tccode
+        if(b1id  != 'X'):        self.b1id=b1id
+        if(b2id  != 'XX'):       self.b2id=b2id
+        if(snum  != 'XX'):       self.snum=snum
+        if(tdo   != self.undef): self.tdo=tdo
+        if(poci  != self.undef): self.poci=poci
+        if(roci  != self.undef): self.roci=roci
+        if(rmax  != self.undef): self.rmax=rmax
+        if(deye  != self.undef): self.deye=deye
+        if(depth != self.undef): self.depth=depth
+        if(name  != self.undef): self.name=name
+
+
+    def setR30(self,r30):
+        r30m=self.meanQuad(r30)
+        self.r30=r30
+        self.r30m=r30m
+
+    def setR34(self,r34):
+        (self.r34,self.r34m)=self.meanQuad(r34)
+
+    def setR50(self,r50):
+        (self.r50,self.r50m)=self.meanQuad(r50)
+
+    def setR64(self,r64):
+        (self.r64,self.r64m)=self.meanQuad(r64)
+
+    def setR100(self,r100):
+        (self.r100,self.r100m)=self.meanQuad(r100)
+
+    def meanQuad(self,quad):
+        mean=0.0
+        nmean=0
+        for q in quad:
+            if(q != self.undef):
+                mean=mean+q
+                nmean=nmean+1
+
+        if(nmean > 0):
+            mean=mean/float(nmean)
+
+        return(quad,mean)
+
+
+
+
 class ADutils(MFutils):
 
 
@@ -6056,7 +6135,7 @@ class Adeck(ADutils):
         bnum=tt[1].strip()
         bnumi=bnum
         ibnum=bnum
-
+        
         # check for ** in b2id  -- from rerun of tracker on tacc?
         #
         if(b2id == '**'):
@@ -6091,7 +6170,7 @@ class Adeck(ADutils):
                     return(None)
 
             try:      
-                int(bnum)
+                ibnum=int(bnum)
             except:   
                 print('WWW bad acard in makeBidDtg(non int): ',card[:-1],' bnum not defined...onward...')
                 return(None)
@@ -9442,6 +9521,7 @@ class MDdataset(MFbase):
 
 
     def setMDtrk(self,verb=0,docq00=1,btonly=0,only6h=1,useVmax4TcCode=1,
+                 warn=0,
                  dob1idSet=0):
 
         # -- look for breaks in the dtg
@@ -9477,7 +9557,7 @@ class MDdataset(MFbase):
             except:  None
 
             if(c0 == None and bt== None):
-                print('WWWW no c0 or bt for stmid: ',self.stm1id,' dtg: ',dtg)
+                if(warn): print('WWWW no c0 or bt for stmid: ',self.stm1id,' dtg: ',dtg)
             else:
                 idtgs.append(dtg)
 
@@ -9778,22 +9858,20 @@ class MDdataset(MFbase):
             if(tccode == None and wtccode == None):
                 if(not(Is9X(self.stm1id))):
                     if(verb): print("""WWW couldn't find tccode in carq or bt; set to 'NT'""",dtg,self.stm1id)
-                #print """WWW couldn't find tccode in carq or bt; exit and try to figure out what happen""",dtg,self.stm1id
-                tccode='NT'
+                    #print """WWW couldn't find tccode in carq or bt; exit and try to figure out what happen""",dtg,self.stm1id
+                    tccode='BT'
+                else:
+                    tccode='NT'
             
             if(wtccode != None and tccode == None):
                 tccode=wtccode
 
             # -- use vmax
             #
-            if(useVmax4TcCode and tccode == 'NT'):
-                if(vmax != None and IsTcWind(vmax)):
-                    tccode='TW'
-                else:
-                    tccode='NT'
+            if(useVmax4TcCode and tccode == 'BT'):
+                if(vmax != None and vmax > 0):
+                    tccode=self.TCCodeVmax(vmax)
             
-            if(tccode == 'TW' and vmax > 0.0):
-                tccode=self.TCCodeVmax(vmax)
 
             if(verb):
                 print('WWW',dtg,tccode,wncode,wtccode,o0,w0,o12,o24,wncode)
@@ -9951,14 +10029,14 @@ class MDdataset(MFbase):
 
     def cleanMD(self):
 
-        #try: del self.cq00
-        #except: None
+        try: del self.cq00
+        except: None
         
-        #try: del self.cq12
-        #except: None
+        try: del self.cq12
+        except: None
         
-        #try: del self.cq24
-        #except: None
+        try: del self.cq24
+        except: None
         
         try: del self.best
         except: None
@@ -9970,6 +10048,12 @@ class MDdataset(MFbase):
         except: None
         
         try: del self.of03
+        except: None
+
+        try: del self.of12
+        except: None
+        
+        try: del self.of24
         except: None
 
 
@@ -10026,7 +10110,18 @@ class MDdataset(MFbase):
                 cards[dtg]=card
 
         return(cards)
-                
+    
+    def TCCodeVmax(self,vmax):
+        
+        tctype='DB'
+        if(vmax > 0 and vmax <= 20): tctype='LO'
+        if(vmax >= 25 and vmax <= 34): tctype='TD'
+        if(vmax >= 35 and vmax <= 63): tctype='TS'
+        if(vmax >= 64 and vmax <= 129): tctype='TY'
+        if(vmax >= 130): tctype='STY'
+        return(tctype)
+     
+    
                 
 
 class MDdeck(Adeck):
@@ -10153,7 +10248,7 @@ class MDdeck(Adeck):
         return(mD)
 
 
-    def getDtgRange(self,mD,nhours=48,diffdtgTol=36.0,ddtg=6,verb=0):
+    def getDtgRange(self,mD,nhours=48,diffdtgTol=36.0,ddtg=6,verb=0,warn=1):
         
         """ adecks can have multiple storms because they are not cleaned like bdecks; look for a break in the dtgs > nhours
         """
@@ -10175,16 +10270,16 @@ class MDdeck(Adeck):
                 if(ndtgs == 1): 
                     dtg1=dtgs[n]
                     cntDtgs.append(dtg1)
-                    print('WWW:MDeck.getDtgRange 11111111111111 dtg -- set cntDtg to this one and return')
+                    if(warn): print('WWW:MDeck.getDtgRange 11111111111111 dtg -- set cntDtg to this one and return')
                     return(cntDtgs)
                 else:
                     dtg1=dtgs[n+1]
                 diffdtg=dtgdiff(dtg0,dtg1)
                 #print 'n:',n,ndtgs-1,dtg0,dtg1,diffdtg,chkddtg
                 if(diffdtg != chkddtg):
-                    print('WWW:MDeck.getDtgRange.checkDtg6h() -- continuity problem n: %02d'%(n+1),' ndtgs: %2d'%(len(dtgs)),'dtg0: ',dtg0,'dtg1: ',dtg1)
+                    if(warn): print('WWW:MDeck.getDtgRange.checkDtg6h() -- continuity problem n: %02d'%(n+1),' ndtgs: %2d'%(len(dtgs)),'dtg0: ',dtg0,'dtg1: ',dtg1)
                     if(n+1 == ndtgs-1):
-                        print('problem at end -- remove dtg: ',dtg1,' by bumping n increment')
+                        if(warn): print('problem at end -- remove dtg: ',dtg1,' by bumping n increment')
                         n=n+1
                     else:
                         # -- we use 18 h because of JTWC SHEM real storm bdecks can have gaps that will be filled in by 9X
@@ -10249,7 +10344,7 @@ class MDdeck(Adeck):
         
 
 
-    def getDtgRangeNN(self,mD,nhours=48,diffdtgTol=36.0,ddtg=6,verb=0):
+    def getDtgRangeNN(self,mD,nhours=48,diffdtgTol=36.0,ddtg=6,verb=0,warn=1):
         
         """ adecks can have multiple storms because they are not cleaned like bdecks; look for a break in the dtgs > nhours
         """
@@ -10273,19 +10368,19 @@ class MDdeck(Adeck):
                 if(ndtgs == 1): 
                     dtg1=dtgs[n]
                     cntDtgs.append(dtg1)
-                    print('WWW:MDeck.getDtgRangeNN.checkDtg6h() -- 1111111 dtg -- set cntDtg to this one and return')
+                    if(warn): print('WWW:MDeck.getDtgRangeNN.checkDtg6h() -- 1111111 dtg -- set cntDtg to this one and return')
                     return(cntDtgs)
                 else:
                     dtg1=dtgs[n+1]
                     
-                diffdtg=dtgdiff(dtg0,dtg1)
+                diffdtg=mf.dtgdiff(dtg0,dtg1)
                 #print 'n------------------------------:',n,ndtgs-1,dtg0,dtg1,diffdtg,chkddtg
                 if(diffdtg != chkddtg):
-                    print('WWW:MDeck.getDtgRangeNN.checkDtg6h() -- continuity problem n: %2d'%(n+1),' ndtgs: %2d'%(len(dtgs)),'dtg0: ',dtg0,'dtg1: ',dtg1,\
-                          'diffdtg: ',diffdtg,' stmid: ',mD.stm1id)   
+                    if(warn): print('WWW:MDeck.getDtgRangeNN.checkDtg6h() -- continuity problem n: %2d'%(n+1),' ndtgs: %2d'%(len(dtgs)),'dtg0: ',dtg0,'dtg1: ',dtg1,\
+                                    'diffdtg: ',diffdtg,' stmid: ',mD.stm1id)   
                     if(n+1 == ndtgs-1):
                         print()
-                        print('WWW:MDeck.getDtgRangeNN.checkDtg6h() -- problem at end -- remove dtg: ',dtg1,' by bumping n increment +2 for stmid: ',mD.stm1id)
+                        if(warn): print('WWW:MDeck.getDtgRangeNN.checkDtg6h() -- problem at end -- remove dtg: ',dtg1,' by bumping n increment +2 for stmid: ',mD.stm1id)
                         n=n+2
                     else:
                         # -- we use 18 h because of JTWC SHEM real storm bdecks can have gaps that will be filled in by 9X
@@ -10295,10 +10390,11 @@ class MDdeck(Adeck):
                             cntDtgs.append(dtg0)
                             n=n+1
                         else:
-                            print()
-                            print('WWW:MDeck.getDtgRangeNN.checkDtg6h() -- problem NOT at end and diffdtg: ',diffdtg,' > diffdtgTol ',diffdtgTol,(n+1),ndtgs-1)
+                            if(warn):
+                                print()
+                                print('WWW:MDeck.getDtgRangeNN.checkDtg6h() -- problem NOT at end and diffdtg: ',diffdtg,' > diffdtgTol ',diffdtgTol,(n+1),ndtgs-1)
                             if((n+1) <= 3 and ndtgs > 4):
-                                print('WWW:MDeck.getDtgRangeNN.checkDtg6h() -- problem at BEGINNING...toss first dtgs before the break at: ',dtg1,n,ndtgs)
+                                if(warn): print('WWW:MDeck.getDtgRangeNN.checkDtg6h() -- problem at BEGINNING...toss first dtgs before the break at: ',dtg1,n,ndtgs)
                                 cntDtgs=[]
                                 cntDtgs.append(dtg1)
                                 
@@ -10334,7 +10430,7 @@ class MDdeck(Adeck):
             else:
                 dtg1=dtg0
 
-            dtgdiff=dtgdiff(dtg0,dtg1)
+            dtgdiff=mf.dtgdiff(dtg0,dtg1)
             if(dtgdiff > nhours or n == nd-1):
                 edtg=dtg0
                 if(verb): print('BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB: %2d'%(n),' bdtg: ',bdtg,' edtg: ',edtg,' dtgdiff: %3.0f'%(dtgdiff),mD.stm1id)

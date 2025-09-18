@@ -13,7 +13,7 @@ import datetime
 from time import time as timer
 from time import sleep,mktime
 #from types import StringType,IntType,FloatType,ListType,DictType,TupleType
-from math import atan2,atan,pi,fabs,cos,sin,log,tan,acos,sqrt
+from math import atan2,atan,pi,fabs,cos,sin,log,tan,acos,sqrt,isnan
 import array
 
 import zipfile

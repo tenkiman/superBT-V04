@@ -243,8 +243,8 @@ if(verb):
     print 'ooo---yyy',oyearOpt
     print 'ooo---BBB',doBdeck2
     
-if(doBdeck2):
-    doBT=1
+doBTMd3=0
+if(doBdeck2): doBTMd3=1
     
 if(verb): MF.sTimer('ALL')
 if(verb): MF.sTimer('md3-load')
@@ -274,6 +274,7 @@ stmids=None
 if(stmopt != None):
     
     if(doBT):
+        print 'fdfdf'
         if(doBdeck2):
             dobt=0
             dofilt9x=0

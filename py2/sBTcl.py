@@ -2312,7 +2312,7 @@ class DataSets(DataSet):
 
     def closeDataSet(self,verb=0,warn=0):
         if(hasattr(self,'db')):
-            #self.db.sync()  -- not needed; done before close in shelve.py
+            self.db.sync()  #-- not needed; done before close in shelve.py
             self.db.close()
             if(verb):
                 print 'M.DataSets.closeDataSet() -- success'
@@ -3723,6 +3723,7 @@ class Mdeck3(MFutils):
             
             dtgMd3={}
             stmMd3={}
+            m3Cards={}
             
             for allCvsPath in allCvsPaths:
 
@@ -3735,6 +3736,7 @@ class Mdeck3(MFutils):
                     stmid=tt[1]
                     MF.appendDictList(dtgMd3, dtg, stmid)
                     MF.appendDictList(stmMd3, stmid, tt[0:-1])
+                    MF.appendDictList(m3Cards, stmid, acard)
             
 
             dtgMd3=MF.uniqDict(dtgMd3)
@@ -3746,6 +3748,7 @@ class Mdeck3(MFutils):
             md3stmids.sort()
             self.md3stmids=md3stmids
             self.stmMd3=stmMd3
+            self.m3Cards=m3Cards
             #print 'kkkkk------',md3stmids
 
 
@@ -4409,6 +4412,15 @@ that generates of -MRG.txt where the working is updated with BT
             
         return(rc,ocard)
 
+    def getMd3Cards(self,stmid):
+
+        m3cards=[]
+        try:
+            m3cards=self.m3Cards[stmid]
+            return(1,m3cards)
+        except:
+            return(0,m3cards)
+        
         
     
     def getMd3track(self,stmid,dobt=0,
@@ -4923,6 +4935,164 @@ class Trkdata(MFbase):
                self.dir,self.spd,self.tccode,
                )
         return(posit)
+
+class Bdeck2(MFbase):
+
+    """ single bdeck2 for a single storm -- uses mdeck2 in mD2
+    """
+    
+    def __init__(self,m3trk,tstmid,
+                 verb=0,
+                 ):
+        #m3trk.ls()
+        if(m3trk == None): 
+            print 'WWW(sBTL.Bdeck2): no bd2 return None...should NOT get here from makeAdeck2s...'
+            return(None)
+        
+        (bts,bdtgs)=m3trk.getMDtrk()
+        self.stmid=tstmid
+        self.stm1id=tstmid
+        self.bts=bts
+        self.keepObjVars=['stmid','stm1id']                       # smaller 352K v 1069K for 6 aids 31w.13 ~ 30% of that for full listing
+        self.keepObjClss=['BT']
+        
+        self.BT=self.getBestTrk()
+
+    def getBestTrk(self):
+
+        try:
+            btcs=self.bts
+        except:
+            btcs=None
+
+        if(btcs != None):
+            dtgs=btcs.keys()
+            BT=BestTrk2(dtgs,btcs)
+            
+            if(hasattr(self,'stmid')):
+                BT.stmid=self.stmid
+            else:
+                BT.stmid='undef'
+        else:
+            BT=BestTrk2()
+            BT.stmid='undef'
+
+        return(BT)
+        
+    
+
+class BestTrk2(MFbase):
+
+    def __init__(self,dtgs=[],btcs={}):
+
+        self.dtgs=dtgs
+        self.btcs=btcs
+        self.btrk={}
+        dtgs.sort()
+        
+        for dtg in dtgs:
+
+            # -- reorder new btcs to old
+            #
+
+            #(btlat,btlon,btvmax,btpmin,
+             #btdir,btspd,
+             #tccode,wncode,
+             #cqtrkdir,cqtrkspd,cqdirtype,
+             #b1id,tdo,ntrk,ndtgs,
+             #r34m,r50m,alf,sname,
+             #r34,r50,depth)=btcs[dtg]
+                
+            kks=btcs[dtg]
+            
+            #print 'bbb---',dtg,len(kks)
+            #for n in range(0,len(kks)):
+                #print 'nnn',n,kks[n]
+                
+            (btlat,btlon,btvmax,btpmin,btdir,btspd,tccode,wncode,\
+             trkdir,trkspd,dirtype,b1id,tdo,ntrk,ndtgs,r34m,r50m,alf,\
+             sname,r34,r50,depth)=btcs[dtg]
+        
+
+            # -- form consistent with BT in AD.py (mdecks)
+            #
+            if(btpmin == None): btpmin=-9999.
+
+            self.btrk[dtg]=[btlat,btlon,btvmax,btpmin,btdir,btspd,tccode,wncode]
+
+            # -- form from mdecks2
+            #self.btrk[dtg]=[btlat,btlon,btvmax,btpmin,btdir,btspd,tccode,wncode]
+
+            continue
+
+
+    def getwbt(self,dtg):
+
+        print 'GGG ',dtg
+        btc=self.btcs[dtg]
+
+        [btdic,cqdic,wndic,stdic,fldic,stdic,r34quad,r50quad]=btc
+
+        [btlat,btlon,btvmax,btpmin,btdir,btspd]=btdic
+        [cqlat,cqlon,cqvmax,cqpmin,cqdir,cqspd]=cqdic
+        [wnlat,wnlon,wnvmax]=wndic
+        [flgtc,flgind,flgcq,flgwn,tdo,lf,tsnum]=fldic
+
+        [btvmax,r34,r50,rmax,reye,poci,roci,tcdepth]=stdic
+
+        print cqdic
+        print fldic
+
+        return(0)
+
+    def selectBestBtCqTau0(self,dtg,verb=0):
+
+        try:
+            btc=self.btcs[dtg]
+        except:
+            return(None,None,None,None,None)
+
+        (btlat,btlon,btvmax,btpmin,
+         btdir,btspd,
+        tccode,wncode,
+        cqtrkdir,cqtrkspd,cqdirtype,
+        b1id,tdo,ntrk,ndtgs,
+        r34m,r50m,alf,sname,
+        r34,r50,depth)=btc
+        
+        # -- either CARQ or BT dir/spd/vmax ALWAYS goes into btdir/btspd/btvmax
+        #    if(cqdirtype == 'C'): -- comes from CARQ tau0  BT -> cqtrkdir/spd
+        #    if(cqdirtype == 'B'): -- comes from BT  BT-> cqtrkdir/spd
+        #
+
+        return(btlat,btlon,btdir,btspd,btvmax)
+
+
+    def lsBT(self,dtgopt=None):
+
+        dtgs=self.btrk.keys()
+        dtgs.sort()
+        
+        tdtgs=dtgs
+        if(dtgopt != None): tdtgs=mf.dtg_dtgopt_prc(dtgopt)
+
+        for dtg in dtgs:
+
+            if(not(dtg in tdtgs)): continue
+            
+            btdic=self.btrk[dtg]
+            blat=btdic[0]
+            blon=btdic[1]
+            bvmax=btdic[2]
+            bpmin=btdic[3]
+            bdir=btdic[4]
+            bspd=btdic[5]
+            tccode=btdic[6]
+            wncode=btdic[7]
+            (clat,clon)=Rlatlon2Clatlon(blat,blon)
+            print "%s      %s %s %3.0f %4.0f  D/S: %03.0f/%02.0f  T/W: %s/%s"%(dtg,clat,clon,bvmax,bpmin,bdir,bspd,tccode,wncode)            
+
+
 
 class ADutils(MFutils):
 

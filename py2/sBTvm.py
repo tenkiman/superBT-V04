@@ -2714,6 +2714,87 @@ def MakeAdeckCards(model,dtg,trk,stmid,ttaus=None,doString=0,verb=0):
 
 
 
+def putBdeck2sDataSets(bds,dbtype='bd2',dsbdir=None,doclean=0,
+                       verb=0):
+    
+    # -- need to pull from w2 vice sBT
+    #
+    from sBTcl import DataSets,DataSet
+    #from tcbase import DataSets,DataSet
+    if(dsbdir == None):
+        from tcbase import TcDataBdir
+        dsbdir="%s/DSs"%(TcDataBdir)
+    
+    backup=0
+    chkifopen=0
+
+    # analyze keys
+    #
+    dskeys=bds.keys()
+    dskeys=mf.uniq(dskeys)
+    
+    dskeysS={}
+    
+    for dskey in dskeys:
+        (snum,b1id,stmyear,b2id,stm2id,stm1id)=getStmParams(dskey)
+        MF.appendDictList(dskeysS,stmyear,dskey)
+        
+        
+    byears=getYearsFromStmids(dskeys)
+    
+    DSsS={}
+
+    for byear in byears:
+        
+        # -- make DSs for each storm year
+        #
+        dbname="%s-%s"%(dbtype,byear)
+        dbfile="%s.pypdb"%(dbname)
+        DSs=DataSets(bdir=dsbdir,name=dbfile,dtype=dbtype,verb=verb,doDSsWrite=1,unlink=doclean)
+        
+        try:
+            dskCur=DSs.db['keys'].getData()
+        except:
+            dskCur=[]
+        
+        dskCur.sort()
+        dskCur=mf.uniq(dskCur)
+        dskCur=dskCur+dskeys
+
+        dsk=DataSet(name='dskeys',dtype='hash')
+        dsk.data=dskCur
+        DSs.putDataSet(dsk,'keys')
+
+        # put individual bdeck2 by key: storm
+        #
+        for dskey  in dskeysS[byear]:
+            try:
+                ds=bds[dskey]
+                DSs.putDataSet(ds,dskey,doDbSync=1,verb=verb)
+            except:
+                print 'WWW no bds for dskey: ',dskey,' in putBdeck2sDataSet'
+                continue
+
+            #print 'llllllllllllllllllllllllllllllllll'
+            #bb22=DSs.getDataSet(dskey)
+            #kks=bb22.bts.keys()
+            #kks.sort()
+            ##print 'kkklll',kks
+            #bb22.ls()
+            
+        # -- close it
+        #
+        #print 'ccccccccccccccccccccc------------------'
+        #DSs.ls(maxchar=180)
+        DSs.closeDataSet(verb=verb)
+        #print 'aaaaaaaaaaaaaaaaaaaaa------------------'
+        #DSs.ls()
+        DSsS[byear]=DSs
+
+    return(DSsS)
+
+
+
 def getHemis(stmids):
 
     rc=None
@@ -3175,7 +3256,23 @@ def getBD2stmid4Xstmid(istmid):
         bnum=istmid[1:3]
         ostmid=bnum+b1id+istmid[3:]
     return(ostmid)
+
+def getYearFromStmid(stmid):
+    (snum,b1id,year,b2id,tstm2id,stm1id)=getStmParams(stmid)
+    return(year)
+
+def getYearsFromStmids(stmids):
+
+    years=[]
+    if(type(stmids) != ListType): stmids=[stmids]
     
+    for stmid in stmids:
+        year=getYearFromStmid(stmid)
+        years.append(year)
+
+    years=mf.uniq(years)
+
+    return(years)
 
 def get9Xnum(stmid):
     (snum,b1id,year,b2id,stm2id,stm1id)=getStmParams(stmid,convert9x=1)

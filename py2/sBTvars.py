@@ -36,6 +36,8 @@ versionBT=sbtVersion.lower()
 
 bm3year=2007
 em3year=2024
+em3yearM3=2022
+em3yearSBT=2022
 em3yearP1=em3year+1
  
 sbtMeta='h-meta-sbt-%s-vars.csv'%(versionBT)
@@ -49,6 +51,8 @@ sbtLogDir="%s/log-sbt"%(sbtRoot)
 sbtProdDir='%s/products-%s'%(sbtRoot,versionDev)
 sbtProdDirDiag='%s/tcdiag'%(sbtProdDir)
 sbtSrcDir="%s/src-%s"%(sbtRoot,versionDev)
+
+sbtVerDir="%s/%s"%(sbtRoot,versionBT)
 
 sbtVerDirDev="%s/%s"%(sbtRoot,versionDev)
 

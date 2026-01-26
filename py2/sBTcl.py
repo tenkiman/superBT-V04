@@ -11877,7 +11877,7 @@ class superBT(Mdeck3):
         MF.ChkDir(self.gadatDir,'mk')
         
         if(oyearOpt == None):
-            oyearOpt='%s-%s'%(bm3year,em3year)
+            oyearOpt='%s-%s'%(bm3year,em3yearM3)
         
         oyearOpt="%s"%(oyearOpt)
         self.oyearOpt=oyearOpt

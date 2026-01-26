@@ -6469,16 +6469,28 @@ def lsSbtVars(verb=0):
             sMdesc[tt0]=tt1
             sMkeys.append(tt0)
         
+    hcard=''
     if(verb):
         print 'superBT-%s listing'%(versionBT)
         print '         var : description'
         print '--------------------------'
         kk=sMkeys
+        nn=0
+        
         for k in kk:
+            if(hcard == ''):
+                hcard='%s,'%(k)
+            else:
+                hcard='%s%s,'%(hcard,k)
+            nn=nn+1
             key="""'%s'"""%(k)
-            print "%12s : %s"%(key,sMdesc[k])
-    print
+            print "%12s : %3d : %s"%(key,nn,sMdesc[k])
             
+        print
+     
+    # -- 20260126 -- to output correct header line in sbt-*2007-2022*       
+    #hcard=hcard[0:-1]+'\n'
+    #print hcard
     return(sMdesc)
  
 # -- md3

@@ -5,7 +5,7 @@
 
 Mike Fiorino (mfiorino@gmu.edu)</br>
 <b> 30 January 2024 </b></br>
-<b>  8 May 2024 </b>
+<b>  8 May 2024 </b> </br>
 <b> 16 February 2026 </b>
 </div>
 
@@ -147,8 +147,7 @@ introduction with and an expanded version of the two science applications in [RE
 
 There are two ways to install:
 
-- download the superBT tarball: [superBT-V04.tgz](https://github.com/tenkiman/superBT-V04/raw/v04/docs/superBT-V04.tgz
-"superBT tarball: https://github.com/tenkiman/superBT-V04/raw/v04/docs/superBT-V04.tgz")
+- download the superBT tarball: [superBT-V04.tgz](https://wxmap2.com/superBT/superBT-V04.tgz "superBT tarball: https://github.com/tenkiman/superBT-V04/raw/v04/docs/superBT-V04.tgz")
 
 ```sh
 mkdir local-dir                        # local-dir is the directory to untar and will be ...

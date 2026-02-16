@@ -7358,6 +7358,7 @@ class W2areas(MFbase):
     ysize=int(xsize*W2plotAspect)
     dx=1.0
     dy=1.0
+    undef=1.0e20
 
     def __init__(self,
                  lonW=None,
@@ -7379,8 +7380,6 @@ class W2areas(MFbase):
         if( (type(self.dx) is FloatType) and (type(self.dy) is FloatType) ):
             self.setGrid(self.dx,self.dy)
 
-        
-        
 
     def setLons(self,lonW,lonE):
         
@@ -7420,7 +7419,67 @@ class W2areas(MFbase):
         
         self.ni=int(ni)
         self.nj=int(nj)
+        self.iis=range(0,self.ni)
+        self.jjs=range(0,self.nj)
         
+        
+    def ll2ij(self,lon,lat):
+        
+        dlon=self.dx
+        dlat=self.dy
+        lon0=self.lonW
+        lat0=self.latS
+
+        ni=self.ni
+        nj=self.nj
+        wrapx=self.wrapEW
+    
+        i=(lon - lon0)/dlon
+        j=(lat - lat0)/dlat
+        
+    
+        if(wrapx):
+            if(i<=0):  i=ni+i
+            if(i>=ni): i=i-ni
+    
+        ii=int(i+0.5)
+        jj=int(j+0.5)
+        
+        #print 'iiiiiiii------',lon,lat,lon0,lat0,dlon,dlat,wrapx,'ij: %4.1f %4.1f '%(i,j),'ii,jj',ii,jj
+    
+        return(i,j,ii,jj)
+    
+    
+    def ij2ll(self,i,j):
+        
+        dlon=self.dx
+        dlat=self.dy
+        lon0=self.lonW
+        lat0=self.latS
+    
+        lon=i*dlon+lon0
+        lat=j*dlat+lat0
+        
+        #if(lon > 360.0): lon=lon-360.0 
+             
+    
+        return(lat,lon)
+    
+    def setCtlTemplate(self,datfile,btime='00z4July1775',btinc='1mo',nvars=1):
+        ctlpath='t.ctl'
+        ctl='''dset ^%s
+title t.ctl
+undef %s
+xdef %d linear %6.2f %5.2f
+ydef %d linear %6.2f %5.2f
+zdef 1 levels 1013
+tdef 1 linear %s %s
+vars %d
+
+endvars'''%(datfile,str(self.undef),self.ni,self.lonW,self.dx,
+                        self.nj,self.latS,self.dy,
+                        btime,btinc,nvars)
+        MF.WriteString2Path(ctl,ctlpath,verb=1)
 
 
 

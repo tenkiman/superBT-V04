@@ -3852,7 +3852,13 @@ NN: 0 - counts; 1 - donorm=1; 2 donorm=1,docum=1
     dtype=int(tt[2])
     binint=0.25
 
-    ptitle2="Basin: %s  stmopt: %s"%(basin.upper(),stmopt)
+    ptitle2="Basin: %s  stmopt: %s"%(basin.upper(),stmopt)        #nn=len(stmbasins)
+        #for n in range(0,nn):
+            #stmbasin=stmbasins[n]
+            #stmopt='%s%s.%s'%(stmopt,stmbasin,year)
+            #if(n < nn-1):
+                #stmopt="%s,"%(stmopt)
+
     
     if(find(ftype,'sea')): filtBySeason=1
     if(find(ftype,'dev')): filtByDev=1
@@ -3960,6 +3966,36 @@ def uv2dirspd(u,v):
     sspd=sqrt(u*u+v*v)
     return(sdir,sspd)
 
+def dirspd2uv(sdir,sspd,doheading=0):
+    import math
+    """
+    Convert wind speed and heading to u and v components.
+    
+    Parameters:
+        speed (float): Wind speed (any units, e.g., m/s, knots).
+        heading (float): Wind direction in degrees FROM which the wind is blowing.
+    
+    Returns:
+        tuple: (u, v) components in the same units as speed.
+    """
+    # Input validation
+    if not isinstance(sspd, (int, float)) or not isinstance(sdir, (int, float)):
+        raise TypeError("Speed and sdir must be numeric values.")
+    if sspd < 0:
+        raise ValueError("Speed cannot be negative.")
+    
+    # Convert sdir to radians
+    sdirrad=sdir
+    if(doheading): sdirrad=sdirrad-180.0
+        
+    sdir_rad = math.radians(sdirrad)
+    
+    # Meteorological convention: direction is FROM, so reverse the vector
+    u = -sspd * math.sin(sdir_rad)  # East-West component
+    v = -sspd * math.cos(sdir_rad) # North-South component
+
+    return(u,v)
+    
 
 
 def rumhdsp(rlat0,rlon0,rlat1,rlon1,dt,units='english',verb=0):
@@ -4089,7 +4125,7 @@ def getStmopts(stmopt,verb=0):
         bbs=tt
     else:
         bbs=[bb]
-    
+        
     tt=yy.split('-')
 
     if(len(tt) == 2):

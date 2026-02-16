@@ -1,7 +1,7 @@
 <div align="center">
 
 <h1>superBT-V04</h1>
-<h3>a "super" Best Track (BT) for Tropical Cyclone (TC) Forecasting and Research</h3>
+<h3>A Global "super" Best Track (BT) for Tropical Cyclone (TC) Forecasting and Research</h3>
 
 Mike Fiorino (mfiorino@gmu.edu)</br>
 <b> 30 January 2024 </b></br>
@@ -39,8 +39,8 @@ change.
 
 - **V04** : ***current beta version***
 released 202401 at [https://github.com/tenkiman/superBT-V04](https://github.com/tenkiman/superBT-V04 "https://github.com/tenkiman/superBT-V04")
-- **V10** : initial version around 202404
-  - 2006-2023
+- **V10** : initial version around 202604
+  - 2007-2024
   - add R34
 
 ### TC label/numbering and Date-Time conventions
@@ -107,24 +107,29 @@ SS  - Subtropical Storm      : Vmax >=35 & Vmax < 64 kts
 
 ### the superBT data in the `dat/` directory:
   - 3 `.csv` data files
-    - `sbt-v04-2007-2022-MRG.csv` - the superBT
-    - `all-md3-2007-2022-MRG.csv` - a ***merge*** (I call a `mdeck3` or `md3`) of both ***real-time operational*** and ***final best track*** TC position/structure data
-    - `sum-md3-2007-2022-MRG.csv` - a one-line storm summary, there are ***5233 storms*** in the data set
+    - [`sbt-v04-2007-2022-MRG.csv`](https://github.com/tenkiman/superBT-V04/blob/main/dat/sbt-v04-2007-2022-MRG.csv "https://github.com/tenkiman/superBT-V04/blob/main/dat/sbt-v04-2007-2022-MRG.csv") - the superBT
+    - [`all-md3-2007-2022-MRG.csv`](https://github.com/tenkiman/superBT-V04/blob/main/dat/all-md3-2007-2022-MRG.csv "https://github.com/tenkiman/superBT-V04/blob/main/dat/all-md3-2007-2022-MRG.csv") - a ***merge*** (I call a `mdeck3` or `md3`) of both ***real-time operational*** and ***final best track*** TC position/structure data
+    - [`sum-md3-2007-2022-MRG.csv`](https://github.com/tenkiman/superBT-V04/blob/main/dat/sum-md3-2007-2022-MRG.csv "https://github.com/tenkiman/superBT-V04/blob/main/dat/sum-md3-2007-2022-MRG.csv") - a one-line storm summary, there are ***5233 storms*** in the data set
   - 3 corresponding `.csv` metadata files describing the variables.
-    - `h-meta-sbt-v04-vars.csv` - superBT variables/descriptors
-    - `h-meta-md3-vars.csv` - `mdeck3` variables/descriptors
-    - `h-meta-md3-sum.csv` - `mdeck3` storm summary variables/descriptors
+    - [`h-meta-sbt-v04-vars.csv`](https://github.com/tenkiman/superBT-V04/blob/main/dat/h-meta-sbt-v04-vars.csv "https://github.com/tenkiman/superBT-V04/blob/main/dat/h-meta-sbt-v04-vars.csv") - superBT variables/descriptors
+    - [`h-meta-md3-vars.csv`](https://github.com/tenkiman/superBT-V04/blob/main/dat/h-meta-md3-vars.csv "https://github.com/tenkiman/superBT-V04/blob/main/dat/h-meta-md3-vars.csv") - `mdeck3` variables/descriptors
+    - [`h-meta-md3-sum.csv`](https://github.com/tenkiman/superBT-V04/blob/main/dat/h-meta-md3-sum.csv "https://github.com/tenkiman/superBT-V04/blob/main/dat/h-meta-md3-sum.csv") - `mdeck3` storm summary variables/descriptors
     
   - `py2/` directory with a python2 interface for analysis and display
+  - `py3/` directory with a python3 interface for analysis and display **under development**
   - `docs/` directory with documentation
 
 ### Quick Starts and documentation
 
 #### ***docs***
 
+A full listing of all variables in each of the three .csv files is [README-sbt-v04-vars.md](https://raw.githubusercontent.com/tenkiman/superBT-V04/main/docs/README-sbt-v04-vars.md
+"https://raw.githubusercontent.com/tenkiman/superBT-V04/main/docs/README-sbt-v04-vars.md")
+
 The more complete doc [README-sbt-v04.md](https://raw.githubusercontent.com/tenkiman/superBT-V04/main/docs/README-sbt-v04.md
 "https://raw.githubusercontent.com/tenkiman/superBT-V04/main/docs/README-sbt-v04.md")
 gives more details on the data and processing, and two science applications that demonstrate the unique capabilities possible with the `superBT`.
+
 Links to the python2 applications are also included in [README-sbt-v04.md](https://raw.githubusercontent.com/tenkiman/superBT-V04/main/docs/README-sbt-v04.md
 "https://raw.githubusercontent.com/tenkiman/superBT-V04/main/docs/README-sbt-v04.md")
 

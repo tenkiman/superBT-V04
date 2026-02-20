@@ -5916,10 +5916,11 @@ def isIOBasinStm(stmid):
         else:
             return(0)
     elif(len(ustmid) == 2):
-        if(ustmid == 'IO' or ustmid == 'BB' or ustmid == 'AA'):
+        if(ustmid == 'IO' or ustmid == 'BB' or ustmid == 'AA' or ustmid == 'NI'):
             return(1)
         else:
             return(0)
+        
 def isShemBasinStm(stmid):
 
     tt=stmid.split('.')

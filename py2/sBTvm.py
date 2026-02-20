@@ -6883,7 +6883,6 @@ def MakeStmList(stmopt,yearopt=None,dofilt9x=0,verb=0):
 
             tcnames=GetTCnamesHash(year)
             bchk=sss.upper()
-
             for tcname in tcnames:
                 # -- improved subbasin checking...
                 #
@@ -6899,7 +6898,17 @@ def MakeStmList(stmopt,yearopt=None,dofilt9x=0,verb=0):
                     
         elif(len(tt) == 1):
 
+            # -- single storm id
+            #
+            
             if(len(sss) == 3):
+                
+                # -- always get the tcnames
+                #
+                tcnames=GetTCnamesHash(year)
+
+                # -- special case of???
+                #
                 if(sss[0].upper() == 'M'):
                     nback=int(sss[1])
                     bchk=sss[2].upper()
@@ -6931,8 +6940,30 @@ def MakeStmList(stmopt,yearopt=None,dofilt9x=0,verb=0):
 
                 else:
 
-                    sid="%s.%s"%(sss.upper(),year)
-                    sids.append(sid)
+                    # -- single sid
+                    #
+                    for tcname in tcnames:
+
+                        # -- improved subbasin checking...
+                        #
+                        bchk=sss[2].upper()
+                        bnum=sss[0:2]
+                        tcsubbasin=tcname[1][2:3]
+                        tcsnum=tcname[1][0:2]
+                        chk1=(tcsnum == bnum)
+                        chk2=(isIOBasinStm(tcsubbasin) and isIOBasinStm(bchk))
+                        chk3=(isShemBasinStm(tcsubbasin) and isShemBasinStm(bchk))
+                        #print 'tcname',tcsubbasin,bchk,tcname[1],bnum,tcsnum,'chk1: ',chk1
+                        if(chk1):
+                            if(chk2 or chk3):
+                                sid="%s%s.%s"%(bnum,tcname[1][2],tcname[0])
+                            else:
+                                sid="%s%s.%s"%(bnum,bchk,tcname[0])
+                            if(len(sids) == 0):
+                                sids.append(sid)
+                        else:
+                            sid=None
+                            
 
 
 

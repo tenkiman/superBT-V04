@@ -1368,12 +1368,12 @@ class MFutils(MFbase):
 
 
 
-    def ReadFile2List(self,path,verb=0):
+    def ReadFile2List(self,path,verb=0,warn=1):
 
         try:
             list=open(path,'r').readlines()
         except:
-            print "EEE(ReadFile2List) unable to open path: %s"%(path)
+            if(warn): print "EEE(ReadFile2List) unable to open path: %s"%(path)
             return(None)
 
         return(list)

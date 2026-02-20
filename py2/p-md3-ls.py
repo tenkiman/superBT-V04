@@ -206,6 +206,7 @@ class TmtrkCmdLine(CmdLine):
             'sumonly':          ['s',0,1,'list stmids only'],
             'dofilt9x':         ['9',0,1,'only do 9X'],
             'doNNand9X':        ['D',1,0,'do NOT list 9X that developed into NN'],
+            'doMD2ls':          ['y',1,0,'do NOT use md2a format for stm summary card'],
             'domiss':           ['m',0,1,'out stmids with missing dtg'],
             'dtgopt':           ['d:',None,'a',' dtgopt'],
             'dobt':             ['b',0,1,'dobt for both get stmid and trk'],
@@ -286,6 +287,7 @@ if(stmopt != None):
             
             
     
+    #print'ddddddddd----',doBT,dobt,dofilt9x,doNNand9X
     stmids=[]
     stmopts=getStmopts(stmopt)
     for stmopt in stmopts:
@@ -293,19 +295,29 @@ if(stmopt != None):
 
     for stmid in stmids:
         
-        if(sumonly):
-            (rc,scard)=md3.getMd3StmMeta(stmid)
-            print scard
-            (snum,b1id,year,b2id,stm2id,stm1id)=getStmParams(stmid)
+        (snum,b1id,year,b2id,stm2id,stm1id)=getStmParams(stmid)
+        if(int(year) <= 2006): doNNand9X=0 ; doMD2ls=1 ; doBdeck2=1
+        else:                                doMD2ls=1
 
+        if(sumonly):
+            
+            (rc1,scard1)=md3.getMd3StmMeta(stmid,doMD2=1)
+            (rc0,scard0)=md3.getMd3StmMeta(stmid,doMD2=0)
+            if(doMD2ls):
+                scard=scard1
+            else:
+                scard=scard0
+                
+            print scard
+                
             if(IsNN(stmid) and doNNand9X):
                 
-                b3id=rc[-2].split()[-1]
-                gendtg=rc[-1]
+                b3id=rc0[-2].split()[-1]
+                gendtg=rc0[-1]
 
                 stmid9X='%s.%s'%(b3id.lower(),year)
                 if(Is9XNN(stmid9X) == 0):
-                    (rc,scard9X)=md3.getMd3StmMeta(stmid9X)
+                    (rc,scard9X)=md3.getMd3StmMeta(stmid9X,doMD2=0)
                     last9xdtg=rc[-1]
                     gdtgdiff=mf.dtgdiff(gendtg,last9xdtg)
                     scard9X="%s genDiff: %3.0f"%(scard9X,gdtgdiff)
@@ -316,6 +328,7 @@ if(stmopt != None):
         
         # -- get track
         #
+        (rc,scard)=md3.getMd3StmMeta(stmid)
         rc=md3.getMd3track(stmid,dobt=dobt,verb=verb,domiss=domiss)
 
         if(rc[0] == None):
@@ -344,8 +357,8 @@ if(stmopt != None):
 
             if(IsNN(stmid)):
                 (rc,scard)=md3.getMd3StmMeta(stmid)
-                print scard
                 (snum,b1id,year,b2id,stm2id,stm1id)=getStmParams(stmid)
+                print scard
 
                 if(doNNand9X):
                     b3id=rc[-2].split()[-1]
@@ -358,21 +371,12 @@ if(stmopt != None):
                         scard9X="%s genDiff: %3.0f"%(scard9X,gdtgdiff)
                         print scard9X
                         
-                        
-            (rc,scard)=md3.getMd3StmMeta(stmid)
-            stmDevType=rc[-5]
-            (snum,b1id,year,b2id,stm2id,stm1id)=getStmParams(stmid)
-            #print 'ssssss',stmDevType,rc,scard
 
-            if(mf.find(scard,'NN:')):
-                b3id=rc[-2].split()[-1]
-                last9xdtg=rc[-1]
-                stmidNN="%s.%s"%(b3id.lower(),year)
-                (rcNN,scardNN)=md3.getMd3StmMeta(stmidNN)
-                gendtg=rcNN[-1]
-                gdtgdiff=mf.dtgdiff(gendtg,last9xdtg)
-                scardNN="%s genDiff: %3.0f"%(scardNN,gdtgdiff)
-                print scardNN
+            else:
+                (rc,scard)=md3.getMd3StmMeta(stmid)
+                stmDevType=rc[-5]
+                (snum,b1id,year,b2id,stm2id,stm1id)=getStmParams(stmid)
+                print scard
                     
                     
     

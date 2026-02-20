@@ -4086,6 +4086,9 @@ class Mdeck3(MFutils):
             sopt=sopt.upper()
             ss=sopt.split(',')
             
+            if(year <= 2006):
+                dofilt9x=1
+                
             if(len(ss) > 1):
                 for sss in ss:
                     rc=getstmids(sss,year,dofilt9x=dofilt9x)
@@ -4121,6 +4124,7 @@ class Mdeck3(MFutils):
 not sure about this...MRG has BT .csv has working best track
 always use all-BT because m-md3-all-cp.py does a merge process
 that generates of -MRG.txt where the working is updated with BT
+20260218 -- new logic for setting paths...
         """
         allCvsPaths=[]
         sumCvsPaths=[]
@@ -4143,42 +4147,58 @@ that generates of -MRG.txt where the working is updated with BT
             
             # -- set bt based on year
             #
-            doBT=0
-            if(ioyearOpt < 2007): doBT=1
+            #doBT=0
+            #if(ioyearOpt < 2007): doBT=1
             #print 'iiiiii',ioyearOpt,doBT
             if(ioyearOpt > em3year and not(getNewYear)): 
                 if(verb): print 'no data past: ',em3year,' ioyearOpt: ',ioyearOpt
                 continue
 
-            if(verb): print 'setting all/sum cvspath for year: ',oyearOpt
             
-            if(doBT == -1):
-                allCvsPath="%s/all-md3-%s.csv"%(self.tbdir,oyearOpt)
-                sumCvsPath="%s/sum-md3-%s.csv"%(self.tbdir,oyearOpt)
-            elif(doBT == 1):
-                allCvsPath="%s/all-md3-%s-BT.csv"%(self.tbdir,oyearOpt)
-                sumCvsPath="%s/sum-md3-%s-BT.csv"%(self.tbdir,oyearOpt)
-            else:
-                allCvsPath="%s/all-md3-%s-MRG.csv"%(self.tbdir,oyearOpt)
-                sumCvsPath="%s/sum-md3-%s-MRG.csv"%(self.tbdir,oyearOpt)
+            allCvsPath0="%s/all-md3-%s.csv"%(self.tbdir,oyearOpt)
+            sumCvsPath0="%s/sum-md3-%s.csv"%(self.tbdir,oyearOpt)
+            siz0=(MF.getPathSiz(allCvsPath0) > 0)
+            siz0sum=(MF.getPathSiz(sumCvsPath0) > 0)
+            
+            allCvsPathBT="%s/all-md3-%s-BT.csv"%(self.tbdir,oyearOpt)
+            sumCvsPathBT="%s/sum-md3-%s-BT.csv"%(self.tbdir,oyearOpt)
+            sizBT=(MF.getPathSiz(allCvsPathBT) > 0)
+            sizBTsum=(MF.getPathSiz(sumCvsPathBT) > 0)
+
+            allCvsPathMRG="%s/all-md3-%s-MRG.csv"%(self.tbdir,oyearOpt)
+            sumCvsPathMRG="%s/sum-md3-%s-MRG.csv"%(self.tbdir,oyearOpt)
+            sizMRG=MF.getPathSiz(allCvsPathMRG)
+            sizMRGsum=MF.getPathSiz(sumCvsPathMRG)
+            
+            if(verb): 
+                print 'setting all/sum cvspath for year: ',oyearOpt
+                print 'allCvs   siz0   siz0sum: ',allCvsPath0,siz0,siz0sum
+                print 'allCvs  sizBT  sizBTsum: ',allCvsPathBT,sizBT,sizBTsum
+                print 'allCvs sizMRG sizMRGsum: ',allCvsPathMRG,sizMRG,sizMRGsum
                 
-            allCvsPaths.append(allCvsPath)
-            sumCvsPaths.append(sumCvsPath)
+            # -- if doBT go for -BT.csv
+            #
+            if(doBT and sizBT and sizBTsum):
+                allCvsPaths.append(allCvsPathBT)
+                sumCvsPaths.append(sumCvsPathBT)
+            
+            # -- else look for MRG first...
+            #
+            elif(sizMRG and sizMRGsum):
+                allCvsPaths.append(allCvsPathMRG)
+                sumCvsPaths.append(sumCvsPathMRG)
+            
+            # -- else look for working best track
+            #
+            elif(siz0 and siz0sum):
+                allCvsPaths.append(allCvsPath0)
+                sumCvsPaths.append(sumCvsPath0)
+            else:
+                print'WWW no all or sum Cvs for oyearOpt: ',oyearOpt
     
         return(allCvsPaths,sumCvsPaths)
 
     
-    def getCvsYearOptPaths(self,tbdir,oyearOpt,headAll,headSum):
-        
-        
-        allCvsPath=allCvsPathBT=sumCvsPath=sumCvsPathBT=None
-        
-        allCvsPath="%s/all-md3-%s.csv"%(self.tbdir,oyearOpt)
-        allCvsPathBT="%s/all-md3-%s-BT.csv"%(self.tbdir,oyearOpt)
-        sumCvsPath="%s/sum-md3-%s.csv"%(self.tbdir,oyearOpt)
-        sumCvsPathBT="%s/sum-md3-%s-BT.csv"%(self.tbdir,oyearOpt)
-            
-        return(allCvsPath,allCvsPathBT,sumCvsPath,sumCvsPathBT)
     
     def getBasin4b1id(self,b1id):
         ib1id=b1id.lower()
@@ -4317,13 +4337,13 @@ that generates of -MRG.txt where the working is updated with BT
                 ostmids.append(ostmid)
         
         if(dobt):
-            stmids=[]
+            ostmids=[]
             for stmid in stmids:
                 if(IsNN(stmid)): ostmids.append(stmid)
                 
         return(ostmids)
         
-    def getMd3StmMeta(self,stmid,doprint=0):
+    def getMd3StmMeta(self,stmid,doMD2=0,doprint=0):
 
         #n 0 30w.2019
         #n 1 TY
@@ -4393,12 +4413,23 @@ that generates of -MRG.txt where the working is updated with BT
         
         stm=stm.upper()
         
-        ocard="%s %s %3s %-s %-10s :%3s :%4.1f;%4.1f :%5.1f %5.1f : %s<->%s :%5.1f<->%-5.1f :%5.1f<->%-5.1f :%4.1f :%4.1f :%2d:%2d:%2d:%s :%s %s %s"%\
-            (yyyy,stm,tctype,stmDev,sname[0:9],ovmax,tclife,stmlife,latb,lonb,bdtg[4:],edtg[4:],
-             latmn,latmx,lonmn,lonmx,
-             stcd,oACE,
-             nRI,nED,nRW,
-             RIstatus,timeGen,stm9x,ogendtg)
+        if(doMD2):
+            
+            ogendtg=' 1st: %s'%(ogendtg[4:])
+            ocard="%s %s  %3s %-15s : %3s : %4.1f %4.1f : %5.1f %5.1f : %s<->%s :%5.1f<->%-5.1f :%5.1f<->%-5.1f :%4.1f :%4.1f :%2d:%2d:%2d:%s :%s %s %-s"%\
+                (yyyy,stm,tctype,sname[0:9],ovmax,tclife,stmlife,latb,lonb,bdtg[4:],edtg[4:],
+                 latmn,latmx,lonmn,lonmx,
+                 stcd,oACE,
+                 nRI,nED,nRW,
+                 RIstatus,timeGen,stm9x,ogendtg[0:10])
+        else:
+            
+            ocard="%s %s  %3s %-3s %-11s : %3s : %4.1f %4.1f : %5.1f %5.1f : %s<->%s :%5.1f<->%-5.1f :%5.1f<->%-5.1f :%4.1f :%4.1f :%2d:%2d:%2d:%s :%s %s %s"%\
+                (yyyy,stm,tctype,stmDev,sname[0:9],ovmax,tclife,stmlife,latb,lonb,bdtg[4:],edtg[4:],
+                 latmn,latmx,lonmn,lonmx,
+                 stcd,oACE,
+                 nRI,nED,nRW,
+                 RIstatus,timeGen,stm9x,ogendtg)
 
         rc=(yyyy,stm,tctype,stmDev,sname,ovmax,tclife,stmlife,latb,lonb,bdtg,edtg,
             latmn,latmx,lonmn,lonmx,
@@ -4467,6 +4498,7 @@ that generates of -MRG.txt where the working is updated with BT
         m3trk={}
         stmid=stmid.lower()
 
+        (snum,b1id,byear,b2id,stm2id,stm1id)=getStmParams(stmid)
 
         if(not(doBdeck2)):
             try:     smeta=self.stmMetaMd3[stmid]
@@ -4491,12 +4523,21 @@ that generates of -MRG.txt where the working is updated with BT
             try:     smeta=self.stmMetaMd3[stmid]
             except:  return(-1,m3trk)
             
-            smkey=len(smeta)
+            is9xtype=(smeta[-5] == '9X')
+            b3id=smeta[-4]
+            isb2type=(b3id[0:2] == 'xx')
+            nhr9x=(smeta[-3] != 'NaN')
 
             # -- check if NN only storm -- no smid9x for bdeck2
             #
-            if(smeta[-5] == '9X' and smeta[-3] != 'NaN'):
-                stmid9x="%s.%s"%(smeta[-4],stmid.split('.')[-1])
+            stmid9x=None
+            if(is9xtype and nhr9x):
+                if(isb2type):
+                    stmid9x=getNewForm9Xstmid(stmid)
+                else:
+                    stmid9x="%s.%s"%(b3id,byear)
+            
+            if(stmid9x != None):
                 stmcards9x=self.stmMd3[stmid9x.lower()]
                 stmcards=stmcards9x+stmcards
             
@@ -4519,7 +4560,7 @@ that generates of -MRG.txt where the working is updated with BT
                  #self.trkdir,self.trkspd,self.dirtype,
                  #self.b1id,self.tdo,self.ntrk,self.ndtgs,
                  #self.r34m,self.r50m,self.alf,self.sname,
-                 #self.r34,self.r50,self.depth,
+                 #self.r34,self.r50,self.depth,getMd3tracks4dtg
                  #)
 
             (dtg,rlat,rlon,vmax,pmin,tdir,tspd,r34m,r50m,
@@ -11096,7 +11137,16 @@ class MD3trk(MDdataset):
         tccode=trk[n]     #20
         n=n+1
         rcTcCode=IsTc(tccode)
-        #print 'qqqqq----tttt',n,tccode,rcTcCode,self.useVmax4TcCode,vmax
+        if(rcTcCode >= 1 and rcTcCode <= 3):
+            otccode=tccode
+        else:
+            if(vmax != undef):
+                otccode=self.TCCodeVmax(vmax)
+                #print 'hhh-111-222',tccode,vmax,verb
+            else:
+                otccode='TC'
+                
+        #print 'qqqqq----tttt',n,tccode,rcTcCode,otccode,vmax
         
         wncode=trk[n]     #21
         n=n+1
@@ -11137,19 +11187,15 @@ class MD3trk(MDdataset):
         if(tdo == 'NaN' or tdo == '---'): tdo='   '
         n=n+1
 
-        if(self.useVmax4TcCode and vmax != undef):
-            tccode=self.TCCodeVmax(vmax)
-            #print 'hhh-111-222',tccode,vmax,verb
-
 
         if(verb):
             print self.b1id,rlat,rlon,vmax,pmin,dir,spd
-            print tccode,wncode,self.b1id,tdo,ntrk,ndtgs
+            print otccode,wncode,self.b1id,tdo,ntrk,ndtgs
             print r34m,r34m,r50m,depth
             print r34,r50,poci,roci,rmax
             
         self.trk[dtg]=Trkdata(rlat,rlon,vmax,pmin,dir,spd,\
-                              tccode,wncode,b1id=self.b1id,tdo=tdo,ntrk=ntrk+1,ndtgs=ndtgs+1,
+                              otccode,wncode,b1id=self.b1id,tdo=tdo,ntrk=ntrk+1,ndtgs=ndtgs+1,
                               r34m=r34m,r50m=r50m,depth=depth,
                               r34=r34,r50=r50,poci=poci,roci=roci,
                               rmax=rmax)        
@@ -11751,7 +11797,7 @@ class MD3trk(MDdataset):
                     stmDev='nonDEV'
             else:
                 stmDev=self.stmDev
-            print '9999---',ostmid9x,stmid,self.time2gen,Is9XNN(ostmid9x)
+            #print '9999---',ostmid9x,stmid,self.time2gen,Is9XNN(ostmid9x)
             if(Is9XNN(ostmid9x)):
                 if(self.time2gen >= 0):
                     stm9x=stm9x+pad+"9X , %s"%(ostmid9x.split('.')[0].lower())

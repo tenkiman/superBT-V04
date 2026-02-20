@@ -3171,6 +3171,12 @@ def get9XstmidFromNewForm(stmid9x):
         stmid9x='9'+snum[1:]+b1id+'.'+year
     return(stmid9x)
 
+
+def getNewForm9Xstmid(stmid):
+    (snum,b1id,year,b2id,stm2id,stm1id)=getStmParams(stmid)
+    stmid9x="%s%s.%s"%(b1id,snum,year)
+    return(stmid9x)
+
 def aceTC(vmax):
     if(vmax >= tsmin):
         ace=vmax*vmax
@@ -3322,6 +3328,11 @@ def Is9XNN(stmid):
 def IsNN(stmid):
     rc=0
     (snum,b1id,year,b2id,stm2id,stm1id)=getStmParams(stmid)
+
+    # -- detect bd2 9X
+    if(isXStimd(stmid)):
+        return(0)
+
     if(
         (snum.isdigit() and (int(snum) >= 1 and int(snum) <= maxNNnum) )
         ):
@@ -4341,17 +4352,25 @@ def setCvsYearOptPaths(sbtSrcDir,oyearOpt,headAll,headSum,doMergeOnly=1,doWBTonl
         if(MF.ChkPath(allCvsPath)):
             cmd='rm  %s'%(allCvsPath)
             runcmd(cmd)
-    
+            
         if(MF.ChkPath(allCvsPathBT)):
             cmd='rm  %s'%(allCvsPathBT)
             runcmd(cmd)
         
+        if(MF.ChkPath(allCvsPathMRG)):
+            cmd='rm  %s'%(allCvsPathMRG)
+            runcmd(cmd)
+            
         if(MF.ChkPath(sumCvsPath)):
             cmd='rm  %s'%(sumCvsPath)
             runcmd(cmd)
-        
+
         if(MF.ChkPath(sumCvsPathBT)):
-            cmd='rm %s'%(sumCvsPathBT)
+            cmd='rm  %s'%(sumCvsPathBT)
+            runcmd(cmd)
+
+        if(MF.ChkPath(sumCvsPathMRG)):
+            cmd='rm  %s'%(sumCvsPathMRG)
             runcmd(cmd)
             
         # -- headers
@@ -4359,17 +4378,23 @@ def setCvsYearOptPaths(sbtSrcDir,oyearOpt,headAll,headSum,doMergeOnly=1,doWBTonl
         cmd="cat %s > %s"%(headAll,allCvsPath)
         runcmd(cmd)
 
-        if(not(doWBTonly)):
-            cmd="cat %s > %s"%(headAll,allCvsPathBT)
-            runcmd(cmd)
+        cmd="cat %s > %s"%(headAll,allCvsPathBT)
+        runcmd(cmd)
         
+        cmd="cat %s > %s"%(headAll,allCvsPathMRG)
+        runcmd(cmd)
+
         cmd="cat %s > %s"%(headSum,sumCvsPath)
         runcmd(cmd)
         
         cmd="cat %s > %s"%(headSum,sumCvsPathBT)
         runcmd(cmd)
             
-        return(allCvsPath,allCvsPathBT,sumCvsPath,sumCvsPathBT)
+        cmd="cat %s > %s"%(headSum,sumCvsPathMRG)
+        runcmd(cmd)
+            
+        return(allCvsPath,allCvsPathBT,allCvsPathMRG,
+               sumCvsPath,sumCvsPathBT,sumCvsPathMRG)
 
 def setCvsSbtYearOptPaths(sbtSrcDir,oyearOpt,version,headAll,dorm=0):
     
@@ -5283,7 +5308,7 @@ def parseDssTrk(dtg,dds,useVmax4TcCode=1,verb=0):
     undef=dds.undef      #-999
     vmax=dds.vmax        #75
     wncode=dds.wncode    #WN
-
+    
     osname='               , '
     if(sname != None and sname != undef):
         osname="%-15s"%(sname)
@@ -5345,7 +5370,7 @@ def parseDssTrk(dtg,dds,useVmax4TcCode=1,verb=0):
     if(depth != None and depth != undef and depth != ''):
         odepth='%s'%(depth)
         
-    otdo='NaN'
+    otdo=tdo
     
     # -- use TC wind for code
     #
@@ -5476,7 +5501,7 @@ def parseDssTrkMD3(dtg,dds,stm1id,stm9xid,basin,rcsum=None,sname=None,verb=0,war
     undef=dds.undef      #-999
     vmax=dds.vmax        #75
     wncode=dds.wncode    #WN
-
+    
     if(sname != None and sname != undef):
         osname="%-15s"%(sname)
     else:
@@ -5589,6 +5614,7 @@ def parseDssTrkMD3(dtg,dds,stm1id,stm9xid,basin,rcsum=None,sname=None,verb=0,war
     opart1="%s %s %s"%(odtgstm,oposition,ointensity)
     opart2="%s %s"%(omotion,otrkmotion)
     opart3="%s %s %s %s"%(or34m,or34,or50m,or50)
+    #print '33--dd--33',got50,'ocodes: ',ocodes
     if(got50): ocodes="%s"%(ocodes)
     else:      ocodes=" %s"%(ocodes)
     opart4="%s %s %s"%(ocodes,orocipoci,omisc)
@@ -7836,7 +7862,7 @@ def doMd2Md3MrgGenChk(stmid,doM2=1,doRedo=0,qc2paths=1,doGenChk=0,
                       bd2Update=0,
                       override=0,ropt='',verb=0):
     
-    (mpath,mpathBT)=getSrcSumTxt(stmid,bd2Update=bd2Update,verb=0)
+    (mpath,mpathBT)=getSrcSumTxt(stmid,bd2Update=bd2Update,verb=1)
     
     savPath="%s-SAV"%(mpath)
     if(mpathBT != None):
@@ -7931,7 +7957,7 @@ def doMd2Md3MrgGenChk(stmid,doM2=1,doRedo=0,qc2paths=1,doGenChk=0,
             
             print 'gggg',gendtg,last9xdtg,gen9xdtg,gen9xdiff
 
-            if(gen9xdiff > 0 or override):
+            if(gen9xdiff > 0 or gen9xdiff != -6 or override):
                 print 'gendtg:    ',gendtg
                 print 'last9xdtg: ',last9xdtg
                 print 'gen9xdtg:  ',gen9xdtg

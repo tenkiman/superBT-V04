@@ -4113,6 +4113,13 @@ def get4digitYearFrom2DigitYear(yy):
             yy='20%s'%(yy)
         else:
             yy='19%s'%(yy)
+            
+    elif(len(str(yy)) == 4):
+        yy=yy
+    else:
+        print 'ooops bad yy or YYYY'
+        sys.exit()
+        
     return(yy)
     
 def getStmopts(stmopt,verb=0):
@@ -4164,12 +4171,12 @@ def getStmopts(stmopt,verb=0):
             # -- epac best track starts in 1949
             #
             if(verb): print iyy,bb,(iyy >= 45 and iyy <= 48 and bb == 'e')
-            if(iyy >= 45 and iyy <= 48 and bb == 'e'):
-               continue 
+            if(iyy >= 1945 and iyy <= 1948 and bb == 'e'):
+                continue 
+            
             stmopts=stmopts+[
                 '%s.%s'%(bb,syy),
             ]
-    
     return(stmopts)
 
 
@@ -6630,7 +6637,7 @@ def cleanMD3Opaths(sdir,ostm1id,verb=0):
     cmd="rm %s"%(omask)
     mf.runcmd(cmd)
             
-def getMd2Years(stmopt=None,dtgopt=None,lastyear=None):
+def getMd2Years(stmopt=None,dtgopt=None,lastyear=None,verb=0):
 
     from tcbase import TcData
     
@@ -6667,10 +6674,10 @@ def getMd2Years(stmopt=None,dtgopt=None,lastyear=None):
             stmids=stmopt
         else:
             # -- use this one because makeStmListMdeck is a method on TcData() -- this is stand-alone
-            stmids=MakeStmList(stmopt)
+            stmids=MakeStmList(stmopt,verb=verb)
 
         # -- use TcData if no ids...
-        #
+        #get9XstmidFromNewForm
         if(len(stmids) == 0):
             
             stmopts=getStmopts(stmopt)
@@ -6678,7 +6685,7 @@ def getMd2Years(stmopt=None,dtgopt=None,lastyear=None):
                 stmopt=stmopts[0]
                 year=stmopt.split('.')[-1]
                 year=int(year)
-            
+                
             tcD=TcData(years=[year])
             stmids=tcD.makeStmListMdeck(stmopt)
             
@@ -7085,6 +7092,10 @@ def MakeStmList(stmopt,yearopt=None,dofilt9x=0,verb=0):
 
     stmids=[]
 
+    # -- catch 'all.YYYY'
+    #
+    if(sopt == 'all'):
+        sopt='h,i,w,c,e,l'
     for year in years:
 
         ss=sopt.split(',')

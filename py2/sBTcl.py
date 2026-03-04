@@ -3729,6 +3729,7 @@ class Mdeck3(MFutils):
 
                 acards=open(allCvsPath).readlines()
                 #print 'aaa',allCvsPath
+                #sys.exit()
                 for acard in acards[1:]:
                     # -- the last entry has '\n' skip
                     tt=acard.split(',')
@@ -4167,8 +4168,8 @@ that generates of -MRG.txt where the working is updated with BT
 
             allCvsPathMRG="%s/all-md3-%s-MRG.csv"%(self.tbdir,oyearOpt)
             sumCvsPathMRG="%s/sum-md3-%s-MRG.csv"%(self.tbdir,oyearOpt)
-            sizMRG=MF.getPathSiz(allCvsPathMRG)
-            sizMRGsum=MF.getPathSiz(sumCvsPathMRG)
+            sizMRG=(MF.getPathSiz(allCvsPathMRG) > 0)
+            sizMRGsum=(MF.getPathSiz(sumCvsPathMRG) > 0)
             
             if(verb): 
                 print 'setting all/sum cvspath for year: ',oyearOpt
@@ -4176,25 +4177,26 @@ that generates of -MRG.txt where the working is updated with BT
                 print 'allCvs  sizBT  sizBTsum: ',allCvsPathBT,sizBT,sizBTsum
                 print 'allCvs sizMRG sizMRGsum: ',allCvsPathMRG,sizMRG,sizMRGsum
                 
-            # -- if doBT go for -BT.csv
+            # -- FIRST go for MRG because we redid for all years
             #
-            if(doBT and sizBT and sizBTsum):
-                allCvsPaths.append(allCvsPathBT)
-                sumCvsPaths.append(sumCvsPathBT)
-            
-            # -- else look for MRG first...
-            #
-            elif(sizMRG and sizMRGsum):
+            if(sizMRG and sizMRGsum):
                 allCvsPaths.append(allCvsPathMRG)
                 sumCvsPaths.append(sumCvsPathMRG)
-            
-            # -- else look for working best track
+                
+            # -- now look in for BT
+            #
+            elif(doBT and sizBT and sizBTsum):
+                allCvsPaths.append(allCvsPathBT)
+                sumCvsPaths.append(sumCvsPathBT)
+
+            # -- if all else fails...
             #
             elif(siz0 and siz0sum):
                 allCvsPaths.append(allCvsPath0)
                 sumCvsPaths.append(sumCvsPath0)
             else:
-                print'WWW no all or sum Cvs for oyearOpt: ',oyearOpt
+                print'WWW no all or sum Cvs for oyearOpt: ',oyearOpt,'...sayounara...baby...'
+                sys.exit()
     
         return(allCvsPaths,sumCvsPaths)
 
@@ -4517,7 +4519,7 @@ that generates of -MRG.txt where the working is updated with BT
         #for stmcard in stmcards:
         #    print stmcard
 
-        if(IsNN(stmid) and not(doBdeck2)):
+        if(IsNN(stmid) and not(dobt)):
             
             # --smeta[-1] has the type of gendtg
             try:     smeta=self.stmMetaMd3[stmid]
@@ -9412,7 +9414,7 @@ class AidTrk(MFbase):
                         vmaxTcomp=vmaxT*forspdAdjfact
 
                     if(abs(lat0) <= latT and speed >= vmaxTcomp):
-                        card="AidTrk(): EEExssive speed in tropics stmid: %s aid: %s dtg: %s tau0: %3d speed: %7.1f lat0: %5.1f  vmaxTcomp: %5.0f"%\
+                        card=".sBTcl.AidTrk(): EEExssive speed in tropics stmid: %s aid: %s dtg: %s tau0: %3d speed: %7.1f lat0: %5.1f  vmaxTcomp: %5.0f"%\
                             (self.stmid,self.aid,dtg,tau0,speed,lat0,vmaxTcomp)
                         print card
                         xspdlog.append(card)
@@ -9423,7 +9425,7 @@ class AidTrk(MFbase):
 
 
                     if(abs(lat0) > latT and speed >= vmaxM):
-                        card="AidTrk(): EEExssive speed in MIDLATS stmid: %s aid: %s dtg: %s tau0: %3d speed: %7.1f lat0: %5.1f  vmaxTcomp: %5.0f"%\
+                        card="sBTcl.AidTrk(): EEExssive speed in MIDLATS stmid: %s aid: %s dtg: %s tau0: %3d speed: %7.1f lat0: %5.1f  vmaxTcomp: %5.0f"%\
                             (self.stmid,self.aid,dtg,tau0,speed,lat0,vmaxTcomp)
                         print card
                         xspdlog.append(card)

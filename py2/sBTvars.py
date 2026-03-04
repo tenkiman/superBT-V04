@@ -47,7 +47,9 @@ md3VarsMeta='h-meta-md3-vars.csv'
 sbtVerDirDat="%s/dat"%(sbtRootVer)
 
 sbtDatDir="%s/dat-%s"%(sbtRoot,versionDev)
-sbtLogDir="%s/log-sbt"%(sbtRoot)
+# -- 20260304 -- always do log to local vice root...
+#
+sbtLogDir="%s/log-sbt"%(sbtRootLocal)
 sbtProdDir='%s/products-%s'%(sbtRoot,versionDev)
 sbtProdDirDiag='%s/tcdiag'%(sbtProdDir)
 sbtSrcDir="%s/src-%s"%(sbtRoot,versionDev)

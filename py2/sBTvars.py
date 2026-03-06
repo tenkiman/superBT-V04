@@ -82,9 +82,10 @@ W2BaseDirPrc="%s/prc/"%(sbtVerDirTcPrc)
 
 # -- era5
 #
-endEra5Year=2024
-endEra5Dtg='2024060100'
-
+#endEra5Year=2024
+#endEra5Dtg='2024060100'
+era5DatDir='/raid05/era5'
+era5AnlDatDir='/raid05/era5-anl'
 # -- lsdiag
 #
 TcTcanalDatDir="%s/tcdiag"%(sbtDatDir)

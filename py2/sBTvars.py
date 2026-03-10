@@ -86,6 +86,7 @@ W2BaseDirPrc="%s/prc/"%(sbtVerDirTcPrc)
 #endEra5Dtg='2024060100'
 era5DatDir='/raid05/era5'
 era5AnlDatDir='/raid05/era5-anl'
+era5WmoDatDir='/raid05/era5-wmo'
 # -- lsdiag
 #
 TcTcanalDatDir="%s/tcdiag"%(sbtDatDir)
@@ -756,6 +757,8 @@ badEra5Dtgs=[
 
     '1969100512',
     '1969100600',
+    
+    '1997081600', # ua bad
 
     '2024122012',
 ]

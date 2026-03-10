@@ -306,7 +306,8 @@ def yyyyinc(yyyy,inc):
 
 def IsLeapYear(yyyy):
     rc=0
-    if(yyyy%4 == 0 and (yyyy%100 != 0) or (yyyy%400 == 0)):
+    iyyyy=int(yyyy)
+    if(iyyyy%4 == 0 and (iyyyy%100 != 0) or (iyyyy%400 == 0)):
         rc=1
     return(rc)
 

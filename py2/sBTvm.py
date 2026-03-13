@@ -5735,7 +5735,12 @@ def getW2fldsRtfimCtlpath(model,dtg,maxtau=None,dtau=6,details=1,override=0,verb
 
     m2=setModel2(imodel)  
     m2.setDbase(dtg)
-
+    
+    mmodel=imodel
+    
+    if(imodel != m2.model):
+        mmodel=m2.model
+        
     dataDtg=dtg
     tauOffset=0
     
@@ -5756,22 +5761,22 @@ def getW2fldsRtfimCtlpath(model,dtg,maxtau=None,dtau=6,details=1,override=0,verb
     for bdir in bdirs:
         
         if(bdir == '/Volumes' and dtype == 'w2flds'):
-            rootdir="%s/%s/%s"%(bdir,dtype,imodel)
+            rootdir="%s/%s/%s"%(bdir,dtype,mmodel)
         elif(useBddir):
             rootdir=bdir
         else:
-            rootdir="%s/%s/dat/%s"%(bdir,dtype,imodel)
+            rootdir="%s/%s/dat/%s"%(bdir,dtype,mmodel)
             
         maskdir="%s/%s"%(rootdir,dataDtg)
 
-        mask="%s/*%s*.ctl"%(maskdir,imodel)
+        mask="%s/*%s*.ctl"%(maskdir,mmodel)
 
         if(verb): print "getW2fldsRtfimCtlpath: ",mask
         ctlpaths=glob.glob(mask)
         
         # -- special case for era5 where we have ua and sfc .ctl
         #
-        if(len(ctlpaths) == 2 and (imodel == 'era5' or imodel == 'ecm5') ):
+        if(len(ctlpaths) == 2 and (mmodel == 'era5' or mmodel == 'ecm5') ):
             for ctl in ctlpaths:
                 if(doSfc and mf.find(ctl,'sfc')): 
                     ctlpaths=[ctl]
@@ -5793,8 +5798,8 @@ def getW2fldsRtfimCtlpath(model,dtg,maxtau=None,dtau=6,details=1,override=0,verb
                 # -- handle situation where taus in w2flds != taus in nwp2 fields
                 # -- tossed tau78 in ngp2
                 #
-                gmask="%s/*%s*.grb?"%(maskdir,imodel)
-                if(dtype == 'w2flds'): gmask="%s/*%s*%s*.grb?"%(maskdir,imodel,dtype)
+                gmask="%s/*%s*.grb?"%(maskdir,mmodel)
+                if(dtype == 'w2flds'): gmask="%s/*%s*%s*.grb?"%(maskdir,mmodel,dtype)
                 
                 # -- use fd object first...
                 #
@@ -5824,7 +5829,7 @@ def getW2fldsRtfimCtlpath(model,dtg,maxtau=None,dtau=6,details=1,override=0,verb
                     gribs=glob.glob(gmask)
                     (taus,gribtype,gribver,datpaths)=gettaus(gribs)
                 
-                    wmask="%s/*%s*.f???.wgrib?.txt"%(maskdir,imodel)
+                    wmask="%s/*%s*.f???.wgrib?.txt"%(maskdir,mmodel)
                     wgribs=glob.glob(wmask)
                     nfields=getNfields(wgribs)
                 

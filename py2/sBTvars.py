@@ -79,7 +79,7 @@ TcNamesDatDir="%s/tc/names"%(sbtDatDir)
 TcVitalsDatDir="%s/tc/tcvitals"%(sbtDatDir)
 
 W2BaseDirPrc="%s/prc/"%(sbtVerDirTcPrc)
-
+W2BaseDirApp=os.getenv('W2_BDIRAPP')
 # -- era5
 #
 #endEra5Year=2024

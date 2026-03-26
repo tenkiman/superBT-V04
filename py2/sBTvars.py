@@ -87,6 +87,13 @@ W2BaseDirApp=os.getenv('W2_BDIRAPP')
 era5DatDir='/raid05/era5'
 era5AnlDatDir='/raid05/era5-anl'
 era5WmoDatDir='/raid05/era5-wmo'
+ecmtDatDir='/raid02/dat/nwp2/w2flds/dat/ecmt'
+ecm5DatDir='/raid02/dat/nwp2/w2flds/dat/ecm5'
+ecm6DatDir='/raid02/dat/nwp2/w2flds/dat/ecm6'
+
+
+
+ecopWmoDatDir='/raid05/ecop-wmo'
 # -- lsdiag
 #
 TcTcanalDatDir="%s/tcdiag"%(sbtDatDir)

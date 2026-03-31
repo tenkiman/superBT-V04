@@ -91,9 +91,9 @@ ecmtDatDir='/raid02/dat/nwp2/w2flds/dat/ecmt'
 ecm5DatDir='/raid02/dat/nwp2/w2flds/dat/ecm5'
 ecm6DatDir='/raid02/dat/nwp2/w2flds/dat/ecm6'
 
-
-
 ecopWmoDatDir='/raid05/ecop-wmo'
+wmoClimoDatDir='/raid05/era5-anl/climo'
+
 # -- lsdiag
 #
 TcTcanalDatDir="%s/tcdiag"%(sbtDatDir)

@@ -2781,7 +2781,7 @@ def putBdeck2sDataSets(bds,dbtype='bd2',dsbdir=None,doclean=0,
             #kks=bb22.bts.keys()
             #kks.sort()
             ##print 'kkklll',kks
-            #bb22.ls()
+            #bb22d
             
         # -- close it
         #
@@ -5664,7 +5664,6 @@ def getStmids4SumPath(sumPath):
     
 def getW2fldsRtfimCtlpath(model,dtg,maxtau=None,dtau=6,details=1,override=0,verb=0,doSfc=0):
 
-    from M2 import setModel2
 
     def getNfields(wgribs,verb=1):
 
@@ -5740,7 +5739,7 @@ def getW2fldsRtfimCtlpath(model,dtg,maxtau=None,dtau=6,details=1,override=0,verb
     
     if(imodel != m2.model):
         mmodel=m2.model
-        
+    
     dataDtg=dtg
     tauOffset=0
     
@@ -8056,13 +8055,19 @@ def doMd2Md3MrgGenChk(stmid,doM2=1,doRedo=0,qc2paths=1,doGenChk=0,
 def setModel2(model,bdir2=None):
 
     model=model.lower()
-    from sBTcl import Era5
+    from sBTcl import Era5,Era5Wmo,EcopWmo
     
-    if(model == 'era5'): return(Era5(bdir2=bdir2))
-
+    if(model == 'era5'):  
+        return(Era5(bdir2=bdir2))
+    elif(model == 'era5w'): 
+        return(Era5Wmo(bdir2='/raid05/era5-wmo'))
+    elif(model == 'ecopw'): 
+        mm=EcopWmo(bdir2='/raid05/ecop-wmo')
+        return(mm)
+    
     ####lif(model == 'fimx'): return(Fimx())
     else:
-        print 'EEE(M2.setModel2) invalid model: ',model,' in setModel2...sayoonara'
+        print 'sBT -- EEE(M2.setModel2) invalid model: ',model,' in setModel2...sayoonara'
         sys.exit()
         return(None)
 

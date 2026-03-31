@@ -20057,6 +20057,12 @@ class Model2(Model):
             self.setxwgrib(dataDtg)
             if(hasattr(self,'setgmask')): self.setgmask(dtg)
 
+            # -- 20260330 -- test if dat mask is same as grb mask for era5w and ecopw
+            #
+            dmaskEQgmask=0
+            if(self.dmask == self.gmask):
+                dmaskEQgmask=1
+
             # -- special case for navgem from ncep
             #
             if(hasattr(self,'dsetMaskOverride') and self.dsetMaskOverride):
@@ -20073,11 +20079,18 @@ class Model2(Model):
                 self.name2tau=name2tau
                 
             
-            elif(hasattr(self,'dmodelType') and self.dmodelType == 'w2flds' and self.tautype != 'alltau'):
+            elif(
+                hasattr(self,'dmodelType') and 
+                self.dmodelType == 'w2flds' 
+                and self.tautype != 'alltau'
+                and not(dmaskEQgmask)
+                ):
                 
                 self.dmask=self.dmask.replace(self.dmodel,'%s.w2flds'%(self.dmodel))
                 if(hasattr(self,'dsetmask')):
                     self.dsetmask=self.dsetmask.replace(self.dmodel,'%s.w2flds'%(self.dmodel))
+                    
+                    
                 def name2tau(file,dtg):
                     try:
                         tau=file.split('.')[3][1:]
@@ -20098,13 +20111,14 @@ class Model2(Model):
             self.grbpaths=glob.glob(self.grbmask)
             self.grbpaths.sort()
             
+
             if( len(self.datpaths) == 0 and len(self.grbpaths) > 0):
-                print 'WWW(Model2.DataPath): len(self.datpaths): ',len(self.datpaths),' but grbpaths there'
+                print 'sBT-WWW(Model2.DataPath): len(self.datpaths): ',len(self.datpaths),' but grbpaths there'
 
                 for grbpath in self.grbpaths:
                     grbsiz=MF.GetPathSiz(grbpath)
                     if(grbsiz == 0):
-                        print 'WWW(Model2.DataPath): zero length source grb: ',grbpath,' delete'
+                        print 'sBT-WWW(Model2.DataPath): zero length source grb: ',grbpath,' delete'
                         os.unlink(grbpath)
                     else:
                         if(hasattr(self,'gname2tau')):
@@ -20288,7 +20302,7 @@ class Model2(Model):
         if(hasattr(self,'dattaus')):
             datataus=self.dattaus
         else:
-            datataus=Model2DataTaus(self.model,dtg)
+            datataus=self.Model2DataTaus(self.model,dtg)
 
         # -- forward search thru target data taus
         # 
@@ -20400,6 +20414,105 @@ tdef % 3d linear %s %shr
     def Model2PlotMinTau(self,dtg):
         mintauPlot=144
         return(mintauPlot)
+
+    def Model2DataTaus(self,model,dtg):
+        
+        """ 20260331 is still in sBTvm.py, but make part of M2 classes
+"""
+        
+        dtghh=int(dtg[8:10])
+        
+        etau=None
+        dtau=None
+    
+        # -- more agressive use of M2
+        #
+        if(hasattr(self,'getDataTaus')): 
+            taus=self.getDataTaus(dtg)
+            
+        elif(hasattr(self,'dattaus')): 
+            taus=self.dattaus
+            
+        else:
+            etau=self.getEtau(dtg=dtg)
+            dtau=self.getDtau(dtg=dtg)
+            taus=range(0,etau+1,dtau)
+            
+        return(taus)
+    
+    # --  old method getting the M2 instantiation directly here...
+    
+    #from M2 import setModel2
+    #m=setModel2(model)
+    
+        #taus=[]
+    
+        #if(model == 'gfs2' or model == 'fim8' or model == 'fimx' or 
+           #model == 'gfsr' or model == 'gfr1' or model == 'gfsk' or
+           #model == 'ecm2' or model == 'ecm4' or 
+           #model == 'cmc2' or model == 'cgd6' or model == 'cgd2' or
+           #model == 'ocn' or model == 'ohc' or model == 'ww3' or
+           #model == 'ecmg' or
+           #model == 'ngpc' or model == 'ngpj' or
+           #model == 'navg' or
+           #model == 'jgsm' or
+           #model == 'gfsc' or model == 'goes' 
+           #):
+            #if(etau == None):
+                #etau=self.Model2EtauData(model,dtghh)
+                #dtau=self.Model2DtauData(model,dtghh)
+    
+            #if(etau != None):
+                #taus=range(0,etau+1,dtau)
+            #else:
+                #taus=[]
+    
+        ## -- special cases
+        ##
+        #elif(model == 'ukm2' or model == 'ngp2' ):
+            #if(dtghh == 0 or dtghh == 12):
+                #taus=range(0,72+1,6)+range(84,144+1,12)
+            #elif(dtghh == 6 or dtghh == 18):
+                #taus=range(0,60+1,6)
+    
+        #elif(model == 'ukmc'):
+            #if(dtghh == 12):
+                #taus=range(0,72+1,6)+range(84,120+1,12)
+            #elif(dtghh == 0):
+                #taus=range(0,72+1,6)+range(84,120+1,12)
+            #else:
+                #taus=[]
+    
+    
+        ## -- nws ecmwf
+        ##
+        #elif(model == 'ecmn'):
+            #taus=range(0,48+1,6)+range(48,240+1,12)
+    
+        #elif(model == 'jmac'):
+            #if(dtghh == 12):
+                #taus=range(0,72+1,6)+range(84,168+1,12)
+            #elif(dtghh == 0):
+                #taus=range(0,72+1,6)+range(84,84+1,12)
+            #else:
+                #taus=[]
+    
+        #elif(model == 'gfsn'):
+            #etau=Model2EtauData(model,dtghh)
+            #dtau=Model2DtauData(model,dtghh)
+            #if(etau != None):
+                #taus=range(0,etau+1,dtau)
+            #else:
+                #taus=[]
+    
+    
+    
+        #else:
+            #print 'EEE invalid model Model2DataTaus: ',model
+            #sys.exit()
+    
+    
+        #return(taus)
 
 
 class Era5(Model2):
@@ -20521,7 +20634,7 @@ class Era5(Model2):
         gmplatestTau=-999
         gmplastTau=-999
 
-        datataus=Model2DataTaus(self.model,dtg)
+        datataus=self.Model2DataTaus(self.model,dtg)
         
         # -- for single tau in era5/ecm5 ... get the age from the single data file
         #
@@ -20810,6 +20923,160 @@ TCCsfc  0 164,1,0  ** Total cloud cover [(0 - 1)]
 TPsfc  0 228,1,0  ** Total precipitation [m]
 Uprs 14 131,100,0 ** U velocity [m s**-1]
 Vprs 14 132,100,0 ** V velocity [m s**-1]'''
+
+
+class Era5Wmo(Era5):
+
+    modelrestitle='T`bl`n|N400 L91'
+    modelDdtg=12
+    modelgridres='0.5'
+    modelres=modelgridres.replace('.','')
+
+    modelZgVar='zg/%f'%(gravity)
+    modelpslvar='psl*0.01'
+    modeltitleAck1="ECMWF Data Courtesy of ERA project"
+    modeltitleFullmod="ECMWF(ERA5)"
+
+    model='era5'
+    center='ecmwf'
+
+    dmodel='era5'
+    pmodel='er5w'
+
+    pltdir='plt_ecmwf_%s'%(pmodel)
+
+    modelPlotTaus=[0,6,12,18,24,30,36,42,48,60,72,84,96,108,120,132,144,156,168]
+    gmodname="%s%s"%(pmodel,modelres)
+    
+    models=['era5w']
+    modelsW2=models
+    
+
+    def __init__(self,bdir2='/raid05/era5-wmo',gribver=2):
+
+        self.dirmodel=self.dmodel
+
+        if(bdir2 != None): self.bdir2=bdir2
+        
+        self.initModelCenter(self.center)
+        self.initGribVer(gribver)
+
+        self.location='wxmap2'
+
+        self.tautype=''
+        self.gribtype='grb2'
+
+        self.nfields=8
+        self.nfieldsW2flds=8
+
+        self.tbase=self.dmodel
+
+        self.etau=240
+        self.dtau=6
+
+        self.rundtginc=12
+
+        self.adecksource='ecmwf'
+        self.adeckaid='era5'
+        self.tryarch=0
+
+        self.w2fldsSrcDir=bdir2
+        
+    def setDbase(self,dtg,dtype='w2flds',warn=0):
+
+        self.dmodel=self.model
+        self.lmodel=self.model
+        
+        self.dbasedir="%s/%s"%(self.bddir,dtg)
+        self.dbasedirarch="%s/%s"%(self.bddirarch,dtg)
+        
+        byear=dtg[0:4]
+        self.bddir="%s/%s"%(self.w2fldsSrcDir,byear)
+        self.useBddir=1
+        self.dbasedir="%s/%s"%(self.bddir,dtg)
+        self.dbase="%s/%s/%s-%s-%s-ua"%(self.bddir,dtg,self.lmodel,dtype,dtg)
+        self.dmask="%s-%s-%s-ua-f???.%s"%(self.lmodel,dtype,dtg,self.gribtype)
+        
+        self.dpath="%s.ctl"%(self.dbase)
+        
+        self.dpathexists=os.path.exists(self.dpath)
+        
+        self.tdatbase=self.dbase
+    
+    def setxwgrib(self,dtg):
+
+        self.xwgrib='wgrib2'
+        self.dmask="%s-w2flds-%s-ua-f???.%s"%(self.dmodel,dtg,self.gribtype)
+        #self.dsetmask=''
+
+    def setgmask(self,dtg):
+        self.gmask="%s-w2flds-%s-ua-f???.%s"%(self.dmodel,dtg,self.gribtype)
+    
+    def name2tau(self,ffile,dtg):
+        ff=ffile.split('-')
+        tt=ff[-1].split('.')
+        tau=int(tt[0][1:])
+        return(tau)
+    
+# -- 20260330 -- ecop model 2009-2026 for fldveri
+#
+class EcopWmo(Era5Wmo):
+
+    modelrestitle='T`bl`n|N400 L91'
+    modelDdtg=12
+    modelgridres='0.5'
+    modelres=modelgridres.replace('.','')
+
+    modelZgVar='zg/%f'%(gravity)
+    modelpslvar='psl*0.01'
+    modeltitleAck1="ECMWF Data Courtesy of ECMWF TIGGE-ERA5-WMO"
+    modeltitleFullmod="ECMWF(ECOP)"
+
+    model='ecop'
+    center='ecmwf'
+
+    dmodel='ecopw'
+    pmodel='ecop'
+
+    pltdir='plt_ecmwf_%s'%(pmodel)
+
+    modelPlotTaus=[0,6,12,18,24,30,36,42,48,60,72,84,96,108,120,132,144,156,168]
+    gmodname="%s%s"%(pmodel,modelres)
+    
+    models=['ecopw']
+    modelsW2=models
+    
+
+    def __init__(self,bdir2='/raid05/ecop-wmo',gribver=2):
+
+        self.dirmodel=self.dmodel
+
+        if(bdir2 != None): self.bdir2=bdir2
+        
+        self.initModelCenter(self.center)
+        self.initGribVer(gribver)
+
+        self.location='wxmap2'
+
+        self.tautype=''
+        self.gribtype='grb2'
+
+        self.nfields=8
+        self.nfieldsW2flds=8
+
+        self.tbase=self.dmodel
+
+        self.etau=240
+        self.dtau=6
+
+        self.rundtginc=12
+
+        self.adecksource='ecmwf'
+        self.adeckaid='ecop'
+        self.tryarch=0
+
+        self.w2fldsSrcDir=bdir2
+        
 
 class Grib(MFbase):
 
@@ -22369,8 +22636,12 @@ class EnsModel(Model,Grib1,Grib2):
                  doLnOnly=0,
                  ):
 
-
+        
         self.model=model
+        # -- 20260331 -- mmodel is the root of the wmo model,
+        #                 e.g., era5w -> era5 ecopw => ecop
+        self.mmodel=model.replace('w','')
+
         self.dtgs=dtgs
         self.bdtg=dtgs[0]
         self.edtg=dtgs[-1]
@@ -22397,7 +22668,7 @@ class EnsModel(Model,Grib1,Grib2):
                 print 'III(EnsModel) no ctl for dtg: ',dtg
                 continue
             elif(rc[0] == 1):
-                print "found ctl for dtg: ",dtg
+                print "found ctl for dtg: ",dtg,'model: ',self.model,'ctl: ',rc[1]
                 self.bdtg=dtg
                 gotdtg=1
                 break
@@ -22508,7 +22779,7 @@ class EnsModel(Model,Grib1,Grib2):
     def doLnFc(self,override=0,ropt='',verb=0):
         """ cycle through dtgs to make ln -s
         """
-        if(self.model == 'era5w'):
+        if(self.model == 'era5w' or self.model == 'ecopw'):
             ldtgs=[self.bdtg]
         else:
             ldtgs=self.dtgs
@@ -22550,7 +22821,7 @@ class EnsModel(Model,Grib1,Grib2):
         
         
         datpaths=self.cnvDatpaths2dict(datpaths)
-        if(self.model == 'era5w'):
+        if(self.model == 'era5w' or self.model == 'ecopw'):
             datpaths=datpaths[0]
         
         nln=0
@@ -22582,6 +22853,17 @@ class EnsModel(Model,Grib1,Grib2):
                 if(self.model == 'era5w'):
                     ldir=self.tdir
                     spath='/raid05/era5-wmo/%s'%(ftau)
+                    MF.ChangeDir(ldir)
+                    lpath=ftau
+                    try:
+                        cmd="ln -s %s %s"%(spath,lpath)
+                        mf.runcmd(cmd,ropt)
+                    except:
+                        None
+                        
+                elif(self.model == 'ecopw'):
+                    ldir=self.tdir
+                    spath='/raid05/ecop-wmo/%s'%(ftau)
                     MF.ChangeDir(ldir)
                     lpath=ftau
                     try:
@@ -22626,7 +22908,7 @@ class EnsModel(Model,Grib1,Grib2):
                  override=0,chkonly=0,ropt='',verb=0):
         """
         make .ctl for model runs as an ensemble of forecasts f000, f012, ... ,fLLL
-        """
+"""
 
         maxtau=self.maxtau
         ddtg=self.ddtg
@@ -22656,7 +22938,7 @@ class EnsModel(Model,Grib1,Grib2):
             return
 
         tctlpath=self.ctlpath
-
+        
         self.tctlpath=tctlpath
 
 
@@ -22695,7 +22977,7 @@ class EnsModel(Model,Grib1,Grib2):
                 #dset=self.tbase.replace(self.bdtg,fmask)
                 #card="dset ^%%e/%s.f%%f3.%s"%(dset,self.gribtype)
                 #card="dset ^%e/%y4/%y4%m2%d2%h2/era5-w2flds-%y4%m2%d2%h2-ua.grb2"
-                card="dset ^%e/%y4/era5-w2flds-%y4%m2%d2%h2-ua.grb2"
+                card="dset ^%%e/%%y4/%s-w2flds-%%y4%%m2%%d2%%h2-ua.grb2"%(self.mmodel)
                 octl=card
             elif(mf.find(card,'index')):
                 if(self.postfix != None):

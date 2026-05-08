@@ -681,13 +681,17 @@ Nwp2ModelsNwp=   ['gfs2','fim8','ecm2','ukm2','ngp2','cmc2',
                   'ohc','ocn','ww3','gfsc','ukmc','jmac','ngpj']
 
 Nwp2ModelsAll=   [
-		 'gfs2','fim8','ecm2','ukm2',
+		 'era5','ecm5','ecop',
+         'gfs2','fim8','ecm2','ukm2',
          'cmc2','cgd2',
          'ngp2','navg',
 		 'fv3e','fv3g','fv7e','fv7g',
-		 'hwrf','era5','ecm5',
+		 'hwrf',
          'jgsm',
-		 'ohc','ocn','ww3','gfsc','ukmc','jmac','ngpj','goes','gfsr','gfr1','ecmn','ecmg','ecmt','ecm4']
+		 'ohc','ocn','ww3','gfsc','ukmc','jmac','ngpj',
+         'goes',
+         'gfsr','gfr1',
+         'ecmn','ecmg','ecmt','ecm4']
 
 Nwp2ModelsActive=[
 	'gfs2','ecm2','ukm2','cmc2','navg',

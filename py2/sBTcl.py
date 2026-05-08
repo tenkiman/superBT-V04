@@ -20532,7 +20532,6 @@ class Era5(Model2):
 
     dmodel='era5'
     pmodel='er5'
-
     pltdir='plt_ecmwf_%s'%(pmodel)
 
     modelPlotTaus=[0,6,12,18,24,30,36,42,48,60,72,84,96,108,120,132,144,156,168]
@@ -21077,6 +21076,1767 @@ class EcopWmo(Era5Wmo):
 
         self.w2fldsSrcDir=bdir2
         
+
+class Ecm2(Model2):
+
+    modelrestitle='T`bl`n|N400 L91'
+    modelDdtg=12
+    modelgridres='1.0'
+    modelres=modelgridres.replace('.','')
+
+    modelprvar="""_prvar='(( const(pr(t+0),0,-u)-const(pr(t-1),0,-u) )*4*1000)'"""
+    modelpslvar='psl*0.01'
+    modeltitleAck1="ECMWF Data Courtesy of NCEP/NCO"
+    modeltitleFullmod="ECMWF(IFS)"
+
+    model='ecm2'
+    center='ecmwf'
+
+    dmodel='ecmo'
+    pmodel='ecm'
+
+    pltdir='plt_ecmwf_ecm'
+    pmodel='ecm'
+
+    modelPlotTaus=[0,6,12,18,24,30,36,42,48,60,72,84,96,108,120,132,144,156,168]
+    gmodname="%s%s"%(pmodel,modelres)
+
+
+    def __init__(self,bdir2=None,gribver=1):
+
+        self.dirmodel=self.dmodel
+
+        if(bdir2 != None): self.bdir2=bdir2
+        
+        self.initModelCenter(self.center)
+        self.initGribVer(gribver)
+
+        self.location='kishou'
+
+        self.tautype='wgrib'
+
+        self.nfields=94
+        self.nfieldsW2flds=66
+
+        self.tbase=self.dmodel
+
+        self.etau=240
+        self.dtau=6
+
+        self.rundtginc=12
+
+        self.adecksource='ecmwf'
+        self.adeckaid='edet'
+
+
+    # -- set prvar method to set dependence on tau
+    #
+    def setprvar(self,dtg=None,tau=None):
+        modelprvar=self.modelprvar
+        if(tau == 0):
+            modelprvar="""_prvar='(( const(pr(t+1),0,-u)-const(pr(t-0),0,-u) )*4*1000)'"""
+        return(modelprvar)
+
+
+    def setMaxtau(self,dtg):
+        hh=dtg[8:10]
+        if(hh == '00' or hh == '12'):  self.maxtau=240
+        else:    self.maxtau=-999
+        return(self.maxtau)
+
+
+
+    def name2tau(self,file,dtg=None):
+        ib=len(self.dmodel.split('.'))+1
+        try:
+            tau=file.split('.')[ib][1:]
+            tau=int(tau)
+        except:
+            tau=None
+        return(tau)
+
+    def gname2tau(self,file,dtg):
+
+        yyyy=dtg[0:4]
+        mm=dtg[4:6]
+
+        lf=len(file)
+
+        lfe=lf-3
+        lfb=lfe-6
+        vmmddhh=file[lfb:lfe]
+        vmm=vmmddhh[0:2]
+        if(vmm == '01' and mm == '12'):
+            vdtg=str(int(yyyy+1))+vmmddhh
+        else:
+            vdtg=yyyy+vmmddhh
+        tau=mf.dtgdiff(dtg,vdtg)
+        tau=int(tau)
+
+        return(tau)
+
+
+    def setgmask(self,dtg):
+        mmddhh=dtg[4:10]
+        self.gmask="ecens_DCD%s*"%(mmddhh)
+        self.gmask="DCD%s*"%(mmddhh)
+
+    def setxwgrib(self,dtg):
+
+        self.xwgrib='wgrib'
+        if(hasattr(self,'dmodelType')):
+            if(self.dmodelType == 'w2flds'): self.tautype='wgrib'
+
+        if(self.tautype == 'alltau'):
+            self.dmask="%s.%s.%s"%(self.dmodel,dtg,self.gribtype)
+            self.dsetmask="%s.%s.%s.f%%f3.%s"%(self.dmodel,self.dmodelType,dtg,self.gribtype)
+        else:
+            self.dmask="%s.%s.f???.%s"%(self.dmodel,dtg,self.gribtype)
+            self.dsetmask="%s.%s.f%%f3.%s"%(self.dmodel,dtg,self.gribtype)
+
+
+
+    def setctlgridvar(self,dtg):
+
+        latlongrid='''xdef 360 linear   0.0 1.0
+ydef 181 linear -90.0 1.0'''
+
+        if(self.gribtype == 'grb1'):
+            optiondtype='''options yrev template
+dtype grib
+zdef 14 levels 1000 925 850 700 500 400 300 250 200 150 100 50 20 10'''
+
+        elif(self.gribtype == 'grb2'):
+            optiondtype='''options yrev template pascals
+dtype grib2'''
+
+
+        self.ctlgridvar='''undef 9.999E+20
+title ecmo 1deg deterministic run
+*  produced by grib2ctl v0.9.12.5p16
+%s
+%s
+vars 19
+sic       0  31,1,0  ** Sea-ice cover [(0-1)]
+sst       0  34,1,0  ** Sea surface temperature [K]
+uas       0 165,1,0  ** 10 metre u wind component m s**-1
+vas       0 166,1,0  ** 10 metre v wind component m s**-1
+tads      0 168,1,0  ** 2 metre dewpoint temperature K
+tas       0 167,1,0  ** 2 metre temperature K
+zg       14 156,100,0 ** Height (geopotential) m
+psln      0 152,109,1  ** Log surface pressure -
+tmin      0 202,1,0  ** Min 2m temp since previous post-processing K
+psl       0 151,1,0  ** Mean sea level pressure Pa
+tmax      0 201,1,0  ** Max 2m temp since previous post-processing K
+hur      14 157,100,0 ** Relative humidity %%
+ta       14 130,100,0 ** Temperature K
+clt       0 164,1,0  ** Total cloud cover (0 - 1)
+pr        0 228,1,0  ** Total precipitation m
+prl       0 142,1,0  ** large-scale precipitation m
+prc       0 143,1,0  ** convective precipitation m
+ua       14 131,100,0 ** U-velocity m s**-1
+va       14 132,100,0 ** V-velocity m s**-1
+endvars'''%(optiondtype,latlongrid)
+
+
+        allvarsnew='''vars 30
+10FGsfc  0 49,1,0  ** Wind gust at 10 metres [m s**-1]
+10Usfc  0 165,1,0  ** 10 metre U wind component [m s**-1]
+10Vsfc  0 166,1,0  ** 10 metre V wind component [m s**-1]
+2Dsfc  0 168,1,0  ** 2 metre dewpoint temperature [K]
+2Tsfc  0 167,1,0  ** 2 metre temperature [K]
+BLHsfc  0 159,1,0  ** Boundary layer height [m]
+CAPEsfc  0 59,1,0  ** Convective available potential energy [J kg**-1]
+CIsfc  0 31,1,0  ** Sea-ice cover [(0-1)]
+CPsfc  0 143,1,0  ** Convective precipitation [m]
+GHprs 14 156,100,0 ** Height [m]
+LNSPhbl  0 152,109,1  ** Logarithm of surface pressure
+LSPsfc  0 142,1,0  ** Stratiform precipitation [m]
+MN2Tsfc  0 202,1,0  ** Minimum 2 metre temperature since previous post-processing [K]
+MSLsfc  0 151,1,0  ** Mean sea-level pressure [Pa]
+MX2Tsfc  0 201,1,0  ** Maximum 2 metre temperature since previous post-processing [K]
+Rprs 14 157,100,0 ** Relative humidity [%]
+SFsfc  0 144,1,0  ** Snowfall (convective + stratiform) [m of water equivalent]
+SPhbl  0 134,109,1  ** Surface pressure [Pa]
+SSTKsfc  0 34,1,0  ** Sea surface temperature [K]
+Tprs 14 130,100,0 ** Temperature [K]
+TCCsfc  0 164,1,0  ** Total cloud cover [(0 - 1)]
+TCWsfc  0 136,1,0  ** Total column water [kg m**-2]
+TPsfc  0 228,1,0  ** Total precipitation [m]
+TTRsfc  0 179,1,0  ** Top thermal radiation [W m**-2 s]
+Uprs 14 131,100,0 ** U velocity [m s**-1]
+Vprs 14 132,100,0 ** V velocity [m s**-1]
+Wprs  0 135,100,700  ** Vertical velocity [Pa s**-1]
+var121sfc  0 121,1,0  ** undefined
+var122sfc  0 122,1,0  ** undefined
+var123sfc  0 123,1,0  ** undefined'''
+
+        allvarsold='''vars 15
+10Usfc  0 165,1,0  ** 10 metre U wind component [m s**-1]
+10Vsfc  0 166,1,0  ** 10 metre V wind component [m s**-1]
+2Dsfc  0 168,1,0  ** 2 metre dewpoint temperature [K]
+2Tsfc  0 167,1,0  ** 2 metre temperature [K]
+GHprs 14 156,100,0 ** Height [m]
+LNSPhbl  0 152,109,1  ** Logarithm of surface pressure
+MN2Tsfc  0 202,1,0  ** Minimum 2 metre temperature since previous post-processing [K]
+MSLsfc  0 151,1,0  ** Mean sea-level pressure [Pa]
+MX2Tsfc  0 201,1,0  ** Maximum 2 metre temperature since previous post-processing [K]
+Rprs 14 157,100,0 ** Relative humidity [%]
+Tprs 14 130,100,0 ** Temperature [K]
+TCCsfc  0 164,1,0  ** Total cloud cover [(0 - 1)]
+TPsfc  0 228,1,0  ** Total precipitation [m]
+Uprs 14 131,100,0 ** U velocity [m s**-1]
+Vprs 14 132,100,0 ** V velocity [m s**-1]'''
+
+
+class Ecmh(Ecm2):
+    """ limited-area hi-res tigge pull"""
+
+    modelrestitle='T`bl`n1279|N640 L137'
+    modelDdtg=12
+    modelgridres='0.5'
+    modelres=modelgridres.replace('.','')
+
+    # -- units are accumulated precip in Kg/m^2 vice m
+    modelprvar="""_prvar='(( const(pr(t+0),0,-u)-const(pr(t-1),0,-u) )*4)'"""
+    modelpslvar='psl*0.01'
+    modeltitleAck1="ECMWF Data Courtesy of TIGGE server"
+    modeltitleFullmod="ECMWF(IFS)"
+
+    model='ecmh'
+    center='ecmwf'
+
+    dmodel='ecmh'
+    pmodel='ecm'
+
+    pltdir='plt_ecmwf_ecmh'
+    pmodel='ecm'
+
+    modelPlotTaus=[0,6,12,18,24,30,36,42,48,60,72,84,96,108,120,132,144,156,168]
+
+    gmodname="%s%s"%(pmodel,modelres)
+
+    modeltitleAck1="ECMWF Data Courtesy of ECMWF TIGGE Server"
+    fullmod="ECMWF(IFS)"
+
+    btau=0
+    etau=240
+    dtau=6
+    taus=range(btau,etau+1,dtau)
+
+    # -- grid
+
+    gridRes=0.125
+    gridRes=0.100
+
+    latN=55.0
+    latS=30.0
+    lonW=240.0
+    lonE=270.0
+    lonW=-120.0
+    lonE=-95.0
+
+    dlonGrid=(lonE-lonW)
+    dlatGrid=(latN-latS)
+    ni=int(dlonGrid/gridRes + 0.5)+1
+    nj=int(dlatGrid/gridRes + 0.5)+1
+
+    ecArea='%5.1f/%5.1f/%5.1f/%5.1f'%(latN,lonW,latS,lonE)
+    ecArea=ecArea.strip()
+
+    doUA=0
+
+    doalltaus=0
+
+    def __init__(self,gribver=2,fctype='fc'):
+
+        self.dirmodel=self.dmodel
+
+        self.initModelCenter(self.center)
+        self.initGribVer(gribver)
+
+        self.location='kishou'
+        self.tautype='wgrib'
+
+        self.nfields=53
+        self.nfieldsW2flds=53
+
+        self.rundtginc=12
+
+        self.adecksource='tmtrkN'
+        self.adeckaid='ecmh'
+
+        self.fctype=fctype
+        self.dattaus=range(self.btau,self.etau+1,self.dtau)
+        self.dmodelType='w2flds'
+
+
+    def setDtgTdirCtl(self,dtg):
+
+        byear=dtg[0:4]
+        self.dtg=dtg
+        tdir="%s/%s/%s"%(self.w2fldsSrcDir,byear,self.dtg)
+        MF.ChkDir(tdir,'mk')
+        self.tdir=tdir
+
+        if(self.doalltaus):
+            self.dsetbase="%s.w2flds.%s.alltaus.grb%d"%(self.model,self.dtg,self.gribver)
+        else:
+            self.dsetbase="%s.w2flds.%s.f%%f3.grb%d"%(self.model,self.dtg,self.gribver)
+
+        self.tbase="%s.w2flds.%s"%(self.model,self.dtg)
+        self.ctlpath="%s/%s.ctl"%(self.tdir,self.tbase)
+        self.gmpfile="%s.grib%1d.gmp"%(self.tbase,self.gribver)
+
+
+    def getFieldsTigge(self,override=0,verb=0,ropt='',cleanDir=0,justSfc=0):
+
+        def mkEcDtg(dtg):
+            ecdtg="%s-%s-%s"%(dtg[0:4],dtg[4:6],dtg[6:8])
+            synhour=int(dtg[8:10])
+            return(ecdtg,synhour)
+
+
+        if(cleanDir):
+            cmd="rm %s/*"%(self.tdir)
+            mf.runcmd(cmd,ropt)
+            
+        from ecmwfapi import ECMWFDataServer
+        server = ECMWFDataServer()
+
+        (ecdtg,synhour)=mkEcDtg(self.dtg)
+
+        ecarea=self.ecArea
+        ecgridres='%5.3f/%5.3f'%(self.gridRes,self.gridRes)
+
+        paramsfc='136/146/147/151/165/166/167/176/177/179/228164/228228'
+        #paramsfc='all'
+        paramua='129/130/131/157/156'
+        #paramua='all'
+
+        # -- 20260408 current
+        #
+        paramsfc='136/151/165/166/228228'
+        
+        paramua='130/131/132/133/156'
+
+        taus=self.taus
+        if(self.doalltaus): taus=["%d/to/%d/by/%d"%(self.btau,self.etau,self.dtau)]
+
+        for tau in taus:
+
+            if(self.doalltaus):
+                opathsf="%s/%s.%s.alltaus.sf.grb2"%(self.tdir,self.model,self.dtg)
+                opathua="%s/%s.%s.alltaus.ua.grb2"%(self.tdir,self.model,self.dtg)
+                opath="%s/%s.w2flds.%s.alltaus.grb%1d"%(self.tdir,self.model,self.dtg,self.gribver)
+
+            else:
+                opathsf="%s/%s.%s.f%03d.sf.grb2"%(self.tdir,self.model,self.dtg,tau)
+                opathua="%s/%s.%s.f%03d.ua.grb2"%(self.tdir,self.model,self.dtg,tau)
+                opath="%s/%s.w2flds.%s.f%03d.grb%1d"%(self.tdir,self.model,self.dtg,tau,self.gribver)
+
+            if(not(override) and MF.ChkPath(opath) and not(justSfc)): continue
+
+            retsf={
+                'class'     : "%s"%(self.marsClass),
+                "dataset"   : "tigge",
+                "date"      : "%s"%(ecdtg),
+                'expver'    : "prod",
+                "grid"      : "%s"%(ecgridres),
+                'levtype'   : "sfc",
+                'origin'    : "%s"%(self.marsOrigin),
+                "param"     : "%s"%(paramsfc),
+                "step"      : "%s"%(str(tau)),
+                "time"      : "%02d"%(synhour),
+                #"area"      : "%s"%(ecarea),
+                'type'      : "%s"%(self.fctype),
+                "target"    : "%s"%(opathsf),
+            }
+
+            retua={
+                'class'     : "%s"%(self.marsClass),
+                "dataset"   : "tigge",
+                'levtype'   : "pl",
+                'levelist'   : "all",
+                "date"      : "%s"%(ecdtg),
+                "param"     : "%s"%(paramua),
+                "step"      : "%s"%(str(tau)),
+                "time"      : "%02d"%(synhour),
+                #"area"      : "%s"%(ecarea),
+                "grid"      : "%s"%(ecgridres),
+                "target"    : "%s"%(opathua),
+                'expver'    : "prod",
+                'type'      : "%s"%(self.fctype),
+                'origin'    : "%s"%(self.marsOrigin),
+                'class'     : "%s"%(self.marsClass),
+            }
+
+            if(verb):
+                print 'retsf: ',retsf
+                print 'retua: ',retua
+
+            # -- do sfc fields first
+            #
+            if(ropt != 'norun'):
+                
+                # -- first UA fields
+                #
+                if(self.doUA and justSfc == 0):
+
+                    MF.sTimer('ecmt-UA-%s'%(self.dtg))
+                    server.retrieve(retua)
+                    cmd="cat %s > %s"%(opathua,opath)
+                    mf.runcmd(cmd)
+                    try:
+                        os.unlink(opathua)
+                    except:
+                        print 'WWW trying to kill uA path: ',opathua,' in M2.getFieldsTigge failed'
+                    MF.dTimer('ecmt-UA-%s'%(self.dtg))
+
+                # -- sfc fields 2nd
+                #
+                MF.sTimer('ecmt-sf-%s'%(self.dtg))
+                server.retrieve(retsf)
+                cmd="cat %s >> %s"%(opathsf,opath)
+                mf.runcmd(cmd)
+                try:
+                    os.unlink(opathsf)
+                except:
+                    print 'WWW trying to kill SF path: ',opathsf,' in M2.getFieldsTigge failed'
+                
+                MF.dTimer('ecmt-sf-%s'%(self.dtg))
+                    
+            else:
+                print 'RRR(will retrieve sfc): ',retsf
+                print 'RRR(will retrieve  UA): ',retua
+
+
+
+    def filtTaus(self,curdir,dtgChk,
+                 override=0,
+                 quiet=0,
+                 minsiz=9000000):
+
+        w2inv='wgrib2.inv.txt'
+        MF.ChangeDir(self.tdir,verb=1)
+
+        allfile=self.dsetbase
+        self.alltaufile="%s/%s"%(self.tdir,allfile)
+        
+        allfileThere=MF.ChkPath(allfile)
+        
+        print 'AAA: ',allfile,allfileThere
+        print 'DDD: ',dtgChk
+        
+        # -- make sure allfile there first
+        #
+        if(not(allfileThere) and dtgChk >= 0):
+            if(dtgChk == 0):
+                print 'WWW - allfile not there AND NEEDED: ',allfile,' press to the tigge retrieval...'
+            elif(dtgChk == 1):
+                print 'III - allfile not needed...return...'
+            MF.ChangeDir(curdir,verb=0)
+            return
+
+        if( MF.getPathSiz(w2inv) <= 0 or override ):
+            cmd="wgrib2 -end_ft %s > %s"%(allfile,w2inv)
+            owgrib2inv=MF.runcmdLog(cmd,quiet=quiet)
+            if(not(quiet)):
+                for o in owgrib2inv:
+                    print o
+
+        tauinv='tau.inv.txt'
+        for tau in self.taus:
+            vdtg=mf.dtginc(self.dtg,tau)
+            (base,ext)=os.path.splitext(allfile)
+            ofile="%s.f%03d%s"%(base,tau,ext)
+            ofile=ofile.replace('.alltaus','')
+            if(not(quiet)):
+                print 'filtTaus.tau: ',tau,vdtg,ofile
+
+            if(MF.getPathSiz(allfile) > minsiz):
+                if(MF.getPathSiz(ofile) <= 0 or override):
+                    cmd="grep %s %s > %s"%(vdtg,w2inv,tauinv)
+                    ogrep=MF.runcmdLog(cmd,quiet=quiet)
+                    if(not(quiet)):
+                        for o in ogrep:
+                            print o
+                            
+                    cmd="wgrib2 %s -i -grib %s < %s"%(allfile,ofile,tauinv)
+                    owgrib2=MF.runcmdLog(cmd,quiet=quiet)
+                    if(not(quiet)):
+                        for o in owgrib2:
+                            print o 
+
+        MF.ChangeDir(curdir)
+        return
+
+
+    def chkTauDat(self,override=0,nok=46,verb=0):
+
+        fm=self.DataPath(self.dtg,dtype=self.dmodelType,dowgribinv=1,override=override,doDATage=1)
+        fd=fm.GetDataStatus(self.dtg)
+        sts=fd.statuss[self.dtg]
+
+        taus=sts.keys()
+        taus.sort()
+        rc=1
+
+        rcallfile=(hasattr(self,'alltaufile') and MF.getPathSiz(self.alltaufile) > 0)
+        if(MF.getPathSiz(self.alltaufile) == 0):
+            rc=-2
+            print
+            print "chkTauDat for model: %6s dtg:%s 0 size alltaus file return -2"%(self.model,self.dtg)
+            return(rc)
+            
+        elif(len(taus) == 0):
+            rc=0
+            print
+            print "chkTauDat for model: %6s dtg:%s NO taus return 0"%(self.model,self.dtg)
+            return(rc)
+
+        if(verb):
+            print
+            print "chkTauDat for model: %6s dtg:%s"%(self.model,self.dtg)
+
+        for tau in taus:
+            # -- not a bug actual # of fields is in [1]
+            # -- AGE is in [0]
+            
+            nf=sts[tau][1]
+            age=sts[tau][0]
+            
+            if(nf == 41):
+                rc=-1
+            elif(nf == 48 or (nf >= 8 and nf <= 41) ):
+                rc=-2
+            elif(nf >= nok): 
+                rc=1
+            else:
+                rc=0
+            if(verb): print "chkTauDat() tau: %3d  nf: %3d rc: %d"%(tau,nf,rc)
+            
+        # -- blowaway alltau file
+        #
+        if(rc == 1 and hasattr(self,'alltaufile') and MF.getPathSiz(self.alltaufile) > 0):
+            print 'III.chkTauDat() alltaufile: ',self.alltaufile,' there, blowing away...'
+            os.unlink(self.alltaufile)
+
+        return(rc)
+
+
+
+    def makeCtl(self,ropt='',verb=0):
+
+        gtime=mf.dtg2gtime(self.dtg)
+        ntaus=len(self.taus)
+
+        xygrid="""ydef %d linear  %4.1f %5.3f
+xdef %d linear    %4.1f %5.3f"""%(self.nj,self.latS,self.gridRes,
+                                  self.ni,self.lonW,self.gridRes)
+
+        gaoptions="pascals template"
+        if(self.doalltaus): gaoptions="pascals"
+        ctl="""dset  ^%s
+index ^%s
+undef 9.999E+20
+title ecmh.2012071712.f000.grb2
+*  produced by g2ctl v0.0.4m
+dtype grib2
+%s
+tdef %d linear %s %dhr
+* PROFILE hPa
+zdef 9 levels 100000 92500 85000 70000 50000 30000 25000 20000 5000
+options %s 
+#vars 17
+vars 10
+psl    0,101   0,3,0    ** mean sea level pressure [Pa]
+uas    0,103,10   0,2,2 ** 10 m above ground u_velocity [m/s]
+vas    0,103,10   0,2,3 ** 10 m above ground v_velocity [m/s]
+pr     0,1   0,1,52,1   ** surface total_precipitation [kg/m^2]
+prw    0,1,,,8   0,1,51 ** atmos col total_column_water [kg/m^2]
+#clt    0,1,,,8   0,6,1  ** atmos col total_cloud_cover [%%]
+#hfls   0,1   0,0,10,1   ** surface time_integrated_surface_latent_heat_flux [W/m^2 s]
+#hfss   0,1   0,0,11,1   ** surface time_integrated_surface_sensible_heat_flux [W/m^2 s]
+#rss    0,1   0,4,9,1    ** surface time_integrated_surface_net_solar_radiation [W/m^2 s]
+#tas    0,103,2   0,0,0  ** 2 m above ground temperature [K]
+#rls    0,1   0,5,5,1    ** surface time_integrated_outgoing_long_wave_radiation [W/m^2 s]
+#rlt    0,8   0,5,5,1    ** top of atmosphere time_integrated_outgoing_long_wave_radiation [W/m^2 s]
+ua     8,100  0,2,2     ** (1000 925 850 700 500 300 250 200) u_velocity [m/s]
+va     8,100  0,2,3     ** (1000 925 850 700 500 300 250 200) v_velocity [m/s]
+ta     8,100  0,0,0     ** (1000 925 850 700 500 300 250 200) temperature [K]
+hus    8,100  0,1,0     ** (1000 925 850 700 500 300 250 200) specific_humidity [kg/kg]
+zg     9,100  0,3,5     ** (1000 925 850 700 500 300 250 200 50) geopotential_height [gpm]
+endvars"""%(self.dsetbase,self.gmpfile,xygrid,ntaus,gtime,self.dtau,gaoptions)
+
+        self.ctl=ctl
+
+        MF.WriteString2File(ctl,self.ctlpath)
+
+        gbmopt='-i'
+        if(verb): gbmopt='-v -i'
+        cmd="gribmap %s %s"%(gbmopt,self.ctlpath)
+        mf.runcmd(cmd,ropt)
+
+
+    # -- set prvar method to set dependence on tau
+    #
+    def setprvar(self,dtg=None,tau=None):
+        modelprvar=self.modelprvar
+        if(tau == 0):
+            # -- units are accumulated precip in Kg/m^2 vice m
+            modelprvar="""_prvar='(( const(pr(t+1),0,-u)-const(pr(t-0),0,-u) )*4)'"""
+        return(modelprvar)
+
+
+    def setMaxtau(self,dtg):
+        hh=dtg[8:10]
+        if(hh == '00' or hh == '12'):  self.maxtau=240
+        else:    self.maxtau=-999
+        return(self.maxtau)
+
+
+    def name2tau(self,file,dtg=None):
+        ib=len(self.dmodel.split('.'))+1
+        try:
+            tau=file.split('.')[ib][1:]
+            tau=int(tau)
+        except:
+            tau=None
+        return(tau)
+
+    #def gname2tau(self,file,dtg):
+
+        #yyyy=dtg[0:4]
+        #mm=dtg[4:6]
+
+
+        #(fdir,ffile)=os.path.split(file)
+        #ff=ffile.split('.')
+        #print 'asdf',ff
+
+        #lfe=lf-3
+        #lfb=lfe-6
+        #vmmddhh=file[lfb:lfe]
+        #vmm=vmmddhh[0:2]
+        #print 'adsf',vmmddhh
+        #if(vmm == '01' and mm == '12'):
+            #vdtg=str(int(yyyy+1))+vmmddhh
+        #else:
+            #vdtg=yyyy+vmmddhh
+        #tau=mf.dtgdiff(dtg,vdtg)
+        #tau=int(tau)
+
+        #return(tau)
+
+
+    def setgmask(self,dtg):
+        mmddhh=dtg[4:10]
+        self.gmask="ecens_DCD%s*"%(mmddhh)
+        self.gmask="DCD%s*"%(mmddhh)
+
+
+    def setxwgrib(self,dtg):
+
+        self.xwgrib='wgrib2'
+        if(hasattr(self,'dmodelType')):
+            if(self.dmodelType == 'w2flds'): self.tautype='wgrib'
+
+        if(self.tautype == 'alltau'):
+            self.dmask="%s.%s.%s"%(self.dmodel,dtg,self.gribtype)
+            self.dsetmask="%s.%s.%s.f%%f3.%s"%(self.dmodel,self.dmodelType,dtg,self.gribtype)
+        else:
+            self.dmask="%s.%s.f???.%s"%(self.dmodel,dtg,self.gribtype)
+            self.dsetmask="%s.%s.f%%f3.%s"%(self.dmodel,dtg,self.gribtype)
+
+
+
+
+    def setctlgridvar(self,dtg):
+
+        latlongrid='''xdef 720 linear   0.0 0.5
+ydef 361 linear -90.0 0.5'''
+
+        if(self.gribtype == 'grb1'):
+            optiondtype='''options yrev template
+dtype grib
+zdef 9 levels 1000 925 850 700 500 300 250 200 50'''
+
+        elif(self.gribtype == 'grb2'):
+            optiondtype='''options template pascals
+dtype grib2'''
+
+
+        self.ctlgridvar='''undef 9.999E+20
+title ecmo 1deg deterministic run
+*  produced by grib2ctl v0.9.12.5p16
+%s
+%s
+vars 19
+sic       0  31,1,0  ** Sea-ice cover [(0-1)]
+sst       0  34,1,0  ** Sea surface temperature [K]
+uas       0 165,1,0  ** 10 metre u wind component m s**-1
+vas       0 166,1,0  ** 10 metre v wind component m s**-1
+tads      0 168,1,0  ** 2 metre dewpoint temperature K
+tas       0 167,1,0  ** 2 metre temperature K
+zg       14 156,100,0 ** Height (geopotential) m
+psln      0 152,109,1  ** Log surface pressure -
+tmin      0 202,1,0  ** Min 2m temp since previous post-processing K
+psl       0 151,1,0  ** Mean sea level pressure Pa
+tmax      0 201,1,0  ** Max 2m temp since previous post-processing K
+hur      14 157,100,0 ** Relative humidity %%
+ta       14 130,100,0 ** Temperature K
+clt       0 164,1,0  ** Total cloud cover (0 - 1)
+pr        0 228,1,0  ** Total precipitation m
+prl       0 142,1,0  ** large-scale precipitation m
+prc       0 143,1,0  ** convective precipitation m
+ua       14 131,100,0 ** U-velocity m s**-1
+va       14 132,100,0 ** V-velocity m s**-1
+endvars'''%(optiondtype,latlongrid)
+
+
+
+
+class Ecmt(Ecmh):
+
+    modelrestitle='T`bl`n1279|N640 L137'
+    modelDdtg=12
+    modelgridres='0.5'
+    modelres=modelgridres.replace('.','')
+
+    # -- units are accumulated precip in Kg/m^2 vice m
+    modelprvar="""_prvar='(( const(pr(t+0),0,-u)-const(pr(t-1),0,-u) )*4)'"""
+    modelpslvar='psl*0.01'
+    modeltitleAck1="ECMWF Data Courtesy of TIGGE server"
+    modeltitleFullmod="ECMWF(IFS)"
+
+    model='ecmt'
+    center='ecmwf'
+
+    dmodel='ecmt'
+    pmodel='ecm'
+
+    pltdir='plt_ecmwf_ecmt'
+    pmodel='ecm'
+
+    modelPlotTaus=[0,6,12,18,24,30,36,42,48,60,72,84,96,108,120,132,144,156,168]
+
+    gmodname="%s%s"%(pmodel,modelres)
+
+    modeltitleAck1="ECMWF Data Courtesy of ECMWF TIGGE Server"
+    fullmod="ECMWF(IFS)"
+
+    btau=0
+    etau=240
+    dtau=6
+    #dtau=12
+    taus=range(btau,etau+1,dtau)
+
+    gridRes=0.5
+    ecArea='global'
+    latS=-90.0
+    lonW=0.0
+    ni=720
+    nj=361
+
+    doalltaus=0
+    doUA=1
+
+    marsClass='ti'
+    marsExpver='prod'
+    marsOrigin='edzw/cwao/rksl'
+    marsOrigin='ecmf'
+        
+
+    def __init__(self,bdir2=None,gribver=2,fctype='fc'):
+
+        self.dirmodel=self.dmodel
+        if(bdir2 != None): self.bdir2=bdir2
+                
+        self.initModelCenter(self.center)
+        self.initGribVer(gribver)
+
+        self.location='kishou'
+        self.tautype='wgrib'
+        self.gribtype='grb2'
+
+        self.nfields=53
+        self.nfieldsW2flds=53
+        self.nfieldsAll=46
+
+        self.rundtginc=12
+
+        self.adecksource='tmtrkN'
+        self.adeckaid='ecmt'
+
+        self.fctype=fctype
+        self.dattaus=range(self.btau,self.etau+1,self.dtau)
+        self.dmodelType='w2flds'
+        
+
+    def DataPath(self,dtgopt,dtype=None,getFromMss=0,dowgribinv=1,dofilecheck=1,override=0,ropt='',
+                 diag=1,
+                 useglob=0,
+                 doDATage=0,
+                 doBail=0,
+                 verb=1):
+
+
+        if(hasattr(self,'doDATage')): doDATage=self.doDATage
+        dpaths=[]
+        statuss={}
+
+        if(not(hasattr(self,'dtype')) and dtype != None):
+            self.dtype=dtype
+            
+        self.dtype=dtype
+
+        dtgs=mf.dtg_dtgopt_prc(dtgopt)
+
+        inV=None
+        if(hasattr(self,'iV')): inV=self.iV.hash
+        
+        dataDtgs=[]
+
+        for dtg in dtgs:
+            
+            # -- find tau offset
+            #
+            dataDtg=dtg
+            if(w2.is0618Z(dtg) and self.modelDdtg == 12):
+                self.tauOffset=6
+                dataDtg=mf.dtginc(dtg,-6)
+                
+            dataDtgs.append(dataDtg)
+
+            status={}
+
+            self.setDbase(dataDtg,dtype=dtype)
+            
+            try:
+                dthere=os.path.exists(self.dpath)
+            except:
+                dthere=0
+
+            if(dthere):
+                siz=MF.GetPathSiz(self.dpath)
+                dpaths.append(self.dpath)
+
+            # check file status...doesn't work!!!
+            #
+            #if(dofilecheck == 0):
+            #    self.statuss=statuss
+            #    return(self)
+
+            if(dtype != None and not(hasattr(self,'dmodelType'))): self.dmodelType=dtype
+
+            self.setxwgrib(dataDtg)
+            if(hasattr(self,'setgmask')): self.setgmask(dtg)
+
+            # -- 20260330 -- test if dat mask is same as grb mask for era5w and ecopw
+            #
+            dmaskEQgmask=0
+            if(self.dmask == self.gmask):
+                dmaskEQgmask=1
+                
+                
+                
+            # -- special case for navgem from ncep
+            #
+            if(hasattr(self,'dsetMaskOverride') and self.dsetMaskOverride):
+                
+                def name2tau(ffile,dtg):
+                    
+                    try:
+                        tau=ffile.split('.')[-2][-3:]
+                        tau=int(tau)
+                    except:
+                        tau=None
+                    return(tau)
+                
+                self.name2tau=name2tau
+                
+            
+            elif(hasattr(self,'dmodelType')
+                 and self.dmodelType == 'w2flds'
+                 and self.tautype != 'alltau'
+                 and dmaskEQgmask == 0
+                 ):
+                
+                self.dmask=self.dmask.replace(self.dmodel,'%s.w2flds'%(self.dmodel))
+                if(hasattr(self,'dsetmask')):
+                    self.dsetmask=self.dsetmask.replace(self.dmodel,'%s.w2flds'%(self.dmodel))
+                def name2tau(file,dtg):
+                    try:
+                        tau=file.split('.')[3][1:]
+                        tau=int(tau)
+                    except:
+                        tau=None
+                    return(tau)
+                self.name2tau=name2tau
+
+
+            
+            self.datmask="%s/%s"%(self.dbasedir,self.dmask)
+
+            self.datpaths=glob.glob(self.datmask)
+            self.datpaths.sort()
+            
+            grbmask="%s/%s"%(self.dbasedir,self.gmask)
+            grbpaths=glob.glob(grbmask)
+            grbpaths.sort()
+            
+            gmaskAll=self.gmask.replace('f???.','')
+            gmaskAll="%s/%s"%(self.dbasedir,gmaskAll)
+            grbpathsAll=glob.glob(gmaskAll)
+            grbpathsAll.sort()
+
+            ngrb =len(grbpaths)
+            ngrbA=len(grbpathsAll)
+            ndat =len(self.datpaths)
+            if(ngrbA == 1 and ngrb == 0):
+                self.grbpaths=grbpathsAll
+                self.datpaths=grbpathsAll
+                self.tautype='alltau'
+                
+            elif(ngrbA == 0 and ngrb > 0):
+                self.grbpaths=grbpaths
+
+            if( ndat == 0 and ngrb > 0):
+                if(diag): 
+                    print 'WWW(Model2.DataPath): len(self.datpaths): ',\
+                          len(self.datpaths),' but grbpaths there for: ',dtg,' model: ',self.dmodel
+                if(doBail):
+                    sys.exit()
+
+                self.datpaths=self.grbpaths
+
+            if ( len(self.datpaths) > 0):
+
+                for datpath in self.datpaths:
+
+                    (fdir,ffile)=os.path.split(datpath)
+                    (base,ext)=os.path.splitext(datpath)
+                    if(self.tautype == 'alltau'):
+                        tau=self.taus[-1]
+                    else:
+                        tau=self.name2tau(ffile,dtg)
+                    
+                    (base,ext)=os.path.splitext(datpath)
+                    wgribpath="%s.wgrib%1d.txt"%(base,self.gribver)
+
+                    wgsiz=MF.getPathSiz(wgribpath)
+                    datsiz=MF.getPathSiz(datpath)
+                    if(dowgribinv or override):
+                        if((wgsiz <= 0 and datsiz > 0) or override):
+                            cmd="%s %s > %s"%(self.xwgrib,datpath,wgribpath)
+                            if(diag):  mf.runcmd(cmd)
+                            else:      mf.runcmd(cmd,'quiet')    
+                            
+                    if(os.path.exists(wgribpath)):
+
+                        if(doDATage):
+                            age=MF.PathCreateTimeDtgdiff(dataDtg,datpath)
+                        else:
+                            age=MF.PathCreateTimeDtgdiff(dataDtg,wgribpath)
+
+                        datsiz=os.path.getsize(datpath)
+                        if(age >= 1000.0 and datsiz > 0): age=999.9
+
+                        if(self.model == 'ecmt' and self.tautype == 'alltau'):
+                            nf=self.nfieldsAll
+                            self.ntAll=41
+                        else:
+                            nf=self.nfields
+                            
+                            #cards=open(wgribpath).readlines()
+                            #nf=len(cards)
+                            
+                        status[tau]=(age,nf)
+
+                        if(inV != None):
+                            rc=(datpath,age,nf)
+                            if(verb): print 'PPP putting rc: ',self.model,dataDtg,tau,nf
+                            inV[self.model,dtg,tau]=rc
+                    else:
+                        # -- for ecmt and or no wgribinv
+                        #
+                        if(doDATage):
+                            age=MF.PathCreateTimeDtgdiff(dataDtg,datpath)
+                        else:
+                            age=MF.PathCreateTimeDtgdiff(dataDtg,wgribpath)
+                            
+                        datsiz=os.path.getsize(datpath)
+                        if(age >= 1000.0 and datsiz > 0): age=999.9
+                        
+                        if(self.model == 'ecmt' and self.tautype == 'alltau'):
+                            nf=self.nfieldsAll
+                            self.ntAll=41
+                            status[tau]=(age,nf)
+
+
+            else:
+                status={}
+
+            statuss[dtg]=status
+
+        #
+        # outside  dtg loop -- single dtg
+        #
+
+        self.ctlpath="%s.ctl"%(self.tdatbase)
+
+        self.dpaths=dpaths
+        self.ddtgs=dataDtgs
+        self.statuss=statuss
+
+        if(self.dmodelType != None and self.dmodelType == 'w2flds'):
+            self.nfields=self.nfieldsW2flds
+        else:
+            self.nfields=self.nfields
+            
+        if(hasattr(self,'iV')): self.iV.put()
+
+
+        return(self)
+
+
+    
+
+    def setDbase(self,dtg,dtype='w2flds',warn=0):
+
+        if(self.IsModel2(self.model) or self.IsModel1(self.model)):
+            if(not(hasattr(self,'lmodel'))): self.lmodel=self.dmodel
+
+            if(dtype == 'w2flds'):
+                self.dmodel=self.model
+                self.lmodel=self.model
+                
+            self.dbasedir="%s/%s"%(self.bddir,dtg)
+            self.dbasedirarch="%s/%s"%(self.bddirarch,dtg)
+
+            byear=dtg[0:4]
+            self.bddir="%s/%s"%(self.w2fldsSrcDir,byear)
+            self.useBddir=1
+            self.dbasedir="%s/%s"%(self.bddir,dtg)
+            self.dbase="%s/%s/%s.%s.%s"%(self.bddir,dtg,self.lmodel,dtype,dtg)
+            self.dmask="%s.%s.%s.%s.f???.dat"%(self.lmodel,dtype,dtg,self.gribtype)
+
+            self.dpath="%s.ctl"%(self.dbase)
+
+            self.dpathexists=os.path.exists(self.dpath)
+
+            
+        else:
+            print 'EEE-M2.Era5.setDbase could not set M2.setDbase.dbase  model: ',self.model,'dtg: ',dtg,' dtype: ',self.dtype,' or maybe because model not in w2localvars.py Nwp2ModelsAll...'
+            sys.exit()
+
+
+        self.tdatbase=self.dbase
+
+
+    def setgmask(self,dtg):
+        self.gmask="%s.w2flds.%s.f???.%s"%(self.dmodel,dtg,self.gribtype)
+
+
+    def setxwgrib(self,dtg):
+
+        self.xwgrib='wgrib2'
+        self.dmask="%s.w2flds.%s.f???.%s"%(self.dmodel,dtg,self.gribtype)
+        
+        
+    def GetDataStatus(self,dtg,checkNF=0,mintauNF=5):
+
+        if(hasattr(self,'bddirNWP2')):
+            tdir="%s/%s"%(self.bddirNWP2,dtg)
+        else:
+            tdir="%s/%s"%(self.bddir,dtg)
+
+        NFmin=self.nfields
+        if(checkNF): NFmin=self.nfields-mintauNF
+
+        lastTau=None
+        latestTau=None
+        latestCompleteTau=None
+        earlyTau=None
+        gmpAge=None
+        gmplastdogribmap=-999
+        gmplatestTau=-999
+        gmplastTau=-999
+
+        datataus=self.dattaus
+        
+        # -- for single tau in era5/ecm5 ... get thEcmte age from the single data file
+        #
+        stat=self.statuss[dtg]
+        itaus=stat.keys()
+        
+        if(len(itaus) == 1):
+            itau=itaus[0]
+            (age,siz)=stat[itau]
+            gotage=1
+        elif(len(itaus) > 1):
+            gotage=1
+        else:
+            gotage=0
+            age=-999
+            siz=-999
+        
+        if(gotage == 0):
+            for tau in datataus:
+                nf=self.nfieldsW2flds
+                self.statuss[dtg][tau]=(age,nf)
+        
+        status=self.statuss[dtg]
+        itaus=status.keys()
+        itaus.sort()
+        
+        ages={}
+        for itau in itaus:
+            ages[itau]=status[itau][0]
+
+
+        oldest=-1e20
+        youngest=+1e20
+
+        for itau in itaus:
+            if(ages[itau] < youngest):
+                youngest=ages[itau]
+                earlyTau=itau
+
+            # -- >= because for taus having the same age
+            #
+            if(ages[itau] >= oldest):
+                oldest=ages[itau]
+                latestTau=itau
+
+        if(len(status) >= 1):
+            lastTau=itaus[-1]
+            latestCompleteTau=lastTau
+
+
+        # -- forward search thru target data taus
+        # 
+
+        ndt=len(datataus)
+        
+        if(self.tautype == 'alltau'):
+            latestCompleteTau=datataus[-1]
+            
+        else:
+            for n in range(0,ndt):
+                datatau=datataus[n]
+                gotit=0
+                for itau in itaus:
+                    if(datatau == itau):
+                        (age,nf)=self.statuss[dtg][itau]
+                        if(checkNF and nf < NFmin):
+                            gotit=0
+                            continue
+                        else:
+                            gotit=1
+                            latestCompleteTau=datatau
+                        break
+    
+    
+                if(gotit == 0):  break
+
+
+        # -- backward search (default)
+        #
+
+        latestCompleteTauBackward=-999
+
+        if(self.tautype == 'alltau' and self.dmodelType == None):
+            None
+        else:
+            for n in range(ndt-1,0,-1):
+                datatau=datataus[n]
+                gotit=0
+                for itau in itaus[-1:0:-1]:
+                    if(datatau == itau):
+                        (age,nf)=self.statuss[dtg][itau]
+                        if(checkNF and nf < NFmin):
+                            gotit=0
+                            continue
+                        else:
+                            gotit=1
+                            latestCompleteTauBackward=datatau
+                        break
+        
+                if(gotit == 1):  break
+        
+        self.dstdir=tdir
+        self.dsitaus=itaus
+        self.dslastTau=lastTau
+        self.dsgmpAge=gmpAge
+        self.dsoldestTauAge=oldest
+        self.dslatestTau=latestTau
+        self.dsyoungest=youngest
+        self.dsearlyTau=earlyTau
+        self.dsgmplastdogribmap=gmplastdogribmap
+        self.dsgmplatestTau=gmplatestTau
+        self.dsgmplastTau=gmplastTau
+        self.dslatestCompleteTau=latestCompleteTau
+        self.dslatestCompleteTauBackward=latestCompleteTauBackward
+
+        return(self)
+
+    def name2tau(self,dfile,dtg=None):
+        dd=dfile.split('.')
+        if(len(dd) == 5):
+            ftau=dd[-2]
+            tau=ftau.replace('f','')
+        else:
+            print 'NNNN222TTTAAAUUU failed'
+            sys.exit()
+            
+        tau=int(tau)
+        return(tau)
+
+
+class Ecop(Ecmt):
+
+    modelrestitle='T`bl`n1279|N640 L137'
+    modelDdtg=12
+    modelgridres='0.5'
+    modelres=modelgridres.replace('.','')
+
+    # -- units are accumulated precip in Kg/m^2 vice m
+    modelprvar="""_prvar='(( const(pr(t+0),0,-u)-const(pr(t-1),0,-u) )*4)'"""
+    modelpslvar='psl*0.01'
+    modeltitleAck1="ECMWF Data Courtesy of TIGGE server"
+    modeltitleFullmod="ECMWF(IFS)"
+
+    model='ecop'
+    center='ecmwf'
+
+    dmodel='ecop'
+    pmodel='ecm'
+
+    pltdir='plt_ecmwf_ecmt'
+    pmodel='ecm'
+
+    modelPlotTaus=[0,6,12,18,24,30,36,42,48,60,72,84,96,108,120,132,144,156,168]
+
+    gmodname="%s%s"%(pmodel,modelres)
+
+    modeltitleAck1="ECMWF Data Courtesy of ECMWF TIGGE Server"
+    fullmod="ECMWF(IFS)"
+
+    btau=0
+    etau=240
+    dtau=6
+    ##dtau=12
+    taus=range(btau,etau+1,dtau)
+
+    gridRes=0.5
+    ecArea='global'
+    latS=-90.0
+    lonW=0.0
+    ni=720
+    nj=361
+
+    doalltaus=0
+    doUA=1
+
+    def __init__(self,bdir2=None,gribver=2,fctype='fc'):
+
+        self.dirmodel=self.dmodel
+        if(bdir2 != None): self.bdir2=bdir2
+                
+        self.initModelCenter(self.center)
+        self.initGribVer(gribver)
+
+        self.location='kishou'
+        self.tautype='wgrib'
+        self.gribtype='grb2'
+
+        self.nfields=53
+        self.nfieldsW2flds=53
+        self.nfieldsAll=46
+
+        self.rundtginc=12
+
+        self.adecksource='tmtrkN'
+        self.adeckaid='ecop'
+
+        self.fctype=fctype
+        self.dattaus=range(self.btau,self.etau+1,self.dtau)
+        self.dmodelType='w2flds'
+        
+        
+    def getDataTausEcmt(self,dtg):
+        taus=range(self.btau,self.etau+1,self.dtau)
+        return(taus)
+    
+    def getDataTausEcm5(self,dtg):
+        taus=range(0,120+1,6)+range(132,240+1,12)
+        return(taus)
+
+    def getDataTausEcm6(self,dtg):
+
+        self.dtau=6
+        dtghh=int(dtg[8:10])
+        if(dtghh == 0 or dtghh == 12):
+            self.etau=240
+            self.btau=0
+        elif(dtghh == 6 or dtghh == 18):
+            self.etau=144
+            self.btau=0
+            
+        # -- 20250129 -- before ncep source
+        #
+
+        self.btau=0
+        
+        etau144=144
+        dtau144=6
+        taus144=range(self.btau,etau144+1,dtau144)
+        
+        etau240=240
+        dtau240=12
+        taus240=range(etau144+dtau240,etau240+1,dtau240)
+        
+        if(self.etau == 144):
+            taus=taus144
+        else:
+            taus=taus144+taus240
+
+        return(taus)
+
+    def DataPath(self,dtgopt,dtype='w2flds',dowgribinv=0,dofilecheck=1,override=0,ropt='',
+                 diag=1,
+                 useglob=0,
+                 doDATage=0,
+                 doBail=0,
+                 verb=1):
+
+
+        if(hasattr(self,'doDATage')): doDATage=self.doDATage
+        dpaths=[]
+        statuss={}
+
+        if(not(hasattr(self,'dtype')) and dtype != None):
+            self.dtype=dtype
+            
+        self.dtype=dtype
+
+        dtgs=mf.dtg_dtgopt_prc(dtgopt)
+
+        inV=None
+        if(hasattr(self,'iV')): inV=self.iV.hash
+        
+        dataDtgs=[]
+
+        for dtg in dtgs:
+            
+            # -- find tau offset
+            #
+            dataDtg=dtg
+            if(is0618Z(dtg) and self.modelDdtg == 12):
+                self.tauOffset=6
+                dataDtg=mf.dtginc(dtg,-6)
+                
+            dataDtgs.append(dataDtg)
+
+            status={}
+
+            self.setDbase(dataDtg,dtype=dtype)
+
+            try:
+                dthere=os.path.exists(self.dpath)
+            except:
+                dthere=0
+
+            if(dthere):
+                siz=MF.GetPathSiz(self.dpath)
+                dpaths.append(self.dpath)
+
+            # check file status...doesn't work!!!
+            #
+            #if(dofilecheck == 0):
+            #    self.statuss=statuss
+            #    return(self)
+
+            if(dtype != None and not(hasattr(self,'dmodelType'))): self.dmodelType=dtype
+
+            self.setxwgrib(dataDtg)
+            if(hasattr(self,'setgmask')): self.setgmask(dtg)
+
+            self.datmask="%s/%s"%(self.dbasedir,self.dmask)
+
+            self.datpaths=glob.glob(self.datmask)
+            self.datpaths.sort()
+            
+            grbmask="%s/%s"%(self.dbasedir,self.gmask)
+            
+            grbpaths=glob.glob(grbmask)
+            grbpaths.sort()
+            
+            gmaskAll=self.gmask.replace('f???.','')
+            gmaskAll="%s/%s"%(self.dbasedir,gmaskAll)
+            grbpathsAll=glob.glob(gmaskAll)
+            grbpathsAll.sort()
+
+            ngrb =len(grbpaths)
+            ngrbA=len(grbpathsAll)
+            ndat =len(self.datpaths)
+
+            isEcmt=isEcm5=isEcm6=0
+            if(mf.find(self.datpaths[0],'ecmt')):
+                isEcmt=1
+            elif(mf.find(self.datpaths[0],'ecm5')):
+                isEcm5=1
+            elif(mf.find(self.datpaths[0],'ecm6')):
+                isEcm6=1
+                
+            # -- ecmt 2006-2008
+            #
+            if(ngrbA == 1 and ngrb == 1):
+                self.grbpaths=grbpathsAll
+                self.datpaths=grbpathsAll
+                self.tautype='alltau'
+                isEcmt=1
+
+            # -- ecm5 
+            #
+            elif(ngrbA == 2 and ngrb == 2):
+                
+                self.grbpaths=[grbpathsAll[-1]]
+                self.datpaths=self.grbpaths
+                #print 'gg--',grbpathsAll,self.datpaths
+                #self.tautype='alltau'
+                
+            elif(ngrbA == 0 and ngrb > 0):
+                self.grbpaths=grbpaths
+                self.datpaths=self.grbpaths
+                if(hasattr(self,'getDataTaus')): 
+                    self.taus=self.getDataTaus(dtg)
+
+            
+            if ( len(self.datpaths) > 0):
+
+                for datpath in self.datpaths:
+                    (fdir,ffile)=os.path.split(datpath)
+                    (base,ext)=os.path.splitext(datpath)
+                    if(self.tautype == 'alltau'):
+                        tau=self.taus[-1]
+                    else:
+                        tau=self.name2tau(ffile,dtg)
+                    
+                    (base,ext)=os.path.splitext(datpath)
+                    wgribpath="%s.wgrib%1d.txt"%(base,self.gribver)
+
+                    wgsiz=MF.getPathSiz(wgribpath)
+                    datsiz=MF.getPathSiz(datpath)
+                    #print 'ww--dd',wgribpath,datpath
+                    if(dowgribinv or override):
+                        if((wgsiz <= 0 and datsiz > 0) or override):
+                            cmd="%s %s > %s"%(self.xwgrib,datpath,wgribpath)
+                            if(diag):  mf.runcmd(cmd)
+                            else:      mf.runcmd(cmd,'quiet')    
+                            
+                    if(os.path.exists(wgribpath)):
+
+                        if(doDATage):
+                            age=MF.PathCreateTimeDtgdiff(dataDtg,datpath)
+                        else:
+                            age=MF.PathCreateTimeDtgdiff(dataDtg,wgribpath)
+
+                        datsiz=os.path.getsize(datpath)
+                        if(age >= 1000.0 and datsiz > 0): age=999.9
+
+                        if(self.model == 'ecop' and self.tautype == 'alltau'):
+                            nf=self.nfieldsAll
+                            self.ntAll=41
+                        else:
+                            nf=self.nfields
+                            
+                            #cards=open(wgribpath).readlines()
+                            #nf=len(cards)
+                            
+                        status[tau]=(age,nf)
+
+                        if(inV != None):
+                            rc=(datpath,age,nf)
+                            if(verb): print 'PPP putting rc: ',self.model,dataDtg,tau,nf
+                            inV[self.model,dtg,tau]=rc
+                    else:
+                        # -- for ecmt and or no wgribinv
+                        #
+                        if(doDATage):
+                            age=MF.PathCreateTimeDtgdiff(dataDtg,datpath)
+                        else:
+                            age=MF.PathCreateTimeDtgdiff(dataDtg,wgribpath)
+                            
+                        datsiz=os.path.getsize(datpath)
+                        if(age >= 1000.0 and datsiz > 0): age=999.9
+                        
+                        if(self.model == 'ecop' and self.tautype == 'alltau'):
+                            nf=self.nfieldsAll
+                            self.ntAll=41
+                            status[tau]=(age,nf)
+                # -- mimic ecm5 class
+                #
+                if(isEcmt):
+                    self.nfieldsW2flds=46
+                    taus=self.getDataTausEcmt(dtg)
+                    self.taus=taus
+                    self.ntAll=len(taus)
+                    
+                if(isEcm5):
+                    self.nfieldsW2flds=66
+                    taus=self.getDataTausEcm5(dtg)
+                    for tau in taus:
+                        status[tau]=(age,self.nfieldsW2flds)
+                    self.taus=taus
+                    self.ntAll=31
+                if(isEcm6):
+                    self.nfieldsW2flds=70
+                    taus=self.getDataTausEcm6(dtg)
+                    for tau in taus:
+                        status[tau]=(age,self.nfieldsW2flds)
+                    self.taus=taus
+                    self.ntAll=len(taus)
+                    
+
+
+            else:
+                status={}
+
+            statuss[dtg]=status
+
+        #
+        # outside  dtg loop -- single dtg
+        #
+
+        self.ctlpath="%s.ctl"%(self.tdatbase)
+
+        self.dpaths=dpaths
+        self.ddtgs=dataDtgs
+        self.statuss=statuss
+
+        if(not(hasattr(self,'ntAll'))):
+            
+            if(self.dmodelType != None and self.dmodelType == 'w2flds'): 
+                self.nfields=self.nfieldsW2flds
+                print 'w2--'
+            else:
+                self.nfields=self.nfields
+                print 'nn--'
+                
+        if(hasattr(self,'iV')): self.iV.put()
+
+
+        return(self)
+
+
+    
+
+    def setDbase(self,dtg,dtype='w2flds',warn=0):
+
+        if(self.IsModel2(self.model) or self.IsModel1(self.model)):
+            if(not(hasattr(self,'lmodel'))): self.lmodel=self.dmodel
+
+            if(dtype == 'w2flds'):
+                self.dmodel=self.model
+                self.lmodel=self.model
+                
+            self.dbasedir="%s/%s"%(self.bddir,dtg)
+            self.dbasedirarch="%s/%s"%(self.bddirarch,dtg)
+
+            byear=dtg[0:4]
+            self.bddir="%s/%s"%(self.w2fldsSrcDir,byear)
+            self.useBddir=1
+            self.dbasedir="%s/%s"%(self.bddir,dtg)
+            self.dbase="%s/%s/%s-%s-%s"%(self.bddir,dtg,self.lmodel,dtype,dtg)
+
+            self.dpath="%s.ctl"%(self.dbase)
+            self.dpathexists=os.path.exists(self.dpath)
+
+            
+        else:
+            print 'EEE-M2.Ecop.setDbase could not set M2.setDbase.dbase  model: ',self.model,'dtg: ',dtg,' dtype: ',self.dtype,' or maybe because model not in w2localvars.py Nwp2ModelsAll...'
+            sys.exit()
+
+
+        self.tdatbase=self.dbase
+
+
+    def setgmask(self,dtg):
+        self.gmask="*w2flds*%s*.%s"%(dtg,self.gribtype)
+
+
+    def setxwgrib(self,dtg):
+
+        self.xwgrib='wgrib2'
+        self.dmask="*w2flds*%s*.%s"%(dtg,self.gribtype)
+        
+        
+    def GetDataStatus(self,dtg,checkNF=0,mintauNF=5):
+
+        if(hasattr(self,'bddirNWP2')):
+            tdir="%s/%s"%(self.bddirNWP2,dtg)
+        else:
+            tdir="%s/%s"%(self.bddir,dtg)
+
+        NFmin=self.nfields
+        if(checkNF): NFmin=self.nfields-mintauNF
+
+        lastTau=None
+        latestTau=None
+        latestCompleteTau=None
+        earlyTau=None
+        gmpAge=None
+        gmplastdogribmap=-999
+        gmplatestTau=-999
+        gmplastTau=-999
+
+        datataus=self.dattaus
+        
+        # -- for single tau in era5/ecm5 ... get thEcmte age from the single data file
+        #
+        stat=self.statuss[dtg]
+        itaus=stat.keys()
+        
+        if(len(itaus) == 1):
+            itau=itaus[0]
+            (age,siz)=stat[itau]
+            gotage=1
+        elif(len(itaus) > 1):
+            gotage=1
+        else:
+            gotage=0
+            age=-999
+            siz=-999
+        
+        if(gotage == 0):
+            for tau in datataus:
+                nf=self.nfieldsW2flds
+                self.statuss[dtg][tau]=(age,nf)
+        
+        status=self.statuss[dtg]
+        itaus=status.keys()
+        itaus.sort()
+        
+        ages={}
+        for itau in itaus:
+            ages[itau]=status[itau][0]
+
+
+        oldest=-1e20
+        youngest=+1e20
+
+        for itau in itaus:
+            if(ages[itau] < youngest):
+                youngest=ages[itau]
+                earlyTau=itau
+
+            # -- >= because for taus having the same age
+            #
+            if(ages[itau] >= oldest):
+                oldest=ages[itau]
+                latestTau=itau
+
+        if(len(status) >= 1):
+            lastTau=itaus[-1]
+            latestCompleteTau=lastTau
+
+
+        # -- forward search thru target data taus
+        # 
+
+        ndt=len(datataus)
+        
+        if(self.tautype == 'alltau'):
+            latestCompleteTau=datataus[-1]
+            
+        else:
+            for n in range(0,ndt):
+                datatau=datataus[n]
+                gotit=0
+                for itau in itaus:
+                    if(datatau == itau):
+                        (age,nf)=self.statuss[dtg][itau]
+                        if(checkNF and nf < NFmin):
+                            gotit=0
+                            continue
+                        else:
+                            gotit=1
+                            latestCompleteTau=datatau
+                        break
+    
+    
+                if(gotit == 0):  break
+
+
+        # -- backward search (default)
+        #
+
+        latestCompleteTauBackward=-999
+
+        if(self.tautype == 'alltau' and self.dmodelType == None):
+            None
+        else:
+            for n in range(ndt-1,0,-1):
+                datatau=datataus[n]
+                gotit=0
+                for itau in itaus[-1:0:-1]:
+                    if(datatau == itau):
+                        (age,nf)=self.statuss[dtg][itau]
+                        if(checkNF and nf < NFmin):
+                            gotit=0
+                            continue
+                        else:
+                            gotit=1
+                            latestCompleteTauBackward=datatau
+                        break
+        
+                if(gotit == 1):  break
+        
+        self.dstdir=tdir
+        self.dsitaus=itaus
+        self.dslastTau=lastTau
+        self.dsgmpAge=gmpAge
+        self.dsoldestTauAge=oldest
+        self.dslatestTau=latestTau
+        self.dsyoungest=youngest
+        self.dsearlyTau=earlyTau
+        self.dsgmplastdogribmap=gmplastdogribmap
+        self.dsgmplatestTau=gmplatestTau
+        self.dsgmplastTau=gmplastTau
+        self.dslatestCompleteTau=latestCompleteTau
+        self.dslatestCompleteTauBackward=latestCompleteTauBackward
+
+        return(self)
+
+    def name2tau(self,dfile,dtg=None):
+        ddd=dfile.split('.')
+        ddt=dfile.split('-')
+        #print 'fff--dd',dfile,ddd,ddt
+        #print '--ll',len(ddd),len(ddt)
+        if(len(ddd) == 5):
+            ftau=ddd[-2]
+            tau=ftau.replace('f','')
+        elif(mf.find(dfile,'ecm5')):
+            tau=240
+        elif(mf.find(dfile,'ecm6')):
+            (dbase,dext)=os.path.splitext(dfile)
+            dd6=dbase.split('-')
+            tau=dd6[-1]
+            #print '666 --- ',len(ddd),len(ddt),dfile,dd6
+        else:
+            print 'NNNN222TTTAAAUUU failed'
+            sys.exit()
+            
+        tau=int(tau)
+        return(tau)
+
+
+
+
+
 
 class Grib(MFbase):
 

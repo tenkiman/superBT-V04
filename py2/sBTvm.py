@@ -5789,8 +5789,10 @@ def getW2fldsRtfimCtlpath(model,dtg,maxtau=None,dtau=6,details=1,override=0,verb
             # -- use M2 for w2flds -- cgd6 does not have a wgrib?.txt inventory...this makes it...
             #
             if(dtype == 'w2flds'):
+                
                 fm=m2.DataPath(dataDtg,dtype=dtype,dowgribinv=1,override=override,doDATage=1) 
                 fd=fm.GetDataStatus(dataDtg)
+
                 
             if(details):
                 
@@ -5836,12 +5838,19 @@ def getW2fldsRtfimCtlpath(model,dtg,maxtau=None,dtau=6,details=1,override=0,verb
                 if(maxtau != None): taus=reducetaus(taus,maxtau,dtau)
 
             else:
-                taus=gribtype=gribver=datpaths=None
-
-            if(not(details)):
-                return(1,rootdir,ctlpath)
-            else:
-                return(1,ctlpath,taus,gribtype,gribver,datpaths,nfields,tauOffset)
+                # -- 20260507 -- always decorate ecop ...
+                #
+                tauOffset=tauOffset
+                taus=fd.taus
+                dtau=fd.dtau
+                # -- cull taus
+                if(maxtau != None): taus=reducetaus(taus,maxtau,dtau)
+                gribtype=fd.gribtype
+                gribver=fd.gribver
+                nfields=fd.nfieldsW2flds
+                datpaths=[]
+                
+            return(1,ctlpath,taus,gribtype,gribver,datpaths,nfields,tauOffset)
 
 
     if(len(ctlpaths) == 0 or len(ctlpaths) > 1):
@@ -5852,11 +5861,13 @@ def getW2fldsRtfimCtlpath(model,dtg,maxtau=None,dtau=6,details=1,override=0,verb
     
     
     
-def getCtlpathTaus(model,dtg,maxtau=168,verb=0,doSfc=0,doBail=1):
+def getCtlpathTaus(model,dtg,maxtau=168,details=1,verb=0,doSfc=0,doBail=1):
     
     taus=[]
     ctlpath=taus=nfields=tauOffset=None
-    rc=getW2fldsRtfimCtlpath(model,dtg,maxtau=maxtau,verb=verb,doSfc=doSfc)
+    if(model == 'ecop'):
+        details=0
+    rc=getW2fldsRtfimCtlpath(model,dtg,maxtau=maxtau,details=details,verb=verb,doSfc=doSfc)
     if(rc == None):
         if(doBail):
             print 'EEEE---tcVM-getCtlpathTaus-w2base.getW2fldsRtfimCtlpath...sayounara...for model: ',model,' dtg: ',dtg
@@ -5869,6 +5880,7 @@ def getCtlpathTaus(model,dtg,maxtau=168,verb=0,doSfc=0,doBail=1):
         taus=rc[2]
         nfields=rc[-2]
         tauOffset=rc[-1]
+            
 
     return(ctlpath,taus,nfields,tauOffset)
 
@@ -8055,10 +8067,12 @@ def doMd2Md3MrgGenChk(stmid,doM2=1,doRedo=0,qc2paths=1,doGenChk=0,
 def setModel2(model,bdir2=None):
 
     model=model.lower()
-    from sBTcl import Era5,Era5Wmo,EcopWmo
+    from sBTcl import Era5,Era5Wmo,EcopWmo,Ecop
     
     if(model == 'era5'):  
         return(Era5(bdir2=bdir2))
+    elif(model == 'ecop'):  
+        return(Ecop(bdir2=bdir2))
     elif(model == 'era5w'): 
         return(Era5Wmo(bdir2='/raid05/era5-wmo'))
     elif(model == 'ecopw'): 

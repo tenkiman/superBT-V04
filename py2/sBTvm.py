@@ -5873,6 +5873,7 @@ def getCtlpathTaus(model,dtg,maxtau=168,details=1,verb=0,doSfc=0,doBail=1):
             print 'EEEE---tcVM-getCtlpathTaus-w2base.getW2fldsRtfimCtlpath...sayounara...for model: ',model,' dtg: ',dtg
             sys.exit()
         else:
+            print 'WWWWWWWWW -- nada in getW2fldsRtfimCtlpath...'
             return(ctlpath,taus,nfields,tauOffset)
 
     if(rc[0]):

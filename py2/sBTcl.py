@@ -2534,7 +2534,9 @@ class GaLats(W2GaBase):
 
         
 
-    def __init__(self,ga,ge,dtg=None,
+    def __init__(self,ga,ge,
+                 dtg=None,
+                 mdtg=None,
                  model='rtfim',
                  center='esrl',
                  comment='grib1 output for tm tracker',
@@ -2549,6 +2551,7 @@ class GaLats(W2GaBase):
                  etau=168,
                  dtau=6,
                  taus=None,
+                 mtaus=None,
                  regrid=0,
                  remethod='re',
                  smth2d=0,
@@ -2560,6 +2563,7 @@ class GaLats(W2GaBase):
         if(hasattr(ga,'quiet')): quiet=ga.quiet
         self.initGrads(ga,ge,quiet=quiet)
         self.dtg=dtg
+        self.mdtg=mdtg
         self.model=model
         self._cmd=self.cmd2
         
@@ -2588,7 +2592,11 @@ class GaLats(W2GaBase):
             else:
                 if(dtau != None): dtau=dtau
                 else: print 'EEE GaLats dtau == None and len of taus = 1, set dtau in __init__'; sys.exit()
-        
+                
+        if(mtaus != None):
+            self.mtaus=mtaus
+            
+            
 
         if(ptable == None):
             ptable="%s/hfip/lats.hfip.table.txt"%(self.prcdir),
@@ -2755,8 +2763,11 @@ class GaLats(W2GaBase):
     def outvars(self,svars,uavars,verb=0):
 
         for tau in self.taus:
-            vdtg=mf.dtginc(self.dtg,tau)
+            mtau=self.mtaus[tau]
+            vdtg=mf.dtginc(self.mdtg,mtau)
             gtime=mf.dtg2gtime(vdtg)
+            
+            if(verb): print 'tttt',tau,self.dtg,'mmmm',mtau,self.mdtg,'vvv',vdtg
             
             self("set time %s"%(gtime))
             if(self.frequency == 'forecast_hourly'):
@@ -2781,7 +2792,7 @@ class GaLats(W2GaBase):
                 elif(len(rc) == 4):
                     (name,uatype,levs,exprs)=rc
                     if(not(type(exprs) is ListType)):
-                        print 'simple expression exprs: ',exprs
+                        #print 'simple expression exprs: ',exprs
                         doregular=1
                         doexpr=1
                         
@@ -7281,7 +7292,7 @@ class GaProc(MFbase):
         #
         if(self.ga == None):
             print 'GaProc MMMMMM -- making self.ga'
-            from ga2 import setGA
+            #from ga2 import setGA
             ga=setGA(Opts=self.Opts,Quiet=self.Quiet,Window=self.Window,doLogger=self.doLogger,verb=self.verb,Bin=self.Bin)
             self.ga=ga
             self.ge=ga.ge
@@ -8426,7 +8437,7 @@ c
 
         # -- do grads: 1) open files; 2) get file data
         #
-        from ga2 import setGA
+        #from ga2 import setGA
 
         quiet=self.GAQuiet
         ga=setGA(Bin=Bin,doLogger=self.GAdoLogger,Quiet=quiet)

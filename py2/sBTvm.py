@@ -5885,9 +5885,12 @@ def getCtlpathTaus(model,dtg,maxtau=168,details=1,verb=0,doSfc=0,doBail=1):
 
     return(ctlpath,taus,nfields,tauOffset)
 
-def getInvPath4Dtgopt(dtgopt,invdir='./inv',getonly=0,override=0):
+def getInvPath4Dtgopt(dtgopt,model,invdir='./inv',getonly=0,override=0):
 
-    invmask="%s/inv-sbt-track-v??-%s.txt"%(invdir,dtgopt)
+    if(model == 'era5'):
+        invmask="%s/inv-sbt-track-v??-%s.txt"%(invdir,dtgopt)
+    else:
+        invmask="%s/inv-sbt-track-%s-v??-%s.txt"%(invdir,model,dtgopt)
     invs=glob.glob(invmask)
     
     nnver=0
@@ -5909,8 +5912,10 @@ def getInvPath4Dtgopt(dtgopt,invdir='./inv',getonly=0,override=0):
     if(override): nver='v00'
     else:         nver="v%02d"%(nnver)
     
-        
-    invpath="inv/inv-sbt-track-%s-%s.txt"%(nver,dtgopt)
+    if(model == 'era5'):
+        invpath="inv/inv-sbt-track-%s-%s.txt"%(nver,dtgopt)
+    else:
+        invpath="inv/inv-sbt-track-%s-%s-%s.txt"%(model,nver,dtgopt)
     
     if(override and (MF.getPathSiz(invpath) > 0)):
         cmd='rm %s'%(invpath)
